@@ -43,7 +43,7 @@ Here is an example code snippet:
 		HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();        
 		HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));        
 		HttpHeaders headers = request.getHeaders();        
-		headers.set("Host", "akaa-3fz725qlrtpbyl3k-c7tzr6rinu3vb2b7.luna-staging.akamaiapis.net");        
+		headers.set("Host", "akaa-u5x3btzf44hplb4q-6jrzwnvo7llch3po.luna.akamaiapis.net");        
 		ClientCredential credential = new DefaultCredential("akaa-nev5k66unzize2gx-5uz4svbszp4ko5wq",
 			"akaa-ublu6mqdcqkjw5lz-542a56pcogddddow",
 			"SOMESECRET");         
