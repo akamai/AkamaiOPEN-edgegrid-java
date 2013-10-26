@@ -521,12 +521,22 @@ public class EdgeGridV1Signer implements RequestSigner {
 	 * @return the formatted time stamp.
 	 */
 	private static String getTimeStamp(long time) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ssZ");
+		SimpleDateFormat format =  formatter.get();
 		Date date = new Date(time);
-		
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return format.format(date);
 	}
+	
+	/**
+	 * SimpleDateFormatter by default is not ThreadSafe making it Threadsafe
+	 */
+	private static final ThreadLocal<SimpleDateFormat> formatter = new ThreadLocal<SimpleDateFormat>(){
+        @Override
+        protected SimpleDateFormat initialValue()
+        {
+            return  new SimpleDateFormat("yyyyMMdd'T'HH:mm:ssZ");
+        }
+    };
 	
 	/**
 	 * Helper class representing the canonicalized data and possibly updated request.
