@@ -419,24 +419,24 @@ public class EdgeGridV1Signer implements RequestSigner {
 			HttpContent content = request.getContent();
 			if (content != null) {
 				try {
-					ByteArrayOutputStream bos = new ByteArrayOutputStream();
-					content.writeTo(bos);
-
-					byte[] contentBytes = bos.toByteArray();
-
-					int lengthToHash = bos.size();
-					if (lengthToHash > maxBodySize) {
-						LOGGER.warn(String.format(
-								"Message body length '%d' is larger than the max '%d'. " +
-								"Using '%d' bytes for computing the hash.", lengthToHash, maxBodySize, maxBodySize));
-						lengthToHash = maxBodySize;
-					} else {
-						if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug(String.format("Content: %s", Base64.encodeBase64String(contentBytes)));
-						}
+					if (content.getLength() > maxBodySize) {
+						throw new RequestSigningException("Contenty body too large.");
 					}
 					
-					byte[] digestBytes = getHash(contentBytes, 0, lengthToHash);
+					ByteArrayOutputStream bos = new ByteArrayOutputStream();
+					content.writeTo(bos);
+					
+					if (bos.size() > maxBodySize) {
+						throw new RequestSigningException("Contenty body too large.");
+					}
+
+					byte[] contentBytes = bos.toByteArray();
+					
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug(String.format("Content: %s", Base64.encodeBase64String(contentBytes)));
+					}
+					
+					byte[] digestBytes = getHash(contentBytes);
 										
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug(String.format("Content hash: %s", Base64.encodeBase64String(digestBytes)));
@@ -465,12 +465,11 @@ public class EdgeGridV1Signer implements RequestSigner {
 	 * @return the digest.
 	 * @throws RequestSigningException
 	 */
-	private static byte[] getHash(byte[] contentBytes, int offset, int len) throws RequestSigningException {
+	private static byte[] getHash(byte[] contentBytes) throws RequestSigningException {
 		try {
 			MessageDigest md = MessageDigest.getInstance(MD_ALG);
 			
-			md.update(contentBytes, offset, len);
-			byte[] digestBytes = md.digest();
+			byte[] digestBytes = md.digest(contentBytes);
 			return digestBytes;
 		} catch (NoSuchAlgorithmException nsae) {
 			throw new RequestSigningException("Failed to get request hash: algorithm not found", nsae);
