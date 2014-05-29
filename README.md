@@ -2,6 +2,12 @@
 
 Java library for EdgeGrid Client Authentication
 
+## CHANGES
+
+May 29th 2014
+* A POST request body larger than the maxBodySize is allowed but only the first maxBodySize bytes are used in the [Content hash aspect of the request signature](https://developer.akamai.com/stuff/Getting_Started_with_OPEN_APIs/Client_Auth.html).
+
+
 ## Summary
 
 edgegrid-auth-java is a Java library for signing requests to APIs that are carried on the Akamai EdgeGrid network. It builds on the [Google HTTP Client Library for Java](https://code.google.com/p/google-http-java-client/) and adds the EdgeGrid signature to a normal [HttpRequest](http://javadoc.google-http-java-client.googlecode.com/hg/1.17.0-rc/com/google/api/client/http/HttpRequest.html).
@@ -44,7 +50,7 @@ HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
 HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
 HttpHeaders headers = request.getHeaders();
 headers.set("Host", "akaa-u5x3btzf44hplb4q-6jrzwnvo7llch3po.luna.akamaiapis.net");
-ClientCredential credential = new DefaultCredential("akaa-nev5k66unzize2gx-5uz4svbszp4ko5wq"
+ClientCredential credential = new DefaultCredential("akaa-nev5k66unzize2gx-5uz4svbszp4ko5wq",
 	"akaa-ublu6mqdcqkjw5lz-542a56pcogddddow", "SOMESECRET");
 HttpRequest signedRequest = signer.sign(request, credential);
 ```
