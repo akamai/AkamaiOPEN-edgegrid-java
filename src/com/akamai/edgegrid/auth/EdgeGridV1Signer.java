@@ -34,6 +34,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,7 +194,7 @@ public class EdgeGridV1Signer implements RequestSigner {
 			String clientSecret = credential.getClientSecret();
 			
 			byte[] signingKeyBytes = sign(timeStamp, clientSecret.getBytes(CHARSET), HMAC_ALG);
-			String signingKey = Base64.encodeBase64String(signingKeyBytes);
+			String signingKey = StringUtils.newStringUtf8(Base64.encodeBase64(signingKeyBytes));
 
 			CanonicalizerHelper requestResult = getCanonicalizedRequest(request);
 			HttpRequest updatedRequest = requestResult.getRequest();
@@ -210,7 +211,7 @@ public class EdgeGridV1Signer implements RequestSigner {
 			}
 
 			byte[] signatureBytes = sign(stringToSign, signingKey.getBytes(CHARSET), HMAC_ALG);
-			String signature = Base64.encodeBase64String(signatureBytes);
+			String signature = StringUtils.newStringUtf8(Base64.encodeBase64(signatureBytes));
 			
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug(String.format("Signature : '%s'", signature));
@@ -432,14 +433,14 @@ public class EdgeGridV1Signer implements RequestSigner {
 						lengthToHash = maxBodySize;
 					} else {
 						if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug(String.format("Content: %s", Base64.encodeBase64String(contentBytes)));
+							LOGGER.debug(String.format("Content: %s", StringUtils.newStringUtf8(Base64.encodeBase64(contentBytes))));
 						}
 					}
 					
 					byte[] digestBytes = getHash(contentBytes, 0, lengthToHash);
 										
 					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug(String.format("Content hash: %s", Base64.encodeBase64String(digestBytes)));
+						LOGGER.debug(String.format("Content hash: %s", StringUtils.newStringUtf8(Base64.encodeBase64(digestBytes))));
 					}
 					
 					// for non-retryable content, reset the content for downstream handlers
@@ -448,7 +449,7 @@ public class EdgeGridV1Signer implements RequestSigner {
 						updatedRequest = request.setContent(newContent);
 					}
 					
-					data = Base64.encodeBase64String(digestBytes); 
+					data = StringUtils.newStringUtf8(Base64.encodeBase64(digestBytes));
 				} catch (IOException ioe) {
 					throw new RequestSigningException("Failed to get content hash: failed to read content", ioe);
 				}
