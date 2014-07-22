@@ -533,7 +533,7 @@ public class EdgeGridV1Signer implements RequestSigner {
 	 * Helper class representing the canonicalized data and possibly updated request.
 	 *
 	 */
-	private class CanonicalizerHelper {
+	private static class CanonicalizerHelper {
 		
 		/**
 		 * The canonicalized data.
