@@ -14,13 +14,13 @@ Include the following Maven dependency in your project POM:
 </dependency>
 ```
 
-Define client credential
+Define a client credential
 
 ```java
 ClientCredential credential = ClientCredential.builder()
-  .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz2rp")
-  .clientSecret("12rvdn/myhSSiuYAC6ZPGaI91ezhdbYd7WyagzhGxms=")
+  .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
   .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
+  .clientSecret("SOMESECRET")
   .build();
 ```      
 
@@ -28,10 +28,10 @@ that you will use to sign your REST-assured request:
 
 ```java
 given().
-  baseUri("https://akaa-cf6fooumkselbx6j-spubmyp7ygje4vyx.luna-dev.akamaiapis.net").
+  baseUri("https://akaa-cf6fooumkselbx6j-spubmyp7ygje4vyx.luna.akamaiapis.net").
   filter(EdgeGridV1SignerFilter.sign(credential)).
 when().
-  get("/authz/v2/identities/self").
+  get("/service/v2/users").
 then().
   statusCode(200);
 ```
