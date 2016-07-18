@@ -52,7 +52,7 @@ public class EdgeGridV1SignerFilter implements Filter {
      * @param credential a client credential to sign a request
      * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
      */
-    public static final EdgeGridV1SignerFilter sign(ClientCredential credential) {
+    public static EdgeGridV1SignerFilter sign(ClientCredential credential) {
         return sign(new EdgeGridV1Signer(), credential);
     }
 
@@ -63,8 +63,13 @@ public class EdgeGridV1SignerFilter implements Filter {
      * @param credential       a client credential to sign a request
      * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
      */
-    public static final EdgeGridV1SignerFilter sign(EdgeGridV1Signer edgeGridV1Signer, ClientCredential credential) {
+    public static EdgeGridV1SignerFilter sign(EdgeGridV1Signer edgeGridV1Signer, ClientCredential credential) {
         return new EdgeGridV1SignerFilter(edgeGridV1Signer, credential);
+    }
+
+    private static Multimap<String, String> getHeaders(Headers headers) {
+        Multimap<String, Header> indexedHeaders = Multimaps.index(headers.asList(), (Header::getValue));
+        return Multimaps.transformValues(indexedHeaders, (Header::getValue));
     }
 
     @Override
@@ -85,10 +90,5 @@ public class EdgeGridV1SignerFilter implements Filter {
                 .headers(getHeaders(requestSpec.getHeaders()))
                 .body(requestSpec.getBody())
                 .build();
-    }
-
-    private static Multimap<String, String> getHeaders(Headers headers) {
-        Multimap<String, Header> indexedHeaders = Multimaps.index(headers.asList(), (Header::getValue));
-        return Multimaps.transformValues(indexedHeaders, (Header::getValue));
     }
 }

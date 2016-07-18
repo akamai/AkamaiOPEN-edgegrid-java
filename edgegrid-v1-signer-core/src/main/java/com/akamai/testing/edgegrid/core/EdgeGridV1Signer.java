@@ -45,8 +45,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class EdgeGridV1Signer {
 
-    private static final Logger log = LoggerFactory.getLogger(EdgeGridV1Signer.class);
-
     /**
      * Default algorithm for signing and hashing.
      */
@@ -59,7 +57,7 @@ public class EdgeGridV1Signer {
      * Default headers used for signing.
      */
     public static final Set<String> DEFAULT_HEADERS_TO_SIGN = ImmutableSet.of();
-
+    private static final Logger log = LoggerFactory.getLogger(EdgeGridV1Signer.class);
     private static final String AUTH_CLIENT_TOKEN_NAME = "client_token";
     private static final String AUTH_ACCESS_TOKEN_NAME = "access_token";
     private static final String AUTH_TIMESTAMP_NAME = "timestamp";
@@ -91,41 +89,13 @@ public class EdgeGridV1Signer {
         this(DEFAULT_SIGNING_ALGORITHM, DEFAULT_HEADERS_TO_SIGN, DEFAULT_MAX_BODY_SIZE_IN_BYTES);
     }
 
-    /**
-     * Generates signature for a given HTTP request and client credential. To be put in Authorization header.
-     *
-     * @param request    a HTTP request to sign.
-     * @param credential client credential used to sign a request
-     * @return Authorization header value with
-     * @throws RequestSigningException if signing of a given request failed.
-     * @throws NullPointerException    if <code>request</code> or <code>credential</code> is <code>null</code>.
-     */
-    public String getAuthorizationHeaderValue(Request request, ClientCredential credential) throws RequestSigningException {
-        checkNotNull(request);
-        checkNotNull(credential);
-        return getAuthorizationHeaderValue(request, credential, System.currentTimeMillis(), UUID.randomUUID());
-    }
-
-    String getAuthorizationHeaderValue(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
-        String timeStamp = formatTimeStamp(timestamp);
-        String authData = getAuthData(credential, timeStamp, nonce);
-        String signature = getSignature(request, credential, timeStamp, authData);
-        log.debug(String.format("Signature: '%s'", signature));
-
-        return getAuthorizationHeaderValue(authData, signature);
-    }
-
     private static String getAuthorizationHeaderValue(String authData, String signature) {
-        StringBuilder sb = new StringBuilder(authData);
-        sb.append(AUTH_SIGNATURE_NAME);
-        sb.append('=');
-        sb.append(signature);
-        return sb.toString();
+        return authData + AUTH_SIGNATURE_NAME + '=' + signature;
     }
 
     private static String getRelativePathWithQuery(String uriString) {
         URI uri = URI.create(uriString);
-        StringBuffer sb = new StringBuffer(uri.getPath());
+        StringBuilder sb = new StringBuilder(uri.getPath());
         if (uri.getQuery() != null) {
             sb.append("?").append(uri.getQuery());
         }
@@ -176,6 +146,30 @@ public class EdgeGridV1Signer {
         return uri;
     }
 
+    /**
+     * Generates signature for a given HTTP request and client credential. To be put in Authorization header.
+     *
+     * @param request    a HTTP request to sign.
+     * @param credential client credential used to sign a request
+     * @return Authorization header value with
+     * @throws RequestSigningException if signing of a given request failed.
+     * @throws NullPointerException    if <code>request</code> or <code>credential</code> is <code>null</code>.
+     */
+    public String getAuthorizationHeaderValue(Request request, ClientCredential credential) throws RequestSigningException {
+        checkNotNull(request);
+        checkNotNull(credential);
+        return getAuthorizationHeaderValue(request, credential, System.currentTimeMillis(), UUID.randomUUID());
+    }
+
+    String getAuthorizationHeaderValue(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
+        String timeStamp = formatTimeStamp(timestamp);
+        String authData = getAuthData(credential, timeStamp, nonce);
+        String signature = getSignature(request, credential, timeStamp, authData);
+        log.debug(String.format("Signature: '%s'", signature));
+
+        return getAuthorizationHeaderValue(authData, signature);
+    }
+
     private String getSignature(Request request, ClientCredential credential, String timeStamp, String authData) throws RequestSigningException {
         String signingKey = getSigningKey(timeStamp, credential.getClientSecret());
         String canonicalizedRequest = getCanonicalizedRequest(request);
@@ -196,9 +190,7 @@ public class EdgeGridV1Signer {
     }
 
     private String getStringToSign(String canonicalizedRequest, String authData) {
-        StringBuilder signData = new StringBuilder(canonicalizedRequest);
-        signData.append(authData);
-        return signData.toString();
+        return canonicalizedRequest + authData;
     }
 
     private String getAuthData(ClientCredential credential, String timeStamp, UUID nonce) {
@@ -264,8 +256,7 @@ public class EdgeGridV1Signer {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm.getMessageDigestAlgorithm());
             md.update(contentBytes, offset, len);
-            byte[] digestBytes = md.digest();
-            return digestBytes;
+            return md.digest();
         } catch (NoSuchAlgorithmException nsae) {
             throw new RequestSigningException("Failed to get request hash: algorithm not found", nsae);
         }
@@ -361,19 +352,19 @@ public class EdgeGridV1Signer {
         private final Multimap<String, String> headers;
         private final String body;
 
+        private Request(Builder b) {
+            this.method = checkNotNull(b.method);
+            this.uriWithQuery = checkNotNull(b.uriWithQuery);
+            this.headers = b.headers;
+            this.body = checkNotNull(b.body);
+        }
+
         /**
          * Returns a new builder. The returned builder is equivalent to the builder
          * generated by {@link Builder}.
          */
         public static Builder builder() {
             return new Builder();
-        }
-
-        private Request(Builder b) {
-            this.method = checkNotNull(b.method);
-            this.uriWithQuery = checkNotNull(b.uriWithQuery);
-            this.headers = b.headers;
-            this.body = checkNotNull(b.body);
         }
 
         String getBody() {

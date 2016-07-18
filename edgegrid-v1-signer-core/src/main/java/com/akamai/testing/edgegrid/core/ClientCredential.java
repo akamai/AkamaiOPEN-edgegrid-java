@@ -56,21 +56,22 @@ public class ClientCredential {
     }
 
     public boolean equals(Object o) {
-        if(o == this) {
+        if (o == this) {
             return true;
-        } else if(!(o instanceof ClientCredential)) {
+        } else if (!(o instanceof ClientCredential)) {
             return false;
         } else {
             ClientCredential other;
-            label44: {
-                other = (ClientCredential)o;
+            label44:
+            {
+                other = (ClientCredential) o;
                 String this$clientToken = this.getClientToken();
                 String other$clientToken = other.getClientToken();
-                if(this$clientToken == null) {
-                    if(other$clientToken == null) {
+                if (this$clientToken == null) {
+                    if (other$clientToken == null) {
                         break label44;
                     }
-                } else if(this$clientToken.equals(other$clientToken)) {
+                } else if (this$clientToken.equals(other$clientToken)) {
                     break label44;
                 }
 
@@ -79,21 +80,21 @@ public class ClientCredential {
 
             String this$accessToken = this.getAccessToken();
             String other$accessToken = other.getAccessToken();
-            if(this$accessToken == null) {
-                if(other$accessToken != null) {
+            if (this$accessToken == null) {
+                if (other$accessToken != null) {
                     return false;
                 }
-            } else if(!this$accessToken.equals(other$accessToken)) {
+            } else if (!this$accessToken.equals(other$accessToken)) {
                 return false;
             }
 
             String this$clientSecret = this.getClientSecret();
             String other$clientSecret = other.getClientSecret();
-            if(this$clientSecret == null) {
-                if(other$clientSecret != null) {
+            if (this$clientSecret == null) {
+                if (other$clientSecret != null) {
                     return false;
                 }
-            } else if(!this$clientSecret.equals(other$clientSecret)) {
+            } else if (!this$clientSecret.equals(other$clientSecret)) {
                 return false;
             }
 
@@ -102,14 +103,13 @@ public class ClientCredential {
     }
 
     public int hashCode() {
-        boolean PRIME = true;
         byte result = 1;
         String $clientToken = this.getClientToken();
-        int result1 = result * 59 + ($clientToken == null?43:$clientToken.hashCode());
+        int result1 = result * 59 + ($clientToken == null ? 43 : $clientToken.hashCode());
         String $accessToken = this.getAccessToken();
-        result1 = result1 * 59 + ($accessToken == null?43:$accessToken.hashCode());
+        result1 = result1 * 59 + ($accessToken == null ? 43 : $accessToken.hashCode());
         String $clientSecret = this.getClientSecret();
-        result1 = result1 * 59 + ($clientSecret == null?43:$clientSecret.hashCode());
+        result1 = result1 * 59 + ($clientSecret == null ? 43 : $clientSecret.hashCode());
         return result1;
     }
 

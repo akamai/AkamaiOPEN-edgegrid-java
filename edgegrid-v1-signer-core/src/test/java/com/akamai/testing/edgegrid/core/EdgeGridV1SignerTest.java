@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,7 +45,7 @@ public class EdgeGridV1SignerTest {
             .clientToken("akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj")
             .build();
 
-    static final long DEFAULT_TIMESTAMP = new Date(2016, 7, 4, 9, 0, 0).getTime();
+    static final long DEFAULT_TIMESTAMP = new GregorianCalendar(2016, 7, 4, 9, 0, 0).getTimeInMillis();
 
     @Test(dataProvider = "requestsForDefaultSettings")
     public void testForDefaultSettings(String caseName, String expectedAuthorizationHeader, EdgeGridV1Signer.Request request) throws RequestSigningException {
