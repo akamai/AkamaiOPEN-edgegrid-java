@@ -1,6 +1,6 @@
 # EdgeGrid V1 Signer binding for REST-assured tests
 
-Signs requests to OPEN API services, using EdgeGrid V1 signing algorithm.
+Signs [REST-assured][11] requests to OPEN API services, using EdgeGrid V1 signing algorithm.
 
 ## Usage
 
@@ -23,7 +23,9 @@ ClientCredential credential = ClientCredential.builder()
   .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
   .build();
 ```      
+
 that you will use to sign your REST-assured request:
+
 ```java
 given().
   baseUri("https://akaa-cf6fooumkselbx6j-spubmyp7ygje4vyx.luna-dev.akamaiapis.net").
@@ -69,3 +71,4 @@ Report or request in
 [8]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-golang
 [9]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-java
 [10]: https://github.com/google/google-http-java-client
+[11]: https://github.com/rest-assured/rest-assured
