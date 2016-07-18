@@ -31,8 +31,7 @@ import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 
 /**
- * REST-zssured filter that signs a request usings EdgeGrid V1 signing algorithm. Signing is a process of adding to
- * a request an Authorization header with a signature of a request.
+ * REST-assured filter that signs a request usings EdgeGrid V1 signing algorithm. Signing is a process of adding an Authorization header with a request signature.
  *
  * @author mgawinec@akamai.com
  */
@@ -58,7 +57,7 @@ public class EdgeGridV1SignerFilter implements Filter {
     }
 
     /**
-     * Creates a REST-assured filter that will sign a request with a given credential using a given customer signer.
+     * Creates a REST-assured filter that will sign a request with a given credential using a custom signer.
      *
      * @param edgeGridV1Signer a custom signer used to sign a request
      * @param credential       a client credential to sign a request

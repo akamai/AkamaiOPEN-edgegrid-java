@@ -9,7 +9,7 @@ Include the following Maven dependency in your project POM:
 ```xml
 <dependency>
   <groupId>com.akamai.testing</groupId>
-  <artifactId>edgegrid-v1-signer-rest-assured</artifactId>
+  <artifactId>edgegrid-v1-signer-restassured</artifactId>
   <version>1.0</version>
 </dependency>
 ```
@@ -38,7 +38,7 @@ then().
 
 ## Vision
 
-The idea behind the tool was to create a Java binding for signing OPEN API requests that is agnostic to the type of 
+The idea behind the tool is to create a Java binding for signing OPEN API requests that is agnostic to the type of 
 HTTP client used. The core module is *edgegrid-v1-signer-core*, on top of which a specific binding can be built, e.g., 
 *edgegrid-v1-signer-restassured*.
 
@@ -51,6 +51,8 @@ HTTP client used. The core module is *edgegrid-v1-signer-core*, on top of which 
 Report or request in ??
 
 ## Similar tools
+
+A number of similar libraries for signing requests exist for popular programming languages:
 
 * There are two Python bindings: a [command line tool similar to curl][1] and a [Python library][2].
 * [Ruby binding][2]
