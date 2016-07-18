@@ -1,4 +1,4 @@
-# EdgeGrid V1 Signer binding for REST-assured tests
+# EdgeGrid V1 Signer binding for REST-assured
 
 Signs [REST-assured][11] requests to OPEN API services, using EdgeGrid V1 signing algorithm.
 
@@ -39,8 +39,8 @@ then().
 ## Vision
 
 The idea behind the tool was to create a Java binding for signing OPEN API requests that is agnostic to the type of 
-HTTP client used. The core module is `edgegrid-v1-signer-core`, on top of which a specific binding can be built, e.g., 
-`edgegrid-v1-signer-restassured`.
+HTTP client used. The core module is *edgegrid-v1-signer-core*, on top of which a specific binding can be built, e.g., 
+*edgegrid-v1-signer-restassured*.
 
 ## Releases 
 
@@ -48,11 +48,11 @@ HTTP client used. The core module is `edgegrid-v1-signer-core`, on top of which 
 
 ## Bugs and features request
 
-Report or request in 
+Report or request in ??
 
 ## Similar tools
 
-* There are two Python binding: a [command line tool similar to curl][1] and a [Python library][2].
+* There are two Python bindings: a [command line tool similar to curl][1] and a [Python library][2].
 * [Ruby binding][2]
 * [Perl binding][3]
 * [Powershell binding][4]
