@@ -1,69 +1,61 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.akamai.edgegrid</groupId>
-    <artifactId>auth</artifactId>
 
-    <name>Akamai EdgeGrid Authentication Client Library</name>
 
-    <url>http://www.akamai.com/</url>
-    <version>1.0.0</version>
-    <description>This is the Java client library for Akamai EdgeGrid authentication.</description>
-    <packaging>jar</packaging>
-	
-    <dependencies>
-        <dependency>
-            <groupId>com.google.http-client</groupId>
-            <artifactId>google-http-client</artifactId>
-            <version>1.15.0-rc</version>
-        </dependency>
 
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.5</version>
-        </dependency>
-            
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
-        </dependency>
- 
-        <!-- jUnit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <groupId>com.akamai.testing</groupId>
+    <artifactId>edgegrid-v1-signer</artifactId>
+    <version>1.0</version>
+    <modules>
+        <module>edgegrid-v1-signer-core</module>
+        <module>edgegrid-v1-signer-restassured</module>
+    </modules>
+
+    <packaging>pom</packaging>
+
+    <url>https://github.com/akamai/curl-logger</url>
+    <name>com.akamai.testing:restassured-edgegrid-v1-signer</name>
+    <description>Signs an HTTP request from REST-assured client to OPEN API service with EdgeGrid V1 algorithm</description>
+    <inceptionYear>2016</inceptionYear>
+    <issueManagement>
+        <system>GitHub Issue Tracking</system>
+        <url>https://github.com/akamai/curl-logger/issues</url>
+    </issueManagement>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://opensource.org/licenses/Apache-2.0</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Maciej Gawinecki</name>
+            <id>mgawinec</id>
+            <email>mgawinec at akamai.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
     <properties>
-        <maven.compile.source>1.7</maven.compile.source>
-        <maven.compile.target>1.7</maven.compile.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-	
-    <build>
-        <sourceDirectory>${project.basedir}/src</sourceDirectory>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <configuration>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
+    <!-- Eventually we will detach from parent -->
+    <parent>
+        <groupId>com.akamai.testing</groupId>
+        <artifactId>testing-libraries</artifactId>
+        <version>3.0-SNAPSHOT</version>
+    </parent>
+
+
+
+
+
+
 </project>

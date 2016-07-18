@@ -1,56 +1,71 @@
-# edgegrid-auth-java
+# EdgeGrid V1 Signer binding for REST-assured tests
 
-Java library for EdgeGrid Client Authentication
-
-## CHANGES
-
-May 29th 2014
-* A POST request body larger than the maxBodySize is allowed but only the first maxBodySize bytes are used in the [Content hash aspect of the request signature](https://developer.akamai.com/stuff/Getting_Started_with_OPEN_APIs/Client_Auth.html).
-
-
-## Summary
-
-edgegrid-auth-java is a Java library for signing requests to APIs that are carried on the Akamai EdgeGrid network. It builds on the [Google HTTP Client Library for Java](https://code.google.com/p/google-http-java-client/) and adds the EdgeGrid signature to a normal [HttpRequest](http://javadoc.google-http-java-client.googlecode.com/hg/1.17.0-rc/com/google/api/client/http/HttpRequest.html).
-
+Signs requests to OPEN API services, using EdgeGrid V1 signing algorithm.
 
 ## Usage
 
-Use the library is pretty simple.
+Include the following Maven dependency in your project POM:
 
-First, create a `RequestSigner` object. `EdgeGridV1Signer` is one (the only currently provided) implementation of the `RequestSigner` interface.
-
-The constructor of `EdgeGridV1Signer` takes two parameters:
-
-* `headers`: for specifying the ordered list of request headers to be included in the request signature. This is provided by the API service provider.
-* `maxBodySize`: for specifying the maximum allowed size in bytes of the request body, for POST and PUT requests. This value is also provided by the API service provider.
-
-This `RequestSigner` object can then be used to sign the requests.
-
-To sign an [HttpRequest](http://javadoc.google-http-java-client.googlecode.com/hg/1.17.0-rc/com/google/api/client/http/HttpRequest.html):
-
-1. first, add the Host header with the hostname of the request;
-
-2. then, sign the request with a `ClientCredential` that encapsulates the following:
-
- * `clientToken`: for specifying the client token obtained from the client provisioning process
- * `accessToken`: for specifying the access token obtained from the client authorization process
- * `clientSecret`: for specifying the client secret that is associated with the client token
-
-
-## Example
-
-Here is an example code snippet:
-
-```java         
-RequestSigner signer = new EdgeGridV1Signer(Collections.EMPTY_LIST, 1024 * 2);
-URI uri = new URI("https", "akaa-u5x3btzf44hplb4q-6jrzwnvo7llch3po.luna.akamaiapis.net",			 
-	"/billing-usage/v1/reportSources", null, null);
-HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
-HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
-HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
-HttpHeaders headers = request.getHeaders();
-headers.set("Host", "akaa-u5x3btzf44hplb4q-6jrzwnvo7llch3po.luna.akamaiapis.net");
-ClientCredential credential = new DefaultCredential("akaa-nev5k66unzize2gx-5uz4svbszp4ko5wq",
-	"akaa-ublu6mqdcqkjw5lz-542a56pcogddddow", "SOMESECRET");
-HttpRequest signedRequest = signer.sign(request, credential);
+```xml
+<dependency>
+  <groupId>com.akamai.testing</groupId>
+  <artifactId>edgegrid-v1-signer-rest-assured</artifactId>
+  <version>1.0</version>
+</dependency>
 ```
+
+Define client credential
+
+```java
+ClientCredential credential = ClientCredential.builder()
+  .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz2rp")
+  .clientSecret("12rvdn/myhSSiuYAC6ZPGaI91ezhdbYd7WyagzhGxms=")
+  .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
+  .build();
+```      
+that you will use to sign your REST-assured request:
+```java
+given().
+  baseUri("https://akaa-cf6fooumkselbx6j-spubmyp7ygje4vyx.luna-dev.akamaiapis.net").
+  filter(EdgeGridV1SignerFilter.sign(credential)).
+when().
+  get("/authz/v2/identities/self").
+then().
+  statusCode(200);
+```
+
+## Vision
+
+The idea behind the tool was to create a Java binding for signing OPEN API requests that is agnostic to the type of 
+HTTP client used. The core module is `edgegrid-v1-signer-core`, on top of which a specific binding can be built, e.g., 
+`edgegrid-v1-signer-restassured`.
+
+## Releases 
+
+1.0
+
+## Bugs and features request
+
+Report or request in 
+
+## Similar tools
+
+* There are two Python binding: a [command line tool similar to curl][1] and a [Python library][2].
+* [Ruby binding][2]
+* [Perl binding][3]
+* [Powershell binding][4]
+* [NodeJS binding][5]
+* [C# binding][6]
+* [Go binding][7]
+* [Java binding][9] built on the top of [Google HTTP Client][10].
+
+[1]: https://github.com/akamai-open/edgegrid-curl
+[2]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-python
+[3]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-ruby
+[4]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-perl
+[5]: https://github.com/akamai-open/AkamaiOPEN-powershell
+[6]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-node
+[7]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-C-Sharp
+[8]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-golang
+[9]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-java
+[10]: https://github.com/google/google-http-java-client
