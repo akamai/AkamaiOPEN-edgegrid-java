@@ -61,7 +61,7 @@ A number of similar libraries for signing requests exist for popular programming
 * [NodeJS binding][5]
 * [C# binding][6]
 * [Go binding][7]
-* [Java binding][9] built on the top of [Google HTTP Client][10].
+* [Java binding][9] built on the top of [Google HTTP Client Library for Java][10].
 
 [1]: https://github.com/akamai-open/edgegrid-curl
 [2]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-python
