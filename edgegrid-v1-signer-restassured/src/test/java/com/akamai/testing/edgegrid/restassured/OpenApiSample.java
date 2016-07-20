@@ -22,10 +22,9 @@ import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 
-// TODO(mgawinec) Not sure if this information here can leak to external teams, including both credential and endpoint
 public class OpenApiSample {
 
-    String baseUri = "https://akaa-cf6frtymkselbx6j-spubmyp7ygje4vyx.luna.akamaiapis.net";
+    String baseUri = "https://endpoint.net";
 
     ClientCredential credential = ClientCredential.builder()
             .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")

@@ -19,6 +19,7 @@ package com.akamai.testing.edgegrid.restassured;
 
 import com.akamai.testing.edgegrid.core.ClientCredential;
 import com.akamai.testing.edgegrid.core.EdgeGridV1Signer;
+import com.akamai.testing.edgegrid.core.Request;
 import com.akamai.testing.edgegrid.core.RequestSigningException;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -33,6 +34,7 @@ import io.restassured.specification.FilterableResponseSpecification;
 /**
  * REST-assured filter that signs a request usings EdgeGrid V1 signing algorithm. Signing is a process of adding an Authorization header with a request signature.
  *
+ * @see <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">REST-assured filters</a>
  * @author mgawinec@akamai.com
  */
 public class EdgeGridV1SignerFilter implements Filter {
@@ -75,7 +77,7 @@ public class EdgeGridV1SignerFilter implements Filter {
     @Override
     public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec, FilterContext ctx) {
         try {
-            EdgeGridV1Signer.Request request = map(requestSpec);
+            Request request = map(requestSpec);
             requestSpec.header("Authorization", edgeGridV1Signer.getAuthorizationHeaderValue(request, credential));
         } catch (RequestSigningException e) {
             throw new RuntimeException(e);
@@ -83,8 +85,8 @@ public class EdgeGridV1SignerFilter implements Filter {
         return ctx.next(requestSpec, responseSpec);
     }
 
-    private EdgeGridV1Signer.Request map(FilterableRequestSpecification requestSpec) {
-        return EdgeGridV1Signer.Request.builder()
+    private Request map(FilterableRequestSpecification requestSpec) {
+        return Request.builder()
                 .method(requestSpec.getMethod())
                 .uriWithQuery(requestSpec.getURI())
                 .headers(getHeaders(requestSpec.getHeaders()))

@@ -16,6 +16,12 @@
 
 package com.akamai.testing.edgegrid.core;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimaps;
+
+import java.util.Objects;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -55,66 +61,24 @@ public class ClientCredential {
         return clientSecret;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        } else if (!(o instanceof ClientCredential)) {
-            return false;
-        } else {
-            ClientCredential other;
-            label44:
-            {
-                other = (ClientCredential) o;
-                String this$clientToken = this.getClientToken();
-                String other$clientToken = other.getClientToken();
-                if (this$clientToken == null) {
-                    if (other$clientToken == null) {
-                        break label44;
-                    }
-                } else if (this$clientToken.equals(other$clientToken)) {
-                    break label44;
-                }
-
-                return false;
-            }
-
-            String this$accessToken = this.getAccessToken();
-            String other$accessToken = other.getAccessToken();
-            if (this$accessToken == null) {
-                if (other$accessToken != null) {
-                    return false;
-                }
-            } else if (!this$accessToken.equals(other$accessToken)) {
-                return false;
-            }
-
-            String this$clientSecret = this.getClientSecret();
-            String other$clientSecret = other.getClientSecret();
-            if (this$clientSecret == null) {
-                if (other$clientSecret != null) {
-                    return false;
-                }
-            } else if (!this$clientSecret.equals(other$clientSecret)) {
-                return false;
-            }
-
-            return true;
-        }
+        if (o == null) return false;
+        if (getClass() != o.getClass()) return false;
+        final ClientCredential other = (ClientCredential) o;
+        return Objects.equals(this.clientToken, other.clientToken)
+                && Objects.equals(this.clientSecret, other.clientSecret)
+                && Objects.equals(this.accessToken, other.accessToken);
     }
 
+    @Override
     public int hashCode() {
-        byte result = 1;
-        String $clientToken = this.getClientToken();
-        int result1 = result * 59 + ($clientToken == null ? 43 : $clientToken.hashCode());
-        String $accessToken = this.getAccessToken();
-        result1 = result1 * 59 + ($accessToken == null ? 43 : $accessToken.hashCode());
-        String $clientSecret = this.getClientSecret();
-        result1 = result1 * 59 + ($clientSecret == null ? 43 : $clientSecret.hashCode());
-        return result1;
+        return Objects.hash(accessToken, clientSecret, accessToken);
     }
 
+    @Override
     public String toString() {
-        return "ClientCredential(clientToken=" + this.getClientToken() + ", accessToken=" + this.getAccessToken() + ", clientSecret=" + this.getClientSecret() + ")";
+        return "ClientCredential(clientToken=" + clientSecret + ", accessToken=" + accessToken + ", clientSecret=" + clientSecret + ")";
     }
 
     public static class Builder {
