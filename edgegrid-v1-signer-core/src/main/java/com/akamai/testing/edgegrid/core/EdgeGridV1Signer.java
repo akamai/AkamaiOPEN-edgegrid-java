@@ -39,7 +39,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 
 /**
- * Generates Authorization header based on EdgeGrid V1 signing algorithm. Agnostic to implementation of HTTP request.
+ * Generates Authorization header based on <a href="https://developer.akamai.com/introduction/Client_Auth.html">EdgeGrid
+ * V1 signing algorithm</a>. Agnostic to implementation of HTTP request.
  *
  * @author mgawinec@akamai.com
  */
