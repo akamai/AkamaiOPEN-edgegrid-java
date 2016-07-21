@@ -36,7 +36,7 @@ then().
   statusCode(200);
 ```
 
-### Usage with Google HTTP Client Library for Java
+## Usage with Google HTTP Client Library for Java
 
 Include the following Maven dependency in your project POM:
 
@@ -96,12 +96,15 @@ request.execute();
 ## Vision
 
 The idea behind the tool is to create a Java binding for signing OPEN API requests that is agnostic to the type of 
-HTTP client used. The core module is *edgegrid-v1-googleHttpSigner-core*, on top of which a specific binding can be built, e.g., 
+HTTP client used. The core module is *edgegrid-v1-signer-core*, on top of which a specific binding can be built, e.g., 
 *edgegrid-v1-googleHttpSigner-restassured*.
 
 ## Releases 
 
 1.0
+- signing algorithm
+- binding for Google HTTP Client Library for Java
+- binding for REST-assured
 
 ## Bugs and features request
 
