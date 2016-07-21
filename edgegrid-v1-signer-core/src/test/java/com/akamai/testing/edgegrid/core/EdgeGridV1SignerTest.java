@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.net.URI;
 import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.UUID;
@@ -67,20 +68,20 @@ public class EdgeGridV1SignerTest {
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=39160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=VwF7FDzZeEj8FRPStK4CqbGslhYKqGOpgxh19KQTZe4=",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery("http://control.akamai.com/check")
+                                .uriWithQuery(URI.create("http://control.akamai.com/check"))
                                 .build()},
                 {"GET request with query",
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=39160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=6yKXfMlCpIdeG9dxhnQagBSIXAaDDVbFTDV9W8wMoec=",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery("http://control.akamai.com/check?maciek=value")
+                                .uriWithQuery(URI.create("http://control.akamai.com/check?maciek=value"))
                                 .build()},
                 {"POST request",
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=39160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=scRJfNqVY3gHVMst75nussh2Pw7Pglkstsp1AvsRYGo=",
                         Request.builder()
                                 .method("POST")
-                                .uriWithQuery("http://control.akamai.com/send")
-                                .body("x=y&a=b")
+                                .uriWithQuery(URI.create("http://control.akamai.com/send"))
+                                .body("x=y&a=b".getBytes())
                                 .build()}
         };
     }
@@ -93,7 +94,7 @@ public class EdgeGridV1SignerTest {
                         ImmutableSet.of("Content-Type"),
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery("http://control.akamai.com/check")
+                                .uriWithQuery(URI.create("http://control.akamai.com/check"))
                                 .headers(ImmutableMultimap.<String, String>builder()
                                         .put("Content-Type", "application/json")
                                         .build())
@@ -103,7 +104,7 @@ public class EdgeGridV1SignerTest {
                         ImmutableSet.of("Content-Type"),
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery("http://control.akamai.com/check")
+                                .uriWithQuery(URI.create("http://control.akamai.com/check"))
                                 .headers(ImmutableMultimap.<String, String>builder()
                                         .put("Content-Type", "application/json")
                                         .put("Cache-Control", "no-cache")

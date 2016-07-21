@@ -3,17 +3,22 @@ package com.akamai.testing.edgegrid.core;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
+import java.net.URI;
+import java.util.Arrays;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * HTTP Request agnostic to any HTTP client implementation.
+ *
+ * @author mgawinec@akamai.com
  */
 public class Request {
 
     private final String method;
-    private final String uriWithQuery;
+    private final URI uriWithQuery;
     private final Multimap<String, String> headers;
-    private final String body;
+    private final byte[] body;
 
     private Request(Builder b) {
         this.method = checkNotNull(b.method);
@@ -30,8 +35,8 @@ public class Request {
         return new Builder();
     }
 
-    String getBody() {
-        return body;
+    byte[] getBody() {
+        return Arrays.copyOf(body, body.length);
     }
 
     Multimap<String, String> getHeaders() {
@@ -42,7 +47,7 @@ public class Request {
         return method;
     }
 
-    String getUriWithQuery() {
+    URI getUriWithQuery() {
         return uriWithQuery;
     }
 
@@ -58,15 +63,15 @@ public class Request {
     public static class Builder {
 
         private String method;
-        private String uriWithQuery;
+        private URI uriWithQuery;
         private Multimap<String, String> headers = ImmutableMultimap.of();
-        private String body = "";
+        private byte[] body = new byte[]{};
 
         /**
          * Sets a content of HTTP request body. If not set, body is empty by default.
          */
-        public Builder body(String requestBody) {
-            this.body = requestBody;
+        public Builder body(byte[] requestBody) {
+            this.body = Arrays.copyOf(requestBody, requestBody.length);
             return this;
         }
 
@@ -89,7 +94,7 @@ public class Request {
         /**
          * Sets absolute URI of HTTP request including query string. Mandatory to set.
          */
-        public Builder uriWithQuery(String uriWithQuery) {
+        public Builder uriWithQuery(URI uriWithQuery) {
             this.uriWithQuery = checkNotNull(uriWithQuery);
             return this;
         }

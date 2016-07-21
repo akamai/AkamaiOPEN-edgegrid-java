@@ -22,6 +22,11 @@ import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 
+/**
+ * Example of use of EdgeGrid signer with REST-assured.
+ *
+ * @author mgawinec@akamai.com
+ */
 public class OpenApiSample {
 
     String baseUri = "https://endpoint.net";
@@ -39,7 +44,7 @@ public class OpenApiSample {
         //@formatter:off
         given().
                 baseUri(baseUri).
-                filter(EdgeGridV1SignerFilter.sign(credential)).
+                filter(EdgeGridSignerFilter.sign(credential)).
         when().
                 get("/service/v2/users").
         then().

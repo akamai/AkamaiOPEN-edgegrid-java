@@ -66,6 +66,7 @@ public class EdgeGridV1Signer {
     private final Algorithm algorithm;
     private final Set<String> headersToInclude;
     private final int maxBodySize;
+    private final Base64.Encoder encoder = Base64.getEncoder();
 
     /**
      * Note: the parameters should be published by the service provider when the service
@@ -92,8 +93,7 @@ public class EdgeGridV1Signer {
         return authData + AUTH_SIGNATURE_NAME + '=' + signature;
     }
 
-    private static String getRelativePathWithQuery(String uriString) {
-        URI uri = URI.create(uriString);
+    private static String getRelativePathWithQuery(URI uri ) {
         StringBuilder sb = new StringBuilder(uri.getPath());
         if (uri.getQuery() != null) {
             sb.append("?").append(uri.getQuery());
@@ -180,12 +180,12 @@ public class EdgeGridV1Signer {
 
     private String signAndEncode(String stringToSign, String signingKey) throws RequestSigningException {
         byte[] signatureBytes = sign(stringToSign, signingKey, algorithm.getSigningAlgorithm());
-        return Base64.getEncoder().encodeToString(signatureBytes);
+        return encoder.encodeToString(signatureBytes);
     }
 
     private String getSigningKey(String timeStamp, String clientSecret) throws RequestSigningException {
         byte[] signingKeyBytes = sign(timeStamp, clientSecret, algorithm.getSigningAlgorithm());
-        return Base64.getEncoder().encodeToString(signingKeyBytes);
+        return encoder.encodeToString(signingKeyBytes);
     }
 
     private String getStringToSign(String canonicalizedRequest, String authData) {
@@ -224,13 +224,11 @@ public class EdgeGridV1Signer {
         sb.append(request.getMethod().toUpperCase());
         sb.append('\t');
 
-        URI uri = URI.create(request.getUriWithQuery());
-
-        String scheme = uri.getScheme();
+        String scheme = request.getUriWithQuery().getScheme();
         sb.append(scheme.toLowerCase());
         sb.append('\t');
 
-        String host = uri.getHost();
+        String host = request.getUriWithQuery().getHost();
         sb.append(host.toLowerCase());
         sb.append('\t');
 
@@ -286,7 +284,7 @@ public class EdgeGridV1Signer {
         return headerValue;
     }
 
-    private String getContentHash(String requestMethod, String requestBody) throws RequestSigningException {
+    private String getContentHash(String requestMethod, byte[] requestBody) throws RequestSigningException {
         // only do hash for POSTs for this version
         if ("POST".equals(requestMethod)) {
             return "";
@@ -296,21 +294,20 @@ public class EdgeGridV1Signer {
             return "";
         }
 
-        byte[] contentBytes = requestBody.getBytes();
-        int lengthToHash = contentBytes.length;
+        int lengthToHash = requestBody.length;
         if (lengthToHash > maxBodySize) {
             log.warn(String.format("Message body length '%d' is larger than the max '%d'. " +
                     "Using first '%d' bytes for computing the hash.", lengthToHash, maxBodySize, maxBodySize));
             lengthToHash = maxBodySize;
         } else {
-            log.debug(String.format("Content: %s", Base64.getEncoder().encodeToString(contentBytes)));
+            log.debug(String.format("Content: %s", encoder.encodeToString(requestBody)));
         }
 
-        byte[] digestBytes = getHash(contentBytes, 0, lengthToHash);
-        log.debug(String.format("Content hash: %s", Base64.getEncoder().encodeToString(digestBytes)));
+        byte[] digestBytes = getHash(requestBody, 0, lengthToHash);
+        log.debug(String.format("Content hash: %s", encoder.encodeToString(digestBytes)));
 
         // (mgawinec) I removed support for non-retryable content, that used to reset the content for downstream handlers
-        return Base64.getEncoder().encodeToString(digestBytes);
+        return encoder.encodeToString(digestBytes);
     }
 
 }

@@ -1,38 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <artifactId>edgegrid-v1-signer</artifactId>
         <groupId>com.akamai.testing</groupId>
         <version>1.0</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>edgegrid-v1-signer-restassured</artifactId>
-
-    <packaging>jar</packaging>
-
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
+    <groupId>com.akamai.testing</groupId>
+    <artifactId>edgegrid-v1-signer-googlehttp</artifactId>
+    <version>1.0</version>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client</artifactId>
+            <version>1.21.0</version>
+        </dependency>
         <dependency>
             <groupId>com.akamai.testing</groupId>
             <artifactId>edgegrid-v1-googleHttpSigner-core</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -40,8 +30,11 @@
             <version>6.8.21</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
     </dependencies>
-
 
 </project>

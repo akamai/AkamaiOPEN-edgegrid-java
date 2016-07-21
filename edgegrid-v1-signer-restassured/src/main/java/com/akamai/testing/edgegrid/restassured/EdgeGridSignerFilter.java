@@ -19,31 +19,27 @@ package com.akamai.testing.edgegrid.restassured;
 
 import com.akamai.testing.edgegrid.core.ClientCredential;
 import com.akamai.testing.edgegrid.core.EdgeGridV1Signer;
-import com.akamai.testing.edgegrid.core.Request;
 import com.akamai.testing.edgegrid.core.RequestSigningException;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
-import io.restassured.http.Header;
-import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 
 /**
- * REST-assured filter that signs a request usings EdgeGrid V1 signing algorithm. Signing is a process of adding an Authorization header with a request signature.
+ * REST-assured filter that signs a request using EdgeGrid V1 signing algorithm.
+ * Signing is a process of adding an Authorization header with a request signature. If signing fails then <code>RuntimeException</code> is thrown.
  *
- * @see <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">REST-assured filters</a>
  * @author mgawinec@akamai.com
+ * @see <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">REST-assured filters</a>
  */
-public class EdgeGridV1SignerFilter implements Filter {
+public class EdgeGridSignerFilter implements Filter {
 
     private final ClientCredential credential;
-    private final EdgeGridV1Signer edgeGridV1Signer;
+    private final RestAssuredSigner binding;
 
-    private EdgeGridV1SignerFilter(EdgeGridV1Signer edgeGridV1Signer, ClientCredential credential) {
-        this.edgeGridV1Signer = edgeGridV1Signer;
+    private EdgeGridSignerFilter(EdgeGridV1Signer edgeGridV1Signer, ClientCredential credential) {
+        this.binding = new RestAssuredSigner(edgeGridV1Signer);
         this.credential = credential;
     }
 
@@ -54,7 +50,7 @@ public class EdgeGridV1SignerFilter implements Filter {
      * @param credential a client credential to sign a request
      * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
      */
-    public static EdgeGridV1SignerFilter sign(ClientCredential credential) {
+    public static EdgeGridSignerFilter sign(ClientCredential credential) {
         return sign(new EdgeGridV1Signer(), credential);
     }
 
@@ -65,32 +61,19 @@ public class EdgeGridV1SignerFilter implements Filter {
      * @param credential       a client credential to sign a request
      * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
      */
-    public static EdgeGridV1SignerFilter sign(EdgeGridV1Signer edgeGridV1Signer, ClientCredential credential) {
-        return new EdgeGridV1SignerFilter(edgeGridV1Signer, credential);
-    }
-
-    private static Multimap<String, String> getHeaders(Headers headers) {
-        Multimap<String, Header> indexedHeaders = Multimaps.index(headers.asList(), (Header::getValue));
-        return Multimaps.transformValues(indexedHeaders, (Header::getValue));
+    public static EdgeGridSignerFilter sign(EdgeGridV1Signer edgeGridV1Signer, ClientCredential credential) {
+        return new EdgeGridSignerFilter(edgeGridV1Signer, credential);
     }
 
     @Override
     public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec, FilterContext ctx) {
         try {
-            Request request = map(requestSpec);
-            requestSpec.header("Authorization", edgeGridV1Signer.getAuthorizationHeaderValue(request, credential));
+            binding.sign(requestSpec, credential);
         } catch (RequestSigningException e) {
             throw new RuntimeException(e);
         }
         return ctx.next(requestSpec, responseSpec);
     }
 
-    private Request map(FilterableRequestSpecification requestSpec) {
-        return Request.builder()
-                .method(requestSpec.getMethod())
-                .uriWithQuery(requestSpec.getURI())
-                .headers(getHeaders(requestSpec.getHeaders()))
-                .body(requestSpec.getBody())
-                .build();
-    }
+
 }

@@ -1,8 +1,8 @@
-# EdgeGrid V1 Signer binding for REST-assured
+# EdgeGrid V1 Signer bindings
 
 Signs [REST-assured][11] requests to OPEN API services, using EdgeGrid V1 signing algorithm.
 
-## Usage
+## Usage with REST-assured
 
 Include the following Maven dependency in your project POM:
 
@@ -28,7 +28,7 @@ that you will use to sign your REST-assured request:
 
 ```java
 given().
-  baseUri("https://akaa-cf6fooumkselbx6j-spubmyp7ygje4vyx.luna.akamaiapis.net").
+  baseUri("https://endpoint.net").
   filter(EdgeGridV1SignerFilter.sign(credential)).
 when().
   get("/service/v2/users").
@@ -36,11 +36,68 @@ then().
   statusCode(200);
 ```
 
+### Usage with Google HTTP Client Library for Java
+
+Include the following Maven dependency in your project POM:
+
+```xml
+<dependency>
+  <groupId>com.akamai.testing</groupId>
+  <artifactId>edgegrid-v1-signer-googlehttp</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+Define a client credential
+
+```java
+ClientCredential credential = ClientCredential.builder()
+  .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
+  .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
+  .clientSecret("SOMESECRET")
+  .build();
+```      
+
+that you will use to sign your Google HTTP client request:
+
+```java
+HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
+HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
+GoogleHttpSigner googleHttpSigner = new GoogleHttpSigner();
+URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
+HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
+googleHttpSigner.sign(request, credential);
+request.execute();
+```
+
+This, however, requires remembering to sign expliclty every request. Alternatively, you may create <code>HttpRequestFactory</code>
+that will be doing it for yourself:
+
+```java
+private HttpRequestFactory createSigningRequestFactory(HttpTransport HTTP_TRANSPORT) {
+    return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+        public void initialize(HttpRequest request) throws IOException {
+            request.setInterceptor(new GoogleHttpSignInterceptor(credential));
+        }
+    });
+}
+```
+
+And then
+
+```java
+HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
+HttpRequestFactory requestFactory = createSigningRequestFactory(HTTP_TRANSPORT);
+URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
+HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
+request.execute();
+```        
+
 ## Vision
 
 The idea behind the tool is to create a Java binding for signing OPEN API requests that is agnostic to the type of 
-HTTP client used. The core module is *edgegrid-v1-signer-core*, on top of which a specific binding can be built, e.g., 
-*edgegrid-v1-signer-restassured*.
+HTTP client used. The core module is *edgegrid-v1-googleHttpSigner-core*, on top of which a specific binding can be built, e.g., 
+*edgegrid-v1-googleHttpSigner-restassured*.
 
 ## Releases 
 

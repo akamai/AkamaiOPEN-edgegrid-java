@@ -16,10 +16,6 @@
 
 package com.akamai.testing.edgegrid.core;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimaps;
-
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;

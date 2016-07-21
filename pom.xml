@@ -11,12 +11,13 @@
     <modules>
         <module>edgegrid-v1-signer-core</module>
         <module>edgegrid-v1-signer-restassured</module>
+        <module>edgegrid-v1-signer-googlehttp</module>
     </modules>
 
     <packaging>pom</packaging>
 
     <url>https://github.com/akamai/curl-logger</url>
-    <name>com.akamai.testing:restassured-edgegrid-v1-signer</name>
+    <name>com.akamai.testing:restassured-edgegrid-v1-googleHttpSigner</name>
     <description>Signs an HTTP request from REST-assured client to OPEN API service with EdgeGrid V1 algorithm
     </description>
     <inceptionYear>2016</inceptionYear>
