@@ -1,4 +1,4 @@
-# EdgeGrid V1 Signer bindings
+# EdgeGrid V1 Signer bindings for Java
 
 Signs HTTP requests to OPEN API services, using EdgeGrid V1 signing algorithm.
 
