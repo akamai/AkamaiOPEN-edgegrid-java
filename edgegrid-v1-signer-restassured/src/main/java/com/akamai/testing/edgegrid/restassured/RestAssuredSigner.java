@@ -30,6 +30,7 @@ import java.net.URI;
 
 /**
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.
+ * @author mgawinec@akamai.com
  */
 public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSpecification> {
 

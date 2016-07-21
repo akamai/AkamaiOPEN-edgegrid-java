@@ -30,8 +30,8 @@ import io.restassured.specification.FilterableResponseSpecification;
  * REST-assured filter that signs a request using EdgeGrid V1 signing algorithm.
  * Signing is a process of adding an Authorization header with a request signature. If signing fails then <code>RuntimeException</code> is thrown.
  *
- * @author mgawinec@akamai.com
  * @see <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">REST-assured filters</a>
+ * @author mgawinec@akamai.com
  */
 public class EdgeGridSignerFilter implements Filter {
 
