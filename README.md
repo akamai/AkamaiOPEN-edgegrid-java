@@ -18,7 +18,7 @@ For more information about OPEN API visit the [Akamai {OPEN} Developer Community
 
 ## Usage
 
-All bindings require client credentials:
+All bindings require client credential:
 
 ```java
 ClientCredential credential = ClientCredential.builder()
