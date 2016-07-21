@@ -1,13 +1,20 @@
 # EdgeGrid V1 Signer bindings for Java
 
+## Description
+
 Signs HTTP requests to OPEN API services, using EdgeGrid V1 signing algorithm.
 
-Currently two bindings are available:
+EdgeGrid signing algorithm implementation is agnostic HTTP client. Then you can use or create with a minimal effort 
+a binding specific for HTTP client. Currently two bindings are available:
 
 * binding for [REST-assured][11]
 * binding for [Google HTTP Client Library for Java][10]
 
-## Usage with REST-assured
+This is an open-source library, and contributions are welcome. 
+
+## Usage
+
+### Usage with REST-assured
 
 Include the following Maven dependency in your project POM:
 
@@ -41,7 +48,7 @@ then().
   statusCode(200);
 ```
 
-## Usage with Google HTTP Client Library for Java
+### Usage with Google HTTP Client Library for Java
 
 Include the following Maven dependency in your project POM:
 
@@ -98,11 +105,6 @@ HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
 request.execute();
 ```        
 
-## Vision
-
-The idea behind the tool is to have a common Java library that is agnostic HTTP client implementation. Then you can
-use or create with a minimal effort a binding specific for HTTP client such as Google HTTP Client or REST-assured.
-
 ## Releases 
 
 1.0:
@@ -110,10 +112,6 @@ use or create with a minimal effort a binding specific for HTTP client such as G
 - signing algorithm
 - binding for Google HTTP Client Library for Java
 - binding for REST-assured
-
-## Bugs and features request
-
-Report or request in ??
 
 ## Similar tools
 
