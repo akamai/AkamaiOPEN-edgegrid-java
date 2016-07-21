@@ -1,6 +1,11 @@
 # EdgeGrid V1 Signer bindings
 
-Signs [REST-assured][11] requests to OPEN API services, using EdgeGrid V1 signing algorithm.
+Signs HTTP requests to OPEN API services, using EdgeGrid V1 signing algorithm.
+
+Currently two bindings are available:
+
+* binding for [REST-assured][11]
+* binding for [Google HTTP Client Library for Java][10]
 
 ## Usage with REST-assured
 
