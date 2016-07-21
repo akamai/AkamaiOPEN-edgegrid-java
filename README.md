@@ -18,6 +18,18 @@ For more information about OPEN API visit the [Akamai {OPEN} Developer Community
 
 ## Usage
 
+All bindings require client credentials:
+
+```java
+ClientCredential credential = ClientCredential.builder()
+  .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
+  .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
+  .clientSecret("SOMESECRET")
+  .build();
+```      
+
+The difference is how to use them for signing.
+
 ### Usage with REST-assured
 
 Include the following Maven dependency in your project POM:
@@ -30,17 +42,7 @@ Include the following Maven dependency in your project POM:
 </dependency>
 ```
 
-Define a client credential
-
-```java
-ClientCredential credential = ClientCredential.builder()
-  .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
-  .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
-  .clientSecret("SOMESECRET")
-  .build();
-```      
-
-that you will use to sign your REST-assured request:
+Sign your REST-assured request specification with a defined client credential:
 
 ```java
 given().
@@ -64,17 +66,7 @@ Include the following Maven dependency in your project POM:
 </dependency>
 ```
 
-Define a client credential
-
-```java
-ClientCredential credential = ClientCredential.builder()
-  .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
-  .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
-  .clientSecret("SOMESECRET")
-  .build();
-```      
-
-that you will use to sign your Google HTTP client request:
+Sign your HTTP request with a defined client credential:
 
 ```java
 HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
