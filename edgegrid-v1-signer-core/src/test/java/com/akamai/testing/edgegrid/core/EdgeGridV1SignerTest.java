@@ -65,21 +65,28 @@ public class EdgeGridV1SignerTest {
     public Object[][] requestsForDefaultSettings() {
         return new Object[][]{
                 {"GET request",
-                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=39160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=VwF7FDzZeEj8FRPStK4CqbGslhYKqGOpgxh19KQTZe4=",
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=0dCwIUaObZaXrTO1CwojlVBwuNbh1av+nO7VS2YC8is=",
                         Request.builder()
                                 .method("GET")
                                 .uriWithQuery(URI.create("http://control.akamai.com/check"))
                                 .build()},
                 {"GET request with query",
-                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=39160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=6yKXfMlCpIdeG9dxhnQagBSIXAaDDVbFTDV9W8wMoec=",
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=OkiBaPX/HORjhPPu2Vyo35aQrO3+GhDM1x4NHXUoOio=",
                         Request.builder()
                                 .method("GET")
                                 .uriWithQuery(URI.create("http://control.akamai.com/check?maciek=value"))
                                 .build()},
                 {"POST request",
-                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=39160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=scRJfNqVY3gHVMst75nussh2Pw7Pglkstsp1AvsRYGo=",
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=AY5RxJqWU9EO3iMM1x/Fd6AdsJF8kzz7NYVmyc8QixA=",
                         Request.builder()
                                 .method("POST")
+                                .uriWithQuery(URI.create("http://control.akamai.com/send"))
+                                .body("x=y&a=b".getBytes())
+                                .build()},
+                {"For PUT request we ignore body",
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=DvV3p2X66F3qHopVX3tk3pHm8vIqLR9aJCKFCgIQS5Q=",
+                        Request.builder()
+                                .method("PUT")
                                 .uriWithQuery(URI.create("http://control.akamai.com/send"))
                                 .body("x=y&a=b".getBytes())
                                 .build()}
@@ -90,7 +97,7 @@ public class EdgeGridV1SignerTest {
     public Object[][] requestsForHeadersSigning() {
         return new Object[][]{
                 {"Headers should be included in signature",
-                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=39160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=32aKKzMLSWQQtAhi99QIKvzKHi0kKGdZKPLM7sRrVfY=",
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=S32xN/Essd1Y9mMexnPefngle9tNfcVad0yyYxVBKzA=",
                         ImmutableSet.of("Content-Type"),
                         Request.builder()
                                 .method("GET")
@@ -100,7 +107,7 @@ public class EdgeGridV1SignerTest {
                                         .build())
                                 .build()},
                 {"Not listed headers should not impact signature",
-                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=39160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=32aKKzMLSWQQtAhi99QIKvzKHi0kKGdZKPLM7sRrVfY=",
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=S32xN/Essd1Y9mMexnPefngle9tNfcVad0yyYxVBKzA=",
                         ImmutableSet.of("Content-Type"),
                         Request.builder()
                                 .method("GET")

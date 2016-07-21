@@ -54,7 +54,7 @@ public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSp
                 .method(requestSpec.getMethod())
                 .uriWithQuery(URI.create(requestSpec.getURI()))
                 .headers(getHeaders(requestSpec.getHeaders()))
-                .body(requestSpec.getBody())
+                .body(requestSpec.getBody() != null ? requestSpec.getBody() : new byte[]{} )
                 .build();
     }
 

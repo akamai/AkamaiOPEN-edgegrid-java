@@ -43,7 +43,7 @@ public class OpenApiSample {
             .clientSecret("SOMESECRET")
             .build();
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void signEachRequest() throws URISyntaxException, IOException, RequestSigningException {
         HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
         HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
@@ -54,7 +54,7 @@ public class OpenApiSample {
         request.execute();
     }
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void withInterceptor() throws URISyntaxException, IOException, RequestSigningException {
         HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
         HttpRequestFactory requestFactory = createSigningRequestFactory(HTTP_TRANSPORT);

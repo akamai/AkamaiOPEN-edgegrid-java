@@ -71,6 +71,7 @@ public class Request {
          * Sets a content of HTTP request body. If not set, body is empty by default.
          */
         public Builder body(byte[] requestBody) {
+            checkNotNull(requestBody);
             this.body = Arrays.copyOf(requestBody, requestBody.length);
             return this;
         }

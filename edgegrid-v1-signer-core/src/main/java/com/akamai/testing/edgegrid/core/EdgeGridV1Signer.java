@@ -290,7 +290,7 @@ public class EdgeGridV1Signer {
 
     private String getRequestBodyHash(String requestMethod, byte[] requestBody) throws RequestSigningException {
         // only do hash for POSTs for this version
-        if ("POST".equals(requestMethod)) {
+        if (!"POST".equals(requestMethod)) {
             return "";
         }
 
