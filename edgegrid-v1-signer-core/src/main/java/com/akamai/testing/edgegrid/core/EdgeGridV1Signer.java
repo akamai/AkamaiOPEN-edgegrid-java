@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 
@@ -93,6 +94,25 @@ public class EdgeGridV1Signer {
         this(DEFAULT_SIGNING_ALGORITHM, DEFAULT_HEADERS_TO_SIGN, DEFAULT_MAX_BODY_SIZE_IN_BYTES);
     }
 
+    /**
+     * Generates signature for a given HTTP request and client credential. To be put in Authorization header.
+     *
+     * @param request    a HTTP request to sign.
+     * @param credential client credential used to sign a request
+     * @return Authorization header value with a request signature
+     * @throws RequestSigningException if signing of a given request failed
+     * @throws NullPointerException    if <code>request</code> or <code>credential</code> is <code>null</code>
+     * @throws IllegalArgumentException if request contains multiple request headers with the same header name
+     */
+    public String getAuthorizationHeaderValue(Request request, ClientCredential credential) throws RequestSigningException {
+        return getAuthorizationHeaderValue(request, credential, System.currentTimeMillis(), UUID.randomUUID());
+    }
+
+    private boolean containsDuplicateHeaderNames(Request request) {
+        return request.getHeaders().asMap().entrySet().stream()
+                        .filter(e -> e.getValue().size() > 1).findAny().isPresent();
+    }
+
     private static String getAuthorizationHeaderValue(String authData, String signature) {
         return authData + AUTH_SIGNATURE_NAME + '=' + signature;
     }
@@ -149,22 +169,12 @@ public class EdgeGridV1Signer {
         return uri;
     }
 
-    /**
-     * Generates signature for a given HTTP request and client credential. To be put in Authorization header.
-     *
-     * @param request    a HTTP request to sign.
-     * @param credential client credential used to sign a request
-     * @return Authorization header value with
-     * @throws RequestSigningException if signing of a given request failed.
-     * @throws NullPointerException    if <code>request</code> or <code>credential</code> is <code>null</code>.
-     */
-    public String getAuthorizationHeaderValue(Request request, ClientCredential credential) throws RequestSigningException {
+    String getAuthorizationHeaderValue(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
+
         checkNotNull(request);
         checkNotNull(credential);
-        return getAuthorizationHeaderValue(request, credential, System.currentTimeMillis(), UUID.randomUUID());
-    }
+        checkArgument(!containsDuplicateHeaderNames(request), "The protocol does not support multiple request headers with the same header name");
 
-    String getAuthorizationHeaderValue(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
         String timeStamp = formatTimeStamp(timestamp);
         String authData = getAuthData(credential, timeStamp, nonce);
         String signature = getSignature(request, credential, timeStamp, authData);
@@ -236,7 +246,6 @@ public class EdgeGridV1Signer {
         sb.append(host.toLowerCase());
         sb.append('\t');
 
-
         String relativePath = getRelativePathWithQuery(request.getUriWithQuery());
         String relativeUrl = canonicalizeUri(relativePath);
         sb.append(relativeUrl);
@@ -246,7 +255,7 @@ public class EdgeGridV1Signer {
         sb.append(canonicalizedHeaders);
         sb.append('\t');
 
-        sb.append(getRequestBodyHash(request.getMethod(), request.getBody()));
+        sb.append(getContentHash(request.getMethod(), request.getBody()));
         sb.append('\t');
 
         return sb.toString();
@@ -266,7 +275,7 @@ public class EdgeGridV1Signer {
     private String canonicalizeHeaders(Multimap<String, String> requestHeaders) {
         StringBuilder sb = new StringBuilder();
         for (String headerName : headersToInclude) {
-            // only use the first entry if more than one headers with the same name
+            // we validated before that request contains no multiple headers with same header name
             Optional<String> headerValue = requestHeaders.get(headerName).stream().findFirst();
             if (headerValue.isPresent()) {
                 sb.append(headerName.toLowerCase());
@@ -288,7 +297,7 @@ public class EdgeGridV1Signer {
         return headerValue;
     }
 
-    private String getRequestBodyHash(String requestMethod, byte[] requestBody) throws RequestSigningException {
+    private String getContentHash(String requestMethod, byte[] requestBody) throws RequestSigningException {
         // only do hash for POSTs for this version
         if (!"POST".equals(requestMethod)) {
             return "";
@@ -300,15 +309,15 @@ public class EdgeGridV1Signer {
 
         int lengthToHash = requestBody.length;
         if (lengthToHash > maxBodySize) {
-            log.info(String.format("Message body length '%d' is larger than the max '%d'. " +
+            log.info(String.format("Content length '%d' is larger than the max '%d'. " +
                     "Using first '%d' bytes for computing the hash.", lengthToHash, maxBodySize, maxBodySize));
             lengthToHash = maxBodySize;
         } else {
-            log.debug(String.format("Request body (Base64): %s", base64.encodeToString(requestBody)));
+            log.debug(String.format("Content (Base64): %s", base64.encodeToString(requestBody)));
         }
 
         byte[] digestBytes = getHash(requestBody, 0, lengthToHash);
-        log.debug(String.format("Request body hash (Base64): %s", base64.encodeToString(digestBytes)));
+        log.debug(String.format("Content hash (Base64): %s", base64.encodeToString(digestBytes)));
 
         // (mgawinec) I removed support for non-retryable content, that used to reset the content for downstream handlers
         return base64.encodeToString(digestBytes);

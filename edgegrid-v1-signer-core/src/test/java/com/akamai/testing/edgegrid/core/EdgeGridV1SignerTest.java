@@ -17,6 +17,7 @@
 package com.akamai.testing.edgegrid.core;
 
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.DataProvider;
@@ -59,6 +60,17 @@ public class EdgeGridV1SignerTest {
         EdgeGridV1Signer signer = new EdgeGridV1Signer(Algorithm.EG1_HMAC_SHA256, headersToSign, EdgeGridV1Signer.DEFAULT_MAX_BODY_SIZE_IN_BYTES);
         String actualAuthorizationHeader = signer.getAuthorizationHeaderValue(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void shouldRejectRequestWithDuplicateHeaderNames() throws RequestSigningException {
+        Request request = Request.builder()
+                .method("GET")
+                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .headers(ImmutableMultimap.<String, String>builder().put("Duplicate", "X").put("Duplicate", "Y").build())
+                .build();
+
+        DEFAULT_SIGNER.getAuthorizationHeaderValue(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
     }
 
     @DataProvider
