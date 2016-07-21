@@ -4,8 +4,8 @@
 
 Signs HTTP requests to OPEN API services, using EdgeGrid V1 signing algorithm.
 
-EdgeGrid signing algorithm implementation is agnostic HTTP client. Then you can use or create with a minimal effort 
-a binding specific for HTTP client. Currently two bindings are available:
+EdgeGrid signing algorithm implementation is agnostic to an HTTP client. You can use (or create with a minimal effort) 
+a binding specific for an HTTP client. Currently two bindings are available:
 
 * binding for [REST-assured][11]
 * binding for [Google HTTP Client Library for Java][10]
