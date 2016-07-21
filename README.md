@@ -2,6 +2,8 @@
 
 ## Description
 
+[Akamai {OPEN} EdgeGrid Authentication][12] for Java. 
+
 Signs HTTP requests to OPEN API services, using EdgeGrid V1 signing algorithm.
 
 EdgeGrid signing algorithm implementation is agnostic to an HTTP client. You can use (or create with a minimal effort) 
@@ -11,6 +13,8 @@ a binding specific for an HTTP client. Currently two bindings are available:
 * binding for [Google HTTP Client Library for Java][10]
 
 This is an open-source library, and contributions are welcome. 
+
+For more information about OPEN API visit the [Akamai {OPEN} Developer Community][13].
 
 ## Usage
 
@@ -137,3 +141,5 @@ A number of similar libraries for signing requests exist for popular programming
 [9]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-java
 [10]: https://github.com/google/google-http-java-client
 [11]: https://github.com/rest-assured/rest-assured
+[12]: https://developer.akamai.com/introduction/Client_Auth.html
+[13]: https://developer.akamai.com/
