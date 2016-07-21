@@ -101,7 +101,8 @@ HTTP client used. The core module is *edgegrid-v1-signer-core*, on top of which 
 
 ## Releases 
 
-1.0
+1.0:
+
 - signing algorithm
 - binding for Google HTTP Client Library for Java
 - binding for REST-assured
