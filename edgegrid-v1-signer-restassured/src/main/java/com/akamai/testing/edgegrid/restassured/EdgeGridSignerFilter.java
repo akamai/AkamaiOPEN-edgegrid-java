@@ -38,8 +38,8 @@ public class EdgeGridSignerFilter implements Filter {
     private final ClientCredential credential;
     private final RestAssuredSigner binding;
 
-    private EdgeGridSignerFilter(EdgeGridV1Signer edgeGridV1Signer, ClientCredential credential) {
-        this.binding = new RestAssuredSigner(edgeGridV1Signer);
+    private EdgeGridSignerFilter(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
+        this.binding = new RestAssuredSigner(edgeGridSigner);
         this.credential = credential;
     }
 
@@ -57,12 +57,12 @@ public class EdgeGridSignerFilter implements Filter {
     /**
      * Creates a REST-assured filter that will sign a request with a given credential using a custom signer.
      *
-     * @param edgeGridV1Signer a custom signer used to sign a request
+     * @param edgeGridSigner a custom signer used to sign a request
      * @param credential       a client credential to sign a request
      * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
      */
-    public static EdgeGridSignerFilter sign(EdgeGridV1Signer edgeGridV1Signer, ClientCredential credential) {
-        return new EdgeGridSignerFilter(edgeGridV1Signer, credential);
+    public static EdgeGridSignerFilter sign(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
+        return new EdgeGridSignerFilter(edgeGridSigner, credential);
     }
 
     @Override
