@@ -66,15 +66,19 @@ public class EdgeGridV1Signer {
     private final Algorithm algorithm;
     private final Set<String> headersToInclude;
     private final int maxBodySize;
-    private final Base64.Encoder encoder = Base64.getEncoder();
+    private final Base64.Encoder base64 = Base64.getEncoder();
 
     /**
-     * Note: the parameters should be published by the service provider when the service
+     * Creates EdgeGrid signer with a custom configuration.
+     *
+     * Configuration parameters should be published by the service provider when the service
      * is published. Refer to the API documentation for any special instructions.
      *
      * @param algorithm   algorithm for signing and hashing
      * @param headers     the ordered list of header names to include in the signature.
      * @param maxBodySize the maximum allowed body size in bytes for POST and PUT requests.
+     *
+     * @see <a href="https://developer.akamai.com/">OPEN API documentation</a>
      */
     public EdgeGridV1Signer(Algorithm algorithm, Set<String> headers, int maxBodySize) {
         this.algorithm = checkNotNull(algorithm);
@@ -101,9 +105,9 @@ public class EdgeGridV1Signer {
         return sb.toString();
     }
 
-    private static byte[] sign(String s, String key, String algorithm) throws RequestSigningException {
+    private static byte[] sign(String s, String clientSecret, String algorithm) throws RequestSigningException {
         try {
-            return sign(s, key.getBytes(STRING2BYTES_CHARSET), algorithm);
+            return sign(s, clientSecret.getBytes(STRING2BYTES_CHARSET), algorithm);
         } catch (UnsupportedEncodingException e) {
             throw new RequestSigningException("Failed to sign: invalid string encoding", e);
         }
@@ -117,12 +121,12 @@ public class EdgeGridV1Signer {
 
             byte[] valueBytes = s.getBytes(STRING2BYTES_CHARSET);
             return mac.doFinal(valueBytes);
-        } catch (NoSuchAlgorithmException nsae) {
-            throw new RequestSigningException("Failed to sign: algorithm not found", nsae);
-        } catch (InvalidKeyException ike) {
-            throw new RequestSigningException("Failed to sign: invalid key", ike);
-        } catch (UnsupportedEncodingException uee) {
-            throw new RequestSigningException("Failed to sign: invalid string encoding", uee);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RequestSigningException("Failed to sign: your JDK does not recognize signing algorithm <" + algorithm +">", e);
+        } catch (InvalidKeyException e) {
+            throw new RequestSigningException("Failed to sign: invalid key", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RequestSigningException("Failed to sign: your JDK does not recognize <"+STRING2BYTES_CHARSET+"> encoding", e);
         }
     }
 
@@ -180,12 +184,12 @@ public class EdgeGridV1Signer {
 
     private String signAndEncode(String stringToSign, String signingKey) throws RequestSigningException {
         byte[] signatureBytes = sign(stringToSign, signingKey, algorithm.getSigningAlgorithm());
-        return encoder.encodeToString(signatureBytes);
+        return base64.encodeToString(signatureBytes);
     }
 
     private String getSigningKey(String timeStamp, String clientSecret) throws RequestSigningException {
         byte[] signingKeyBytes = sign(timeStamp, clientSecret, algorithm.getSigningAlgorithm());
-        return encoder.encodeToString(signingKeyBytes);
+        return base64.encodeToString(signingKeyBytes);
     }
 
     private String getStringToSign(String canonicalizedRequest, String authData) {
@@ -242,20 +246,20 @@ public class EdgeGridV1Signer {
         sb.append(canonicalizedHeaders);
         sb.append('\t');
 
-        sb.append(getContentHash(request.getMethod(), request.getBody()));
+        sb.append(getRequestBodyHash(request.getMethod(), request.getBody()));
         sb.append('\t');
 
         return sb.toString();
     }
 
 
-    private byte[] getHash(byte[] contentBytes, int offset, int len) throws RequestSigningException {
+    private byte[] getHash(byte[] requestBody, int offset, int len) throws RequestSigningException {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm.getMessageDigestAlgorithm());
-            md.update(contentBytes, offset, len);
+            md.update(requestBody, offset, len);
             return md.digest();
-        } catch (NoSuchAlgorithmException nsae) {
-            throw new RequestSigningException("Failed to get request hash: algorithm not found", nsae);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RequestSigningException("Failed to get request hash: your JDK does not recognize algorithm <" + algorithm.getMessageDigestAlgorithm() +">", e);
         }
     }
 
@@ -284,7 +288,7 @@ public class EdgeGridV1Signer {
         return headerValue;
     }
 
-    private String getContentHash(String requestMethod, byte[] requestBody) throws RequestSigningException {
+    private String getRequestBodyHash(String requestMethod, byte[] requestBody) throws RequestSigningException {
         // only do hash for POSTs for this version
         if ("POST".equals(requestMethod)) {
             return "";
@@ -296,18 +300,18 @@ public class EdgeGridV1Signer {
 
         int lengthToHash = requestBody.length;
         if (lengthToHash > maxBodySize) {
-            log.warn(String.format("Message body length '%d' is larger than the max '%d'. " +
+            log.info(String.format("Message body length '%d' is larger than the max '%d'. " +
                     "Using first '%d' bytes for computing the hash.", lengthToHash, maxBodySize, maxBodySize));
             lengthToHash = maxBodySize;
         } else {
-            log.debug(String.format("Content: %s", encoder.encodeToString(requestBody)));
+            log.debug(String.format("Request body (Base64): %s", base64.encodeToString(requestBody)));
         }
 
         byte[] digestBytes = getHash(requestBody, 0, lengthToHash);
-        log.debug(String.format("Content hash: %s", encoder.encodeToString(digestBytes)));
+        log.debug(String.format("Request body hash (Base64): %s", base64.encodeToString(digestBytes)));
 
         // (mgawinec) I removed support for non-retryable content, that used to reset the content for downstream handlers
-        return encoder.encodeToString(digestBytes);
+        return base64.encodeToString(digestBytes);
     }
 
 }
