@@ -100,9 +100,8 @@ request.execute();
 
 ## Vision
 
-The idea behind the tool is to create a Java binding for signing OPEN API requests that is agnostic to the type of 
-HTTP client used. The core module is *edgegrid-v1-signer-core*, on top of which a specific binding can be built, e.g., 
-*edgegrid-v1-googleHttpSigner-restassured*.
+The idea behind the tool is to have a common Java library that is agnostic HTTP client implementation. Then you can
+use or create with a minimal effort a binding specific for HTTP client such as Google HTTP Client or REST-assured.
 
 ## Releases 
 
