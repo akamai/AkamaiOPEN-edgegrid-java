@@ -71,9 +71,10 @@ Sign your HTTP request with a defined client credential:
 ```java
 HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
 HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
-GoogleHttpSigner googleHttpSigner = new GoogleHttpSigner();
 URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
 HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
+
+GoogleHttpSigner googleHttpSigner = new GoogleHttpSigner();
 googleHttpSigner.sign(request, credential);
 request.execute();
 ```
@@ -98,6 +99,7 @@ HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
 HttpRequestFactory requestFactory = createSigningRequestFactory(HTTP_TRANSPORT);
 URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
 HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
+
 request.execute();
 ```        
 
