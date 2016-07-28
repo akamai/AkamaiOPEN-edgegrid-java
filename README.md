@@ -1,4 +1,4 @@
-# EdgeGrid V1 Signer bindings for Java
+# AkamaiOPEN-edgegrid-java
 
 ## Description
 
