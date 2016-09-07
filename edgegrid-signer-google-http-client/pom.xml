@@ -2,27 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>edgegrid-v1-signer</artifactId>
-        <groupId>com.akamai.testing</groupId>
+        <artifactId>signer-parent</artifactId>
+        <groupId>com.akamai.edgegrid</groupId>
         <version>1.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.akamai.testing</groupId>
-    <artifactId>edgegrid-v1-signer-googlehttp</artifactId>
-    <version>1.0</version>
+    <artifactId>edgegrid-signer-google-http-client</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>signer-core</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>com.google.http-client</groupId>
             <artifactId>google-http-client</artifactId>
             <version>1.21.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.akamai.testing</groupId>
-            <artifactId>edgegrid-v1-googleHttpSigner-core</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
