@@ -20,8 +20,8 @@ package com.akamai.testing.edgegrid.restassured;
 import com.akamai.testing.edgegrid.core.AbstractSignerBinding;
 import com.akamai.testing.edgegrid.core.EdgeGridV1Signer;
 import com.akamai.testing.edgegrid.core.Request;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.specification.FilterableRequestSpecification;
@@ -55,13 +55,16 @@ public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSp
                 .method(requestSpec.getMethod())
                 .uriWithQuery(URI.create(requestSpec.getURI()))
                 .headers(getHeaders(requestSpec.getHeaders()))
-                .body(requestSpec.getBody() != null ? requestSpec.getBody() : new byte[]{} )
+                .body(requestSpec.getBody() != null ? requestSpec.<byte[]>getBody() : new byte[]{} )
                 .build();
     }
 
     private static Multimap<String, String> getHeaders(Headers headers) {
-        Multimap<String, Header> indexedHeaders = Multimaps.index(headers.asList(), (Header::getValue));
-        return Multimaps.transformValues(indexedHeaders, (Header::getValue));
+        Multimap<String, String> ret = LinkedListMultimap.create();
+        for (Header header : headers) {
+            ret.put(header.getName(), header.getValue());
+        }
+        return ret;
     }
 
     @Override

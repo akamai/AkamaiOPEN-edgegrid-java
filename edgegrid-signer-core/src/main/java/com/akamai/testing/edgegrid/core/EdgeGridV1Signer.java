@@ -110,8 +110,12 @@ public class EdgeGridV1Signer {
     }
 
     private boolean containsDuplicateHeaderNames(Request request) {
-        return request.getHeaders().asMap().entrySet().stream()
-                        .filter(e -> e.getValue().size() > 1).findAny().isPresent();
+        for (Map.Entry<String, Collection<String>> entry : request.getHeaders().asMap().entrySet()) {
+            if (entry.getValue().size() > 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String getAuthorizationHeaderValue(String authData, String signature) {
