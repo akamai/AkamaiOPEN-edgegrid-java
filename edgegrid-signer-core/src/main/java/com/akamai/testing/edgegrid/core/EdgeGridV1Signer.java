@@ -16,10 +16,6 @@
 
 package com.akamai.testing.edgegrid.core;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -54,10 +50,7 @@ public class EdgeGridV1Signer {
      * Default maximum allowed body size in bytes for POST and PUT requests.
      */
     public static final int DEFAULT_MAX_BODY_SIZE_IN_BYTES = 1024 * 2;
-    /**
-     * Default headers used for signing.
-     */
-    public static final Set<String> DEFAULT_HEADERS_TO_SIGN = ImmutableSet.of();
+
     private static final Logger log = LoggerFactory.getLogger(EdgeGridV1Signer.class);
     private static final String AUTH_CLIENT_TOKEN_NAME = "client_token";
     private static final String AUTH_ACCESS_TOKEN_NAME = "access_token";
@@ -96,7 +89,7 @@ public class EdgeGridV1Signer {
      * Creates signer with default configuration.
      */
     public EdgeGridV1Signer() {
-        this(DEFAULT_SIGNING_ALGORITHM, DEFAULT_HEADERS_TO_SIGN, DEFAULT_MAX_BODY_SIZE_IN_BYTES);
+        this(DEFAULT_SIGNING_ALGORITHM, Collections.<String>emptySet(), DEFAULT_MAX_BODY_SIZE_IN_BYTES);
     }
 
     /**
@@ -114,7 +107,7 @@ public class EdgeGridV1Signer {
     }
 
     private boolean containsDuplicateHeaderNames(Request request) {
-        for (Map.Entry<String, Collection<String>> entry : request.getHeaders().asMap().entrySet()) {
+        for (Map.Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
             if (entry.getValue().size() > 1) {
                 return true;
             }
@@ -274,7 +267,7 @@ public class EdgeGridV1Signer {
         }
     }
 
-    private String canonicalizeHeaders(Multimap<String, String> requestHeaders) {
+    private String canonicalizeHeaders(Map<String, List<String>> requestHeaders) {
         StringBuilder sb = new StringBuilder();
         for (String headerName : headersToInclude) {
             // we validated before that request contains no multiple headers with same header name

@@ -20,19 +20,34 @@ package com.akamai.testing.edgegrid.restassured;
 import com.akamai.testing.edgegrid.core.AbstractSignerBinding;
 import com.akamai.testing.edgegrid.core.EdgeGridV1Signer;
 import com.akamai.testing.edgegrid.core.Request;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.specification.FilterableRequestSpecification;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.
  * @author mgawinec@akamai.com
  */
 public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSpecification> {
+
+    private static Map<String, List<String>> getHeaders(Headers headers) {
+        Map<String, List<String>> ret = new HashMap<>();
+        for (Header header : headers) {
+            List<String> values = ret.get(header.getName());
+            if (values == null) {
+                values = new LinkedList<>();
+                ret.put(header.getName(), values);
+            }
+            values.add(header.getValue());
+        }
+        return ret;
+    }
 
     /**
      * Creates a signer binding with default EdgeGrid signer.
@@ -57,14 +72,6 @@ public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSp
                 .headers(getHeaders(requestSpec.getHeaders()))
                 .body(requestSpec.getBody() != null ? requestSpec.<byte[]>getBody() : new byte[]{} )
                 .build();
-    }
-
-    private static Multimap<String, String> getHeaders(Headers headers) {
-        Multimap<String, String> ret = LinkedListMultimap.create();
-        for (Header header : headers) {
-            ret.put(header.getName(), header.getValue());
-        }
-        return ret;
     }
 
     @Override

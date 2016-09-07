@@ -1,11 +1,14 @@
 package com.akamai.testing.edgegrid.core;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.Builder;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -24,12 +27,12 @@ public class Request implements Comparator<Request>, Comparable<Request> {
     private final byte[] body;
     private final String method;
     private final URI uriWithQuery;
-    private final Multimap<String, String> headers;
+    private final Map<String, List<String>> headers;
 
     private Request(RequestBuilder b) {
         this.body = b.body;
-        this.headers = b.headers;
         this.method = b.method;
+        this.headers = b.headers;
         this.uriWithQuery = b.uriWithQuery;
     }
 
@@ -80,7 +83,7 @@ public class Request implements Comparator<Request>, Comparable<Request> {
         return Arrays.copyOf(body, body.length);
     }
 
-    Multimap<String, String> getHeaders() {
+    Map<String, List<String>> getHeaders() {
         return headers;
     }
 
@@ -98,10 +101,10 @@ public class Request implements Comparator<Request>, Comparable<Request> {
      */
     public static class RequestBuilder implements Builder<Request> {
 
+        private byte[] body = new byte[]{};
+        private Map<String, List<String>> headers = new HashMap<>();
         private String method;
         private URI uriWithQuery;
-        private Multimap<String, String> headers = ImmutableMultimap.of();
-        private byte[] body = new byte[]{};
 
         /**
          * Sets a content of HTTP request body. If not set, body is empty by default.
@@ -116,14 +119,48 @@ public class Request implements Comparator<Request>, Comparable<Request> {
         }
 
         /**
-         * Sets headers of HTTP request. If not set, headers list is empty by default
+         * <p>
+         * Adds a single header for an HTTP request. This can be called multiple times to add as
+         * many headers as needed.
+         * </p>
+         * <p>
+         * <i><b>WARNING:</b>{@link #headers(Map)} will replace the headers set by this method with
+         * an unmodifiable {@link Map}. {@link #headers(Map)} and {@link #header(String, String)}
+         * should not be used in the same builder instance.</i>
+         * </p>
          *
-         * @param headers a {@link Multimap} of headers
+         * @param headerName a header name
+         * @param value a header value
          * @return reference back to this builder instance
          */
-        public RequestBuilder headers(Multimap<String, String> headers) {
+        public RequestBuilder header(String headerName, String value) {
+            Validate.notEmpty(headerName, "headerName cannot be empty");
+            Validate.notEmpty(value, "value cannot be empty");
+            List<String> values = headers.get(headerName);
+            if (values == null) {
+                values = new LinkedList<>();
+                headers.put(headerName, values);
+            }
+            values.add(value);
+            return this;
+        }
+
+        /**
+         * <p>
+         * Sets headers of HTTP request.
+         * </p>
+         * <p>
+         * <i><b>WARNING:</b>This method sets an unmodifiable {@link Map} for the headers, so
+         * subsequent calls to {@link #header(String, String)} will not work. {@link #headers(Map)}
+         * and {@link #header(String, String)} should not be used in the same builder instance.</i>
+         * </p>
+         *
+         * @param headers a {@link Map} of {@link List} of headers
+         * @return reference back to this builder instance
+         */
+        public RequestBuilder headers(Map<String, List<String>> headers) {
             Validate.notNull(headers, "headers cannot be null");
-            this.headers = ImmutableMultimap.copyOf(headers);
+            this.headers = Collections.unmodifiableMap(headers);
             return this;
         }
 

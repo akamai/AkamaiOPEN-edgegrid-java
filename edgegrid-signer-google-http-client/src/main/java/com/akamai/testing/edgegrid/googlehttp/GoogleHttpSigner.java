@@ -16,17 +16,22 @@
 package com.akamai.testing.edgegrid.googlehttp;
 
 
-import com.akamai.testing.edgegrid.core.*;
-import com.google.api.client.http.*;
-import com.google.api.client.util.FieldInfo;
-import com.google.api.client.util.Types;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+
+import com.akamai.testing.edgegrid.core.AbstractSignerBinding;
+import com.akamai.testing.edgegrid.core.EdgeGridV1Signer;
+import com.akamai.testing.edgegrid.core.Request;
+import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.util.FieldInfo;
+import com.google.api.client.util.Types;
 
 /**
  * Google HTTP Client Library binding for EdgeGrid signer for signing {@link HttpRequest}.
@@ -35,6 +40,25 @@ import java.util.Map;
  */
 public class GoogleHttpSigner extends AbstractSignerBinding<HttpRequest> {
 
+    private static Map<String, List<String>> getHeaders(HttpHeaders headers) {
+        Map<String, List<String>> ret = new HashMap<>();
+        for (Map.Entry<String, Object> e : headers.entrySet()) {
+            List<String> values = ret.get(e.getKey());
+            if (values == null) {
+                values = new LinkedList<>();
+                ret.put(e.getKey(), values);
+            }
+            Object value = e.getValue();
+            if (value instanceof Iterable<?> || value.getClass().isArray()) {
+                for (Object repeatedValue : Types.iterableOf(value)) {
+                    values.add(toStringValue(repeatedValue));
+                }
+            } else {
+                values.add(toStringValue(value));
+            }
+        }
+        return ret;
+    }
 
     /**
      * Creates a signer binding with default EdgeGrid signer.
@@ -87,22 +111,6 @@ public class GoogleHttpSigner extends AbstractSignerBinding<HttpRequest> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private Multimap<String, String> getHeaders(HttpHeaders headers) {
-
-        Multimap<String, String> newHeaders = HashMultimap.create();
-        for (Map.Entry<String, Object> e : headers.entrySet()) {
-            Object value = e.getValue();
-            if (value instanceof Iterable<?> || value.getClass().isArray()) {
-                for (Object repeatedValue : Types.iterableOf(value)) {
-                    newHeaders.put(e.getKey(),  toStringValue(repeatedValue));
-                }
-            } else {
-                newHeaders.put(e.getKey(), toStringValue(value));
-            }
-        }
-        return newHeaders;
     }
 
     private static String toStringValue(Object headerValue) {

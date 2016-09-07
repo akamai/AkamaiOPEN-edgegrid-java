@@ -17,12 +17,11 @@
 package com.akamai.testing.edgegrid.core;
 
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -66,7 +65,8 @@ public class EdgeGridV1SignerTest {
         Request request = Request.builder()
                 .method("GET")
                 .uriWithQuery(URI.create("http://control.akamai.com/check"))
-                .headers(ImmutableMultimap.<String, String>builder().put("Duplicate", "X").put("Duplicate", "Y").build())
+                .header("Duplicate", "X")
+                .header("Duplicate", "Y")
                 .build();
 
         DEFAULT_SIGNER.getAuthorizationHeaderValue(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
@@ -106,27 +106,25 @@ public class EdgeGridV1SignerTest {
 
     @DataProvider
     public Object[][] requestsForHeadersSigning() {
+        Set<String> headerToSign = new HashSet<>();
+        headerToSign.add("Content-Type");
         return new Object[][]{
                 {"Headers should be included in signature",
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=S32xN/Essd1Y9mMexnPefngle9tNfcVad0yyYxVBKzA=",
-                        ImmutableSet.of("Content-Type"),
+                        headerToSign,
                         Request.builder()
                                 .method("GET")
                                 .uriWithQuery(URI.create("http://control.akamai.com/check"))
-                                .headers(ImmutableMultimap.<String, String>builder()
-                                        .put("Content-Type", "application/json")
-                                        .build())
+                                .header("Content-Type", "application/json")
                                 .build()},
                 {"Not listed headers should not impact signature",
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=S32xN/Essd1Y9mMexnPefngle9tNfcVad0yyYxVBKzA=",
-                        ImmutableSet.of("Content-Type"),
+                        headerToSign,
                         Request.builder()
                                 .method("GET")
                                 .uriWithQuery(URI.create("http://control.akamai.com/check"))
-                                .headers(ImmutableMultimap.<String, String>builder()
-                                        .put("Content-Type", "application/json")
-                                        .put("Cache-Control", "no-cache")
-                                        .build())
+                                .header("Content-Type", "application/json")
+                                .header("Cache-Control", "no-cache")
                                 .build()}
 
         };
