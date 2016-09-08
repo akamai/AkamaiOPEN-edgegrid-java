@@ -19,6 +19,9 @@ package com.akamai.testing.edgegrid.core;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 
 /**
@@ -76,14 +76,19 @@ public class EdgeGridV1Signer {
      * is published. Refer to the API documentation for any special instructions.
      *
      * @param algorithm   algorithm for signing and hashing
-     * @param headers     the ordered list of header names to include in the signature.
-     * @param maxBodySize the maximum allowed body size in bytes for POST and PUT requests.
+     * @param headers     the set of header names to include in the signature
+     * @param maxBodySize the maximum allowed body size in bytes for POST and PUT requests
      *
      * @see <a href="https://developer.akamai.com/">OPEN API documentation</a>
      */
     public EdgeGridV1Signer(Algorithm algorithm, Set<String> headers, int maxBodySize) {
-        this.algorithm = checkNotNull(algorithm);
-        this.headersToInclude = checkNotNull(headers);
+        Validate.notNull(algorithm, "algorithm cannot be null");
+        this.algorithm = algorithm;
+        if (headers == null) {
+            headersToInclude = Collections.emptySet();
+        } else {
+            headersToInclude = Collections.unmodifiableSet(headers);
+        }
         this.maxBodySize = maxBodySize;
     }
 
@@ -156,7 +161,7 @@ public class EdgeGridV1Signer {
     }
 
     private static String canonicalizeUri(String uri) {
-        if (Strings.isNullOrEmpty(uri)) {
+        if (StringUtils.isEmpty(uri)) {
             return "/";
         }
 
@@ -168,10 +173,9 @@ public class EdgeGridV1Signer {
     }
 
     String getAuthorizationHeaderValue(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
-
-        checkNotNull(request);
-        checkNotNull(credential);
-        checkArgument(!containsDuplicateHeaderNames(request), "The protocol does not support multiple request headers with the same header name");
+        Validate.notNull(credential, "credential cannot be null");
+        Validate.notNull(request, "request cannot be null");
+        Validate.isTrue(!containsDuplicateHeaderNames(request), "The protocol does not support multiple request headers with the same header name");
 
         String timeStamp = formatTimeStamp(timestamp);
         String authData = getAuthData(credential, timeStamp, nonce);
