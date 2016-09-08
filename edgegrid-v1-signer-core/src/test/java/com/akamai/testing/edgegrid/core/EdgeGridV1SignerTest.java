@@ -17,14 +17,12 @@
 package com.akamai.testing.edgegrid.core;
 
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.net.URI;
-import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.UUID;
 
@@ -47,7 +45,8 @@ public class EdgeGridV1SignerTest {
             .clientToken("akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj")
             .build();
 
-    static final long DEFAULT_TIMESTAMP = new GregorianCalendar(2016, 7, 4, 9, 0, 0).getTimeInMillis();
+    /** Static timestamp corresponds to 2016-08-04T07:00:00+0000. */
+    static final long DEFAULT_TIMESTAMP = 1470294000000L;
 
     @Test(dataProvider = "requestsForDefaultSettings")
     public void testForDefaultSettings(String caseName, String expectedAuthorizationHeader, Request request) throws RequestSigningException {
