@@ -17,11 +17,21 @@
 package com.akamai.testing.edgegrid.core;
 
 import java.util.Collections;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.configuration2.INIConfiguration;
+import org.apache.commons.configuration2.SubnodeConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.Builder;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -38,6 +48,86 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
 
     /** This is the default {@code maxBodySize} to apply if not explicitly set in a credential. */
     public static final int DEFAULT_MAX_BODY_SIZE = 131072;
+
+    /**
+     * Loads a {@link ClientCredential} from {@code file}. The {@link File} should contain INI-style
+     * EdgeRc content.
+     *
+     * @param file a {@link File} pointing to an EdgeRc file
+     * @param section a config section (null for the default section)
+     * @return a {@link ClientCredential}
+     * @throws ConfigurationException If an error occurs while reading the configuration
+     * @throws IOException if an I/O error occurs
+     */
+    public static ClientCredential fromEdgeRc(File file, String section)
+            throws ConfigurationException, IOException {
+        return fromEdgeRc(new FileReader(file), section);
+    }
+
+    /**
+     * Loads a {@link ClientCredential} from {@code inputStream}. The {@link InputStream} should
+     * contain INI-style EdgeRc content.
+     *
+     * @param inputStream an open {@link InputStream} to an EdgeRc file
+     * @param section a config section (null for the default section)
+     * @return a {@link ClientCredential}
+     * @throws ConfigurationException If an error occurs while reading the configuration
+     * @throws IOException if an I/O error occurs
+     */
+    public static ClientCredential fromEdgeRc(InputStream inputStream, String section)
+            throws ConfigurationException, IOException {
+        return fromEdgeRc(new InputStreamReader(inputStream), section);
+    }
+
+    /**
+     * Loads a {@link ClientCredential} from {@code reader}. The {@link Reader} should contain
+     * INI-style EdgeRc content.
+     *
+     * @param reader an open {@link Reader} to an EdgeRc file
+     * @param section a config section (null for the default section)
+     * @return a {@link ClientCredential}
+     * @throws ConfigurationException If an error occurs while reading the configuration
+     * @throws IOException if an I/O error occurs
+     */
+    public static ClientCredential fromEdgeRc(Reader reader, String section)
+            throws ConfigurationException, IOException {
+        INIConfiguration config = new INIConfiguration();
+        config.read(reader);
+        SubnodeConfiguration s = config.getSection(section);
+        ClientCredentialBuilder builder = builder()
+                .accessToken(s.getString("access_token"))
+                .clientSecret(s.getString("client_secret"))
+                .clientToken(s.getString("client_token"))
+                .host(s.getString("host"));
+        if (s.getInteger("max-body", null) != null) {
+            builder.maxBodySize(s.getInteger("max-body", null));
+        }
+        String headersString = s.getString("headers_to_sign");
+        if (StringUtils.isNotBlank(headersString)) {
+            for (String h : headersString.split(",")) {
+                builder.headerToSign(h);
+            }
+        }
+        return builder.build();
+    }
+
+    /**
+     * Loads a {@link ClientCredential} from {@code filename}. The file should contain INI-style
+     * EdgeRc content. Note that this method intelligently replaces "~" with a reference to the
+     * JVM's user home directory ({@code System.getProperty("user.home")}).
+     *
+     * @param filename a filename pointing to an EdgeRc file
+     * @param section a config section (null for the default section)
+     * @return a {@link ClientCredential}
+     * @throws ConfigurationException If an error occurs while reading the configuration
+     * @throws IOException if an I/O error occurs
+     */
+    public static ClientCredential fromEdgeRc(String filename, String section)
+            throws ConfigurationException, IOException {
+        filename = filename.replaceFirst("^~", System.getProperty("user.home"));
+        File file = new File(filename);
+        return fromEdgeRc(new FileReader(file), section);
+    }
 
     private String accessToken;
     private String clientSecret;
