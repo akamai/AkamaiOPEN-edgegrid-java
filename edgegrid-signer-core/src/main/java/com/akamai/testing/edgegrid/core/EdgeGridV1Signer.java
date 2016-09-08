@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -64,7 +64,6 @@ public class EdgeGridV1Signer {
     private static final String AUTH_TIMESTAMP_NAME = "timestamp";
     private static final String AUTH_NONCE_NAME = "nonce";
     private static final String AUTH_SIGNATURE_NAME = "signature";
-    private static final String STRING2BYTES_CHARSET = "UTF-8";
     private final Algorithm algorithm;
     private final Set<String> headersToInclude;
     private final int maxBodySize;
@@ -131,11 +130,7 @@ public class EdgeGridV1Signer {
     }
 
     private static byte[] sign(String s, String clientSecret, String algorithm) throws RequestSigningException {
-        try {
-            return sign(s, clientSecret.getBytes(STRING2BYTES_CHARSET), algorithm);
-        } catch (UnsupportedEncodingException e) {
-            throw new RequestSigningException("Failed to sign: invalid string encoding", e);
-        }
+        return sign(s, clientSecret.getBytes(StandardCharsets.UTF_8), algorithm);
     }
 
     private static byte[] sign(String s, byte[] key, String algorithm) throws RequestSigningException {
@@ -144,14 +139,12 @@ public class EdgeGridV1Signer {
             Mac mac = Mac.getInstance(algorithm);
             mac.init(signingKey);
 
-            byte[] valueBytes = s.getBytes(STRING2BYTES_CHARSET);
+            byte[] valueBytes = s.getBytes(StandardCharsets.UTF_8);
             return mac.doFinal(valueBytes);
         } catch (NoSuchAlgorithmException e) {
             throw new RequestSigningException("Failed to sign: your JDK does not recognize signing algorithm <" + algorithm +">", e);
         } catch (InvalidKeyException e) {
             throw new RequestSigningException("Failed to sign: invalid key", e);
-        } catch (UnsupportedEncodingException e) {
-            throw new RequestSigningException("Failed to sign: your JDK does not recognize <"+STRING2BYTES_CHARSET+"> encoding", e);
         }
     }
 
