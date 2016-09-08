@@ -42,6 +42,7 @@ public class EdgeGridV1SignerTest {
             .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234")
             .clientSecret("12rvdn/myhSSiuYAC6ZPGaI91ezhdbYd7WyTRKhGxms=")
             .clientToken("akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj")
+            .host("control.akamai.com")
             .build();
 
     /** Static timestamp corresponds to 2016-08-04T07:00:00+0000. */
@@ -55,7 +56,7 @@ public class EdgeGridV1SignerTest {
 
     @Test(dataProvider = "requestsForHeadersSigning")
     public void testForHeadersSigning(String caseName, String expectedAuthorizationHeader, Set<String> headersToSign, Request request) throws RequestSigningException {
-        EdgeGridV1Signer signer = new EdgeGridV1Signer(Algorithm.EG1_HMAC_SHA256, headersToSign, EdgeGridV1Signer.DEFAULT_MAX_BODY_SIZE_IN_BYTES);
+        EdgeGridV1Signer signer = new EdgeGridV1Signer(Algorithm.EG1_HMAC_SHA256, headersToSign);
         String actualAuthorizationHeader = signer.getAuthorizationHeaderValue(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
@@ -79,7 +80,7 @@ public class EdgeGridV1SignerTest {
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=0dCwIUaObZaXrTO1CwojlVBwuNbh1av+nO7VS2YC8is=",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                                .uriWithQuery(URI.create("http://any-hostname-at-all.com/check"))
                                 .build()},
                 {"GET request with query",
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=OkiBaPX/HORjhPPu2Vyo35aQrO3+GhDM1x4NHXUoOio=",
@@ -91,7 +92,7 @@ public class EdgeGridV1SignerTest {
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=AY5RxJqWU9EO3iMM1x/Fd6AdsJF8kzz7NYVmyc8QixA=",
                         Request.builder()
                                 .method("POST")
-                                .uriWithQuery(URI.create("http://control.akamai.com/send"))
+                                .uriWithQuery(URI.create("http://any-hostname-at-all.com/send"))
                                 .body("x=y&a=b".getBytes())
                                 .build()},
                 {"For PUT request we ignore body",
@@ -122,7 +123,7 @@ public class EdgeGridV1SignerTest {
                         headerToSign,
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                                .uriWithQuery(URI.create("http://this-is-ignored.com/check"))
                                 .header("Content-Type", "application/json")
                                 .header("Cache-Control", "no-cache")
                                 .build()}

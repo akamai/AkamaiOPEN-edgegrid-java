@@ -33,14 +33,21 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class ClientCredential implements Comparator<ClientCredential>, Comparable<ClientCredential> {
 
+    /** This is the default {@code maxBodySize} to apply if not explicitly set in a credential. */
+    public static final int DEFAULT_MAX_BODY_SIZE = 131072;
+
     private String accessToken;
     private String clientSecret;
     private String clientToken;
+    private String host;
+    private Integer maxBodySize;
 
     ClientCredential(ClientCredentialBuilder b) {
         this.accessToken = b.accessToken;
         this.clientSecret = b.clientSecret;
         this.clientToken = b.clientToken;
+        this.host = b.host;
+        this.maxBodySize = b.maxBodySize;
     }
 
     /**
@@ -59,6 +66,8 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
                 .append(o1.accessToken, o2.accessToken)
                 .append(o1.clientSecret, o2.clientSecret)
                 .append(o1.clientToken, o2.clientToken)
+                .append(o1.host, o2.host)
+                .append(o1.maxBodySize, o2.maxBodySize)
                 .build();
     }
 
@@ -87,9 +96,20 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
         return clientToken;
     }
 
+    int getMaxBodySize() {
+        if (maxBodySize == null) {
+            return DEFAULT_MAX_BODY_SIZE;
+        }
+        return maxBodySize;
+    }
+
+    String getHost() {
+        return host;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(accessToken, clientSecret, accessToken);
+        return Objects.hash(accessToken, clientSecret, clientToken, host, maxBodySize);
     }
 
     @Override
@@ -98,6 +118,8 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
                 .append("accessToken", accessToken)
                 .append("clientSecret", clientSecret)
                 .append("clientToken", clientToken)
+                .append("host", host)
+                .append("maxBodySize", getMaxBodySize()) // note: intentionally using accessor here.
                 .build();
     }
 
@@ -105,6 +127,8 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
         private String accessToken;
         private String clientSecret;
         private String clientToken;
+        private String host;
+        private Integer maxBodySize;
 
         /**
          * Creates a new builder. The returned builder is equivalent to the builder
@@ -151,6 +175,29 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
         }
 
         /**
+         * Sets a hostname to be used when making OPEN API requests with this credential.
+         *
+         * @param host a host name
+         * @return reference back to this builder instance
+         */
+        public ClientCredentialBuilder host(String host) {
+            Validate.notBlank(host, "host cannot be blank");
+            this.host = host;
+            return this;
+        }
+
+        /**
+         * Sets the maximum body size that will be used for producing request signatures.
+         *
+         * @param maxBodySize a number of bytes
+         * @return reference back to this builder instance
+         */
+        public ClientCredentialBuilder maxBodySize(int maxBodySize) {
+            this.maxBodySize = maxBodySize;
+            return this;
+        }
+
+        /**
          * Returns a newly-created immutable client credential.
          *
          * @return reference back to this builder instance
@@ -160,6 +207,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
             Validate.notBlank(accessToken, "accessToken cannot be blank");
             Validate.notBlank(clientSecret, "clientSecret cannot be blank");
             Validate.notBlank(clientToken, "clientToken cannot be blank");
+            Validate.notBlank(host, "host cannot be blank");
             return new ClientCredential(this);
         }
 

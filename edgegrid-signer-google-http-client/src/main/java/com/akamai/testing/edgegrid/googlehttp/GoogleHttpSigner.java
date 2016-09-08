@@ -118,4 +118,14 @@ public class GoogleHttpSigner extends AbstractSignerBinding<HttpRequest> {
                 ? FieldInfo.of((Enum<?>) headerValue).getName() : headerValue.toString();
     }
 
+    @Override
+    protected HttpRequest setHost(HttpRequest request, String host) {
+        // NOTE: Header names are lower-cased by the library.
+        if (request.getHeaders().containsKey("host")) {
+            request.getHeaders().put("host", host);
+        }
+        request.getUrl().setHost(host);
+        return request;
+    }
+
 }

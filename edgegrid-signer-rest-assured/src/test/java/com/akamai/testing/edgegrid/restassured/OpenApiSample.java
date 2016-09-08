@@ -33,9 +33,9 @@ public class OpenApiSample {
 
     ClientCredential credential = ClientCredential.builder()
             .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
-            .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
             .clientSecret("SOMESECRET")
-
+            .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
+            .host("endpoint.net")
             .build();
 
     @Test(enabled = false)

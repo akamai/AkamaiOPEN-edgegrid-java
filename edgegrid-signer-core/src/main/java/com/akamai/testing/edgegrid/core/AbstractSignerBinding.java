@@ -42,12 +42,15 @@ public abstract class AbstractSignerBinding<RequestT> {
     }
 
     /**
-     * Signs a given requests with a given client credential using EdgeGrid signer algorithm.
+     * Signs {@code request} with {@code credential} using EdgeGrid signer algorithm and replaces
+     * {@code request}'s host name with the one specified by the credential.
+     *
      * @param request a HTTP request to sign
      * @param credential a client credential to sign a request with
      * @throws RequestSigningException if failed to sign a request
      */
     public void sign(RequestT request, ClientCredential credential) throws RequestSigningException{
+        setHost(request, credential.getHost());
         String authorization = edgeGridSigner.getAuthorizationHeaderValue(map(request), credential);
         setAuthorization(request, authorization);
     }
@@ -66,5 +69,15 @@ public abstract class AbstractSignerBinding<RequestT> {
      * @return updated request
      */
     protected abstract RequestT setAuthorization(RequestT request, String signature);
+
+    /**
+     * Updates a given HTTP request by replacing the request hostname with {@code host} instead.
+     *
+     * @param request HTTP request to update
+     * @param host an OPEN API hostname
+     * @return updated request
+     */
+    protected abstract RequestT setHost(RequestT request, String host);
+
 }
 

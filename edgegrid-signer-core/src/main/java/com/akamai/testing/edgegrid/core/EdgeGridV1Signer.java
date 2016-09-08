@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
  * V1 signing algorithm</a>. Agnostic to implementation of HTTP request.
  *
  * @author mgawinec@akamai.com
+ * @author mmeyer@akamai.com
  */
 public class EdgeGridV1Signer {
 
@@ -46,10 +47,6 @@ public class EdgeGridV1Signer {
      * Default algorithm for signing and hashing.
      */
     public static final Algorithm DEFAULT_SIGNING_ALGORITHM = Algorithm.EG1_HMAC_SHA256;
-    /**
-     * Default maximum allowed body size in bytes for POST and PUT requests.
-     */
-    public static final int DEFAULT_MAX_BODY_SIZE_IN_BYTES = 1024 * 2;
 
     private static final Logger log = LoggerFactory.getLogger(EdgeGridV1Signer.class);
     private static final String AUTH_CLIENT_TOKEN_NAME = "client_token";
@@ -58,9 +55,15 @@ public class EdgeGridV1Signer {
     private static final String AUTH_NONCE_NAME = "nonce";
     private static final String AUTH_SIGNATURE_NAME = "signature";
     private final Algorithm algorithm;
-    private final Set<String> headersToInclude;
-    private final int maxBodySize;
+    private final Set<String> headersToSign;
     private final Base64.Encoder base64 = Base64.getEncoder();
+
+    /**
+     * Creates signer with default configuration.
+     */
+    public EdgeGridV1Signer() {
+        this(DEFAULT_SIGNING_ALGORITHM, Collections.<String>emptySet());
+    }
 
     /**
      * Creates EdgeGrid signer with a custom configuration.
@@ -69,27 +72,18 @@ public class EdgeGridV1Signer {
      * is published. Refer to the API documentation for any special instructions.
      *
      * @param algorithm   algorithm for signing and hashing
-     * @param headers     the set of header names to include in the signature
-     * @param maxBodySize the maximum allowed body size in bytes for POST and PUT requests
+     * @param headersToSign the set of header names to include in the signature
      *
      * @see <a href="https://developer.akamai.com/">OPEN API documentation</a>
      */
-    public EdgeGridV1Signer(Algorithm algorithm, Set<String> headers, int maxBodySize) {
+    public EdgeGridV1Signer(Algorithm algorithm, Set<String> headersToSign) {
         Validate.notNull(algorithm, "algorithm cannot be null");
         this.algorithm = algorithm;
-        if (headers == null) {
-            headersToInclude = Collections.emptySet();
+        if (headersToSign == null) {
+            this.headersToSign = Collections.emptySet();
         } else {
-            headersToInclude = Collections.unmodifiableSet(headers);
+            this.headersToSign = Collections.unmodifiableSet(headersToSign);
         }
-        this.maxBodySize = maxBodySize;
-    }
-
-    /**
-     * Creates signer with default configuration.
-     */
-    public EdgeGridV1Signer() {
-        this(DEFAULT_SIGNING_ALGORITHM, Collections.<String>emptySet(), DEFAULT_MAX_BODY_SIZE_IN_BYTES);
     }
 
     /**
@@ -119,7 +113,7 @@ public class EdgeGridV1Signer {
         return authData + AUTH_SIGNATURE_NAME + '=' + signature;
     }
 
-    private static String getRelativePathWithQuery(URI uri ) {
+    private static String getRelativePathWithQuery(URI uri) {
         StringBuilder sb = new StringBuilder(uri.getPath());
         if (uri.getQuery() != null) {
             sb.append("?").append(uri.getQuery());
@@ -180,7 +174,7 @@ public class EdgeGridV1Signer {
 
     private String getSignature(Request request, ClientCredential credential, String timeStamp, String authData) throws RequestSigningException {
         String signingKey = getSigningKey(timeStamp, credential.getClientSecret());
-        String canonicalizedRequest = getCanonicalizedRequest(request);
+        String canonicalizedRequest = getCanonicalizedRequest(request, credential);
         String stringToSign = getStringToSign(canonicalizedRequest, authData);
         log.debug(String.format("String to sign: '%s'", stringToSign));
 
@@ -228,7 +222,7 @@ public class EdgeGridV1Signer {
     }
 
 
-    private String getCanonicalizedRequest(Request request) throws RequestSigningException {
+    private String getCanonicalizedRequest(Request request, ClientCredential credential) throws RequestSigningException {
         StringBuilder sb = new StringBuilder();
         sb.append(request.getMethod().toUpperCase());
         sb.append('\t');
@@ -237,7 +231,7 @@ public class EdgeGridV1Signer {
         sb.append(scheme.toLowerCase());
         sb.append('\t');
 
-        String host = request.getUriWithQuery().getHost();
+        String host = credential.getHost();
         sb.append(host.toLowerCase());
         sb.append('\t');
 
@@ -250,7 +244,7 @@ public class EdgeGridV1Signer {
         sb.append(canonicalizedHeaders);
         sb.append('\t');
 
-        sb.append(getContentHash(request.getMethod(), request.getBody()));
+        sb.append(getContentHash(request.getMethod(), request.getBody(), credential.getMaxBodySize()));
         sb.append('\t');
 
         return sb.toString();
@@ -269,7 +263,7 @@ public class EdgeGridV1Signer {
 
     private String canonicalizeHeaders(Map<String, List<String>> requestHeaders) {
         StringBuilder sb = new StringBuilder();
-        for (String headerName : headersToInclude) {
+        for (String headerName : headersToSign) {
             // we validated before that request contains no multiple headers with same header name
             Optional<String> headerValue = requestHeaders.get(headerName).stream().findFirst();
             if (headerValue.isPresent()) {
@@ -292,7 +286,8 @@ public class EdgeGridV1Signer {
         return headerValue;
     }
 
-    private String getContentHash(String requestMethod, byte[] requestBody) throws RequestSigningException {
+    private String getContentHash(String requestMethod, byte[] requestBody, int maxBodySize)
+            throws RequestSigningException {
         // only do hash for POSTs for this version
         if (!"POST".equals(requestMethod)) {
             return "";

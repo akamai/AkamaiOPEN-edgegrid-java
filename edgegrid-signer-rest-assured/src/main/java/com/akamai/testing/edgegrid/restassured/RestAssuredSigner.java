@@ -79,4 +79,14 @@ public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSp
         requestSpec.header("Authorization", signature);
         return requestSpec;
     }
+
+    @Override
+    protected FilterableRequestSpecification setHost(FilterableRequestSpecification requestSpec, String host) {
+        if (requestSpec.getHeaders().hasHeaderWithName("Host")) {
+            requestSpec.header("Host", host);
+        }
+        // RestAssured needs to deal with the specific hostname at the time of the call.
+        return requestSpec;
+    }
+
 }

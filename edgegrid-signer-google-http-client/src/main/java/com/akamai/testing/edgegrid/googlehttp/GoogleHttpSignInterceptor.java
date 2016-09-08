@@ -39,7 +39,7 @@ public class GoogleHttpSignInterceptor implements HttpExecuteInterceptor {
     /**
      * Creates a sign interceptor with default EdgeGrid signer.
      *
-     * @param credential
+     * @param credential a {@link ClientCredential}
      */
     public GoogleHttpSignInterceptor(ClientCredential credential) {
         this(new EdgeGridV1Signer(), credential);
@@ -49,6 +49,7 @@ public class GoogleHttpSignInterceptor implements HttpExecuteInterceptor {
      * Creates a sign interceptor with a custom EdgeGrid signer.
      *
      * @param edgeGridSigner a custom edge grid signer that will be used to sign requests
+     * @param credential a {@link ClientCredential}
      */
     public GoogleHttpSignInterceptor(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
         this.binding = new GoogleHttpSigner(edgeGridSigner);
