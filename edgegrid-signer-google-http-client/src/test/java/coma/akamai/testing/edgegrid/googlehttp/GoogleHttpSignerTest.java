@@ -40,7 +40,7 @@ import java.net.URISyntaxException;
  *
  * @author mgawinec@akamai.com
  */
-public class OpenApiSample {
+public class GoogleHttpSignerTest {
 
     ClientCredential credential = ClientCredential.builder()
             .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
