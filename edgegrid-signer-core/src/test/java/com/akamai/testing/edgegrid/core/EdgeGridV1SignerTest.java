@@ -56,8 +56,15 @@ public class EdgeGridV1SignerTest {
 
     @Test(dataProvider = "requestsForHeadersSigning")
     public void testForHeadersSigning(String caseName, String expectedAuthorizationHeader, Set<String> headersToSign, Request request) throws RequestSigningException {
-        EdgeGridV1Signer signer = new EdgeGridV1Signer(Algorithm.EG1_HMAC_SHA256, headersToSign);
-        String actualAuthorizationHeader = signer.getAuthorizationHeaderValue(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+        ClientCredential credential = ClientCredential.builder()
+                .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234")
+                .clientSecret("12rvdn/myhSSiuYAC6ZPGaI91ezhdbYd7WyTRKhGxms=")
+                .clientToken("akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj")
+                .headersToSign(headersToSign)
+                .host("control.akamai.com")
+                .build();
+        EdgeGridV1Signer signer = new EdgeGridV1Signer(Algorithm.EG1_HMAC_SHA256);
+        String actualAuthorizationHeader = signer.getAuthorizationHeaderValue(request, credential, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
 

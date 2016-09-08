@@ -55,14 +55,13 @@ public class EdgeGridV1Signer {
     private static final String AUTH_NONCE_NAME = "nonce";
     private static final String AUTH_SIGNATURE_NAME = "signature";
     private final Algorithm algorithm;
-    private final Set<String> headersToSign;
     private final Base64.Encoder base64 = Base64.getEncoder();
 
     /**
      * Creates signer with default configuration.
      */
     public EdgeGridV1Signer() {
-        this(DEFAULT_SIGNING_ALGORITHM, Collections.<String>emptySet());
+        this(DEFAULT_SIGNING_ALGORITHM);
     }
 
     /**
@@ -72,18 +71,12 @@ public class EdgeGridV1Signer {
      * is published. Refer to the API documentation for any special instructions.
      *
      * @param algorithm   algorithm for signing and hashing
-     * @param headersToSign the set of header names to include in the signature
      *
      * @see <a href="https://developer.akamai.com/">OPEN API documentation</a>
      */
-    public EdgeGridV1Signer(Algorithm algorithm, Set<String> headersToSign) {
+    public EdgeGridV1Signer(Algorithm algorithm) {
         Validate.notNull(algorithm, "algorithm cannot be null");
         this.algorithm = algorithm;
-        if (headersToSign == null) {
-            this.headersToSign = Collections.emptySet();
-        } else {
-            this.headersToSign = Collections.unmodifiableSet(headersToSign);
-        }
     }
 
     /**
@@ -240,7 +233,7 @@ public class EdgeGridV1Signer {
         sb.append(relativeUrl);
         sb.append('\t');
 
-        String canonicalizedHeaders = canonicalizeHeaders(request.getHeaders());
+        String canonicalizedHeaders = canonicalizeHeaders(request.getHeaders(), credential);
         sb.append(canonicalizedHeaders);
         sb.append('\t');
 
@@ -261,9 +254,9 @@ public class EdgeGridV1Signer {
         }
     }
 
-    private String canonicalizeHeaders(Map<String, List<String>> requestHeaders) {
+    private String canonicalizeHeaders(Map<String, List<String>> requestHeaders, ClientCredential credential) {
         StringBuilder sb = new StringBuilder();
-        for (String headerName : headersToSign) {
+        for (String headerName : credential.getHeadersToSign()) {
             // we validated before that request contains no multiple headers with same header name
             Optional<String> headerValue = requestHeaders.get(headerName).stream().findFirst();
             if (headerValue.isPresent()) {

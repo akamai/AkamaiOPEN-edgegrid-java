@@ -16,8 +16,11 @@
 
 package com.akamai.testing.edgegrid.core;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.Builder;
@@ -39,6 +42,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
     private String accessToken;
     private String clientSecret;
     private String clientToken;
+    private Set<String> headersToSign;
     private String host;
     private Integer maxBodySize;
 
@@ -46,6 +50,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
         this.accessToken = b.accessToken;
         this.clientSecret = b.clientSecret;
         this.clientToken = b.clientToken;
+        this.headersToSign = b.headersToSign;
         this.host = b.host;
         this.maxBodySize = b.maxBodySize;
     }
@@ -103,13 +108,20 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
         return maxBodySize;
     }
 
+    Set<String> getHeadersToSign() {
+        if (headersToSign == null) {
+            return Collections.emptySet();
+        }
+        return headersToSign;
+    }
+
     String getHost() {
         return host;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accessToken, clientSecret, clientToken, host, maxBodySize);
+        return Objects.hash(accessToken, clientSecret, clientToken, headersToSign, host, maxBodySize);
     }
 
     @Override
@@ -118,6 +130,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
                 .append("accessToken", accessToken)
                 .append("clientSecret", clientSecret)
                 .append("clientToken", clientToken)
+                .append("headersToSign", headersToSign)
                 .append("host", host)
                 .append("maxBodySize", getMaxBodySize()) // note: intentionally using accessor here.
                 .build();
@@ -127,6 +140,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
         private String accessToken;
         private String clientSecret;
         private String clientToken;
+        private Set<String> headersToSign;
         private String host;
         private Integer maxBodySize;
 
@@ -171,6 +185,38 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
         public ClientCredentialBuilder accessToken(String accessToken) {
             Validate.notBlank(accessToken, "accessToken cannot be blank");
             this.accessToken = accessToken;
+            return this;
+        }
+
+        /**
+         * Adds all of {@code headersToSign} into the builder's internal collection. This can be
+         * called multiple times to continue adding them. The set passed in is not stored directly,
+         * a copy is made instead.
+         *
+         * @param headersToSign a {@link Set} of header names
+         * @return reference back to this builder instance
+         */
+        public ClientCredentialBuilder headersToSign(Set<String> headersToSign) {
+            for (String headerName : headersToSign) {
+                headerToSign(headerName);
+            }
+            return this;
+        }
+
+        /**
+         * Adds {@code headerName} into the builder's internal collection. This can be called
+         * multiple times to continue adding them.
+         *
+         * @param headerName a header name
+         * @return reference back to this builder instance
+         */
+        public ClientCredentialBuilder headerToSign(String headerName) {
+            Validate.notBlank(headerName, "headerName cannot be blank");
+            if (this.headersToSign == null) {
+                this.headersToSign = new HashSet<>();
+            }
+
+            this.headersToSign.add(headerName);
             return this;
         }
 
