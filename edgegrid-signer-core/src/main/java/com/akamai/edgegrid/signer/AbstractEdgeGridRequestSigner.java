@@ -54,7 +54,7 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      */
     public void sign(RequestT request, ClientCredential credential) throws RequestSigningException {
         setHost(request, credential.getHost());
-        String authorization = edgeGridSigner.getAuthorizationHeaderValue(map(request), credential);
+        String authorization = edgeGridSigner.getSignature(map(request), credential);
         setAuthorization(request, authorization);
     }
 
