@@ -19,8 +19,8 @@ package com.akamai.edgegrid.signer.googlehttpclient;
 
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.RequestSigningException;
-import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpSignInterceptor;
-import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpSigner;
+import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpClientEdgeGridInterceptor;
+import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpClientEdgeGridRequestSigner;
 import com.google.api.client.http.*;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 
@@ -40,7 +40,7 @@ import java.net.URISyntaxException;
  *
  * @author mgawinec@akamai.com
  */
-public class GoogleHttpSignerTest {
+public class GoogleHttpClientEdgeGridRequestSignerTest {
 
     ClientCredential credential = ClientCredential.builder()
             .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
@@ -56,7 +56,7 @@ public class GoogleHttpSignerTest {
         URI uri = URI.create("https://ignored-hostname.com/billing-usage/v1/reportSources");
         HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
 
-        GoogleHttpSigner googleHttpSigner = new GoogleHttpSigner();
+        GoogleHttpClientEdgeGridRequestSigner googleHttpSigner = new GoogleHttpClientEdgeGridRequestSigner();
         googleHttpSigner.sign(request, credential);
 
         assertThat(request.getHeaders().containsKey("host"), is(false));
@@ -71,7 +71,7 @@ public class GoogleHttpSignerTest {
         HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
         request.getHeaders().put("Host", "ignored-hostname.com");
 
-        GoogleHttpSigner googleHttpSigner = new GoogleHttpSigner();
+        GoogleHttpClientEdgeGridRequestSigner googleHttpSigner = new GoogleHttpClientEdgeGridRequestSigner();
         googleHttpSigner.sign(request, credential);
 
         // NOTE: The library lower-cases all header names.
@@ -97,7 +97,7 @@ public class GoogleHttpSignerTest {
         return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
             @Override
             public void initialize(HttpRequest request) throws IOException {
-                request.setInterceptor(new GoogleHttpSignInterceptor(credential));
+                request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(credential));
             }
         });
     }

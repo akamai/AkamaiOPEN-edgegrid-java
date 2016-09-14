@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.akamai.edgegrid.signer.AbstractSignerBinding;
+import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.EdgeGridV1Signer;
 import com.akamai.edgegrid.signer.Request;
 
@@ -35,7 +35,7 @@ import com.akamai.edgegrid.signer.Request;
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.
  * @author mgawinec@akamai.com
  */
-public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSpecification> {
+public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<FilterableRequestSpecification> {
 
     private static Map<String, List<String>> getHeaders(Headers headers) {
         Map<String, List<String>> ret = new HashMap<>();
@@ -53,7 +53,7 @@ public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSp
     /**
      * Creates a signer binding with default EdgeGrid signer.
      */
-    public RestAssuredSigner() {
+    public RestAssuredEdgeGridRequestSigner() {
         super();
     }
 
@@ -61,7 +61,7 @@ public class RestAssuredSigner extends AbstractSignerBinding<FilterableRequestSp
      * Creates a signer binding with a custom EdgeGrid signer.
      * @param edgeGridSigner a custom edge grid signer that will be used to sign requests
      */
-    public RestAssuredSigner(EdgeGridV1Signer edgeGridSigner) {
+    public RestAssuredEdgeGridRequestSigner(EdgeGridV1Signer edgeGridSigner) {
         super(edgeGridSigner);
     }
 

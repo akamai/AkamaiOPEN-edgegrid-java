@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.akamai.edgegrid.signer.AbstractSignerBinding;
+import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.EdgeGridV1Signer;
 import com.akamai.edgegrid.signer.Request;
 import com.google.api.client.http.ByteArrayContent;
@@ -38,7 +38,7 @@ import com.google.api.client.util.Types;
  *
  * @author mgawinec@akamai.com
  */
-public class GoogleHttpSigner extends AbstractSignerBinding<HttpRequest> {
+public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest> {
 
     private static Map<String, List<String>> getHeaders(HttpHeaders headers) {
         Map<String, List<String>> ret = new HashMap<>();
@@ -63,7 +63,7 @@ public class GoogleHttpSigner extends AbstractSignerBinding<HttpRequest> {
     /**
      * Creates a signer binding with default EdgeGrid signer.
      */
-    public GoogleHttpSigner() {
+    public GoogleHttpClientEdgeGridRequestSigner() {
         super();
     }
 
@@ -71,7 +71,7 @@ public class GoogleHttpSigner extends AbstractSignerBinding<HttpRequest> {
      * Creates a signer binding with a custom EdgeGrid signer.
      * @param edgeGridSigner a custom edge grid signer that will be used to sign requests
      */
-    public GoogleHttpSigner(EdgeGridV1Signer edgeGridSigner) {
+    public GoogleHttpClientEdgeGridRequestSigner(EdgeGridV1Signer edgeGridSigner) {
         super(edgeGridSigner);
     }
 

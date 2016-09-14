@@ -34,13 +34,13 @@ import io.restassured.specification.FilterableResponseSpecification;
  * @see <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">REST-assured filters</a>
  * @author mgawinec@akamai.com
  */
-public class EdgeGridSignerFilter implements Filter {
+public class RestAssuredEdgeGridFilter implements Filter {
 
     private final ClientCredential credential;
-    private final RestAssuredSigner binding;
+    private final RestAssuredEdgeGridRequestSigner binding;
 
-    private EdgeGridSignerFilter(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
-        this.binding = new RestAssuredSigner(edgeGridSigner);
+    private RestAssuredEdgeGridFilter(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
+        this.binding = new RestAssuredEdgeGridRequestSigner(edgeGridSigner);
         this.credential = credential;
     }
 
@@ -51,7 +51,7 @@ public class EdgeGridSignerFilter implements Filter {
      * @param credential a client credential to sign a request
      * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
      */
-    public static EdgeGridSignerFilter sign(ClientCredential credential) {
+    public static RestAssuredEdgeGridFilter sign(ClientCredential credential) {
         return sign(new EdgeGridV1Signer(), credential);
     }
 
@@ -62,8 +62,8 @@ public class EdgeGridSignerFilter implements Filter {
      * @param credential       a client credential to sign a request
      * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
      */
-    public static EdgeGridSignerFilter sign(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
-        return new EdgeGridSignerFilter(edgeGridSigner, credential);
+    public static RestAssuredEdgeGridFilter sign(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
+        return new RestAssuredEdgeGridFilter(edgeGridSigner, credential);
     }
 
     @Override

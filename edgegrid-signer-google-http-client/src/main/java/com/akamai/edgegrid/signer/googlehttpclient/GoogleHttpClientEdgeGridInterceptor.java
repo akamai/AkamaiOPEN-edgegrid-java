@@ -31,9 +31,9 @@ import java.io.IOException;
  * @see <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpExecuteInterceptor">HttpExecuteInterceptor</a> from Google HTTP Client library for Java
  * @author mgawinec@akamai.com
  */
-public class GoogleHttpSignInterceptor implements HttpExecuteInterceptor {
+public class GoogleHttpClientEdgeGridInterceptor implements HttpExecuteInterceptor {
 
-    private final GoogleHttpSigner binding;
+    private final GoogleHttpClientEdgeGridRequestSigner binding;
     private final ClientCredential credential;
 
     /**
@@ -41,7 +41,7 @@ public class GoogleHttpSignInterceptor implements HttpExecuteInterceptor {
      *
      * @param credential a {@link ClientCredential}
      */
-    public GoogleHttpSignInterceptor(ClientCredential credential) {
+    public GoogleHttpClientEdgeGridInterceptor(ClientCredential credential) {
         this(new EdgeGridV1Signer(), credential);
     }
 
@@ -51,8 +51,8 @@ public class GoogleHttpSignInterceptor implements HttpExecuteInterceptor {
      * @param edgeGridSigner a custom edge grid signer that will be used to sign requests
      * @param credential a {@link ClientCredential}
      */
-    public GoogleHttpSignInterceptor(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
-        this.binding = new GoogleHttpSigner(edgeGridSigner);
+    public GoogleHttpClientEdgeGridInterceptor(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
+        this.binding = new GoogleHttpClientEdgeGridRequestSigner(edgeGridSigner);
         this.credential = credential;
     }
 

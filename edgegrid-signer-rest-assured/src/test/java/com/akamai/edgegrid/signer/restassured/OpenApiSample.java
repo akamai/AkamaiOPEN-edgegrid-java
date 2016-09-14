@@ -20,7 +20,7 @@ package com.akamai.edgegrid.signer.restassured;
 import org.testng.annotations.Test;
 
 import com.akamai.edgegrid.signer.ClientCredential;
-import com.akamai.edgegrid.signer.restassured.EdgeGridSignerFilter;
+import com.akamai.edgegrid.signer.restassured.RestAssuredEdgeGridFilter;
 
 import static io.restassured.RestAssured.given;
 
@@ -46,7 +46,7 @@ public class OpenApiSample {
         //@formatter:off
         given().
                 baseUri(baseUri).
-                filter(EdgeGridSignerFilter.sign(credential)).
+                filter(RestAssuredEdgeGridFilter.sign(credential)).
         when().
                 get("/service/v2/users").
         then().

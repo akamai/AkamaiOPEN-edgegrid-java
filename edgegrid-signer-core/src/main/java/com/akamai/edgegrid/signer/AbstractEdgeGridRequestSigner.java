@@ -22,14 +22,14 @@ package com.akamai.edgegrid.signer;
  *
  * @author mgawinec@akamai.com
  */
-public abstract class AbstractSignerBinding<RequestT> {
+public abstract class AbstractEdgeGridRequestSigner<RequestT> {
 
     private final EdgeGridV1Signer edgeGridSigner;
 
     /**
      * Creates signer binding with a default EdgeGrid signer.
      */
-    public AbstractSignerBinding() {
+    public AbstractEdgeGridRequestSigner() {
         this(new EdgeGridV1Signer());
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractSignerBinding<RequestT> {
      * Creates signer binding with a custom EdgeGrid signer.
      * @param edgeGridSigner EdgeGrid signer that will be used to sign requests.
      */
-    public AbstractSignerBinding(EdgeGridV1Signer edgeGridSigner) {
+    public AbstractEdgeGridRequestSigner(EdgeGridV1Signer edgeGridSigner) {
         this.edgeGridSigner = edgeGridSigner;
     }
 
