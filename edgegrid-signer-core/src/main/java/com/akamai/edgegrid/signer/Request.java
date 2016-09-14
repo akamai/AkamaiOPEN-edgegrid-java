@@ -17,7 +17,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 
 /**
- * HTTP Request agnostic to any HTTP client implementation.
+ * Library-agnostic representation of an HTTP request. This object is immutable, so you probably
+ * want to build an instance using {@link RequestBuilder}. Extenders of
+ * {@link AbstractEdgeGridRequestSigner} will need to build one of these as part of their
+ * implementation.
  *
  * @author mgawinec@akamai.com
  * @author mmeyer@akamai.com

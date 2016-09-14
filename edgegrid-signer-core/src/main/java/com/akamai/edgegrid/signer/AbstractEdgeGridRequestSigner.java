@@ -16,7 +16,9 @@
 package com.akamai.edgegrid.signer;
 
 /**
- * A template for signer bindings for specific HTTP client.
+ * This is an abstract base class for implementing EdgeGrid request signing in a library-specific
+ * way. There are several HTTP client libraries available for Java, and this class offers a simple
+ * mechanism for supporting them.
  *
  * @param <RequestT> a type of HTTP client specific request.
  *
@@ -35,6 +37,7 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
 
     /**
      * Creates signer binding with a custom EdgeGrid signer.
+     *
      * @param edgeGridSigner EdgeGrid signer that will be used to sign requests.
      */
     public AbstractEdgeGridRequestSigner(EdgeGridV1Signer edgeGridSigner) {
@@ -49,7 +52,7 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      * @param credential a client credential to sign a request with
      * @throws RequestSigningException if failed to sign a request
      */
-    public void sign(RequestT request, ClientCredential credential) throws RequestSigningException{
+    public void sign(RequestT request, ClientCredential credential) throws RequestSigningException {
         setHost(request, credential.getHost());
         String authorization = edgeGridSigner.getAuthorizationHeaderValue(map(request), credential);
         setAuthorization(request, authorization);
@@ -57,13 +60,16 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
 
     /**
      * Maps HTTP client-specific request to client-agnostic model of this request.
+     *
      * @param request HTTP client-specific request
      * @return an instance of <code>Request</code> corresponding to a given
      */
     protected abstract Request map(RequestT request);
 
     /**
-     * Updates a given HTTP request by adding Authorization header with a value containing request signature.
+     * Updates a given HTTP request by adding Authorization header with a value containing request
+     * signature.
+     *
      * @param request HTTP request to update
      * @param signature HTTP request signature
      * @return updated request
@@ -80,4 +86,3 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
     protected abstract RequestT setHost(RequestT request, String host);
 
 }
-

@@ -39,7 +39,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * Client credential used to sign a request.
+ * This is a representation of client credential used to sign an EdgeGrid request. This object is
+ * immutable, so you probably want to build an instance using {@link ClientCredentialBuilder} or one
+ * of the static methods that reads from an EdgeRc file.
  *
  * @author mgawinec@akamai.com
  * @author mmeyer@akamai.com
