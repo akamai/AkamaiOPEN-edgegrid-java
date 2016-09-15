@@ -1,12 +1,14 @@
 package com.akamai.edgegrid.signer;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
 import java.io.InputStream;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import com.akamai.edgegrid.signer.ClientCredential;
 
 public class ClientCredentialTest {
 
@@ -14,72 +16,75 @@ public class ClientCredentialTest {
     public void testGood1() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
         ClientCredential credential = ClientCredential.fromEdgeRc(inputStream, "good1");
-        MatcherAssert.assertThat(credential.getAccessToken(), Matchers.is(Matchers.equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
-        MatcherAssert.assertThat(credential.getClientSecret(), Matchers.is(Matchers.equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
-        MatcherAssert.assertThat(credential.getClientToken(), Matchers.is(Matchers.equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
-        MatcherAssert.assertThat(credential.getHost(), Matchers.is(Matchers.equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
-        MatcherAssert.assertThat(credential.getHeadersToSign(), Matchers.is(Matchers.empty()));
-        MatcherAssert.assertThat(credential.getMaxBodySize(), Matchers.is(65536));
+        assertThat(credential.getAccessToken(), is(equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
+        assertThat(credential.getClientSecret(), is(equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
+        assertThat(credential.getClientToken(), is(equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
+        assertThat(credential.getHost(), is(equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
+        assertThat(credential.getHeadersToSign(), is(empty()));
+        assertThat(credential.getMaxBodySize(), is(65536));
     }
 
     @Test
     public void testGood2() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
         ClientCredential credential = ClientCredential.fromEdgeRc(inputStream, "good2");
-        MatcherAssert.assertThat(credential.getAccessToken(), Matchers.is(Matchers.equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
-        MatcherAssert.assertThat(credential.getClientSecret(), Matchers.is(Matchers.equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
-        MatcherAssert.assertThat(credential.getClientToken(), Matchers.is(Matchers.equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
-        MatcherAssert.assertThat(credential.getHost(), Matchers.is(Matchers.equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
-        MatcherAssert.assertThat(credential.getHeadersToSign(), Matchers.is(Matchers.empty()));
-        MatcherAssert.assertThat(credential.getMaxBodySize(), Matchers.is(131072));
+        assertThat(credential.getAccessToken(), is(equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
+        assertThat(credential.getClientSecret(), is(equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
+        assertThat(credential.getClientToken(), is(equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
+        assertThat(credential.getHost(), is(equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
+        assertThat(credential.getHeadersToSign(), is(empty()));
+        assertThat(credential.getMaxBodySize(), is(131072));
     }
 
     @Test
     public void testGood3() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
         ClientCredential credential = ClientCredential.fromEdgeRc(inputStream, "good3");
-        MatcherAssert.assertThat(credential.getAccessToken(), Matchers.is(Matchers.equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
-        MatcherAssert.assertThat(credential.getClientSecret(), Matchers.is(Matchers.equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
-        MatcherAssert.assertThat(credential.getClientToken(), Matchers.is(Matchers.equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
-        MatcherAssert.assertThat(credential.getHost(), Matchers.is(Matchers.equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
-        MatcherAssert.assertThat(credential.getHeadersToSign(), Matchers.is(Matchers.empty()));
-        MatcherAssert.assertThat(credential.getMaxBodySize(), Matchers.is(131072));
+        assertThat(credential.getAccessToken(), is(equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
+        assertThat(credential.getClientSecret(), is(equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
+        assertThat(credential.getClientToken(), is(equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
+        assertThat(credential.getHost(), is(equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
+        assertThat(credential.getHeadersToSign(), is(empty()));
+        assertThat(credential.getMaxBodySize(), is(131072));
     }
 
     @Test
     public void testGood4() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
         ClientCredential credential = ClientCredential.fromEdgeRc(inputStream, "good4");
-        MatcherAssert.assertThat(credential.getAccessToken(), Matchers.is(Matchers.equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
-        MatcherAssert.assertThat(credential.getClientSecret(), Matchers.is(Matchers.equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
-        MatcherAssert.assertThat(credential.getClientToken(), Matchers.is(Matchers.equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
-        MatcherAssert.assertThat(credential.getHost(), Matchers.is(Matchers.equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
-        MatcherAssert.assertThat(credential.getHeadersToSign(), Matchers.is(Matchers.empty()));
-        MatcherAssert.assertThat(credential.getMaxBodySize(), Matchers.is(131072));
+        assertThat(credential.getAccessToken(), is(equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
+        assertThat(credential.getClientSecret(), is(equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
+        assertThat(credential.getClientToken(), is(equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
+        assertThat(credential.getHost(), is(equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
+        assertThat(credential.getHeadersToSign(), is(empty()));
+        assertThat(credential.getMaxBodySize(), is(131072));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void testBad1() throws Exception {
-        InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        ClientCredential.fromEdgeRc(inputStream, "bad1");
+    public void testMalformedEdgeRc() throws Exception {
+        InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc_malformed");
+        ClientCredential.fromEdgeRc(inputStream, "broken");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void testBad2() throws Exception {
-        InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        ClientCredential.fromEdgeRc(inputStream, "bad2");
+    public void testMissingEdgeRc() throws Exception {
+        InputStream inputStream = ClassLoader.getSystemResourceAsStream("no_such_file");
+        ClientCredential.fromEdgeRc(inputStream, "broken");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void testBad3() throws Exception {
+    @Test(expectedExceptions=NullPointerException.class, dataProvider = "badSections")
+    public void testUnparseableSections(String sectionName) throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        ClientCredential.fromEdgeRc(inputStream, "bad3");
+        ClientCredential.fromEdgeRc(inputStream, null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void testBad4() throws Exception {
-        InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        ClientCredential.fromEdgeRc(inputStream, "bad4");
+    @DataProvider
+    public Object[][] badSections() {
+        return new Object[][] {
+                {"bad1"},
+                {"bad2"},
+                {"bad3"},
+                {"bad4" },
+        };
     }
-
 }
