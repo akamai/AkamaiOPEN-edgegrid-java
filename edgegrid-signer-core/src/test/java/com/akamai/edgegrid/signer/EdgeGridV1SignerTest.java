@@ -114,7 +114,13 @@ public class EdgeGridV1SignerTest {
                                 .method("PUT")
                                 .uriWithQuery(URI.create("http://control.akamai.com/send"))
                                 .body("x=y&a=b".getBytes())
-                                .build()}
+                                .build()},
+                {"GET without scheme or hostname",
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=8GpKbZnIx4XEw/zXtQdbVwIu0zJSG0RpNiVTSyIUwr0=",
+                        Request.builder()
+                                .method("GET")
+                                .uriWithQuery(URI.create("/check"))
+                                .build()},
         };
     }
 

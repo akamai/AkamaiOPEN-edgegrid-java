@@ -243,7 +243,7 @@ public class EdgeGridV1Signer {
         sb.append(request.getMethod().toUpperCase());
         sb.append('\t');
 
-        String scheme = request.getUriWithQuery().getScheme();
+        String scheme = StringUtils.defaultString(request.getUriWithQuery().getScheme(), "https");
         sb.append(scheme.toLowerCase());
         sb.append('\t');
 
