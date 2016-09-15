@@ -19,7 +19,6 @@ package com.akamai.edgegrid.signer.googlehttpclient;
 
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.RequestSigningException;
-import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpClientEdgeGridInterceptor;
 import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpClientEdgeGridRequestSigner;
 import com.google.api.client.http.*;
 import com.google.api.client.http.apache.ApacheHttpTransport;
@@ -29,6 +28,8 @@ import org.testng.annotations.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 
 import java.io.IOException;
 import java.net.URI;
@@ -61,6 +62,8 @@ public class GoogleHttpClientEdgeGridRequestSignerTest {
 
         assertThat(request.getHeaders().containsKey("host"), is(false));
         assertThat(request.getUrl().getHost(), equalTo("endpoint.net"));
+        assertThat(request.getHeaders().containsKey("authorization"), is(true));
+        assertThat(request.getHeaders().getAuthorization(), not(isEmptyOrNullString()));
     }
 
     @Test
@@ -79,26 +82,8 @@ public class GoogleHttpClientEdgeGridRequestSignerTest {
         assertThat(request.getHeaders().containsKey("host"), is(true));
         assertThat((String) request.getHeaders().get("host"), equalTo("endpoint.net"));
         assertThat(request.getUrl().getHost(), equalTo("endpoint.net"));
+        assertThat(request.getHeaders().containsKey("authorization"), is(true));
+        assertThat(request.getHeaders().getAuthorization(), not(isEmptyOrNullString()));
     }
 
-    @Test
-    public void withInterceptor() throws URISyntaxException, IOException, RequestSigningException {
-        HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
-        HttpRequestFactory requestFactory = createSigningRequestFactory(HTTP_TRANSPORT);
-
-        URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
-        HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
-
-        assertThat(request.getHeaders().containsKey("host"), is(false));
-        assertThat(request.getUrl().getHost(), equalTo("endpoint.net"));
-    }
-
-    private HttpRequestFactory createSigningRequestFactory(HttpTransport HTTP_TRANSPORT) {
-        return HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-            @Override
-            public void initialize(HttpRequest request) throws IOException {
-                request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(credential));
-            }
-        });
-    }
 }
