@@ -83,7 +83,7 @@ public class Request implements Comparator<Request>, Comparable<Request> {
     }
 
     byte[] getBody() {
-        return Arrays.copyOf(body, body.length);
+        return body;
     }
 
     Map<String, List<String>> getHeaders() {
