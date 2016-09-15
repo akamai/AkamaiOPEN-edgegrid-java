@@ -56,7 +56,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
      * EdgeRc content.
      *
      * @param file a {@link File} pointing to an EdgeRc file
-     * @param section a config section (null for the default section)
+     * @param section a config section ({@code null} for the default section)
      * @return a {@link ClientCredential}
      * @throws ConfigurationException If an error occurs while reading the configuration
      * @throws IOException if an I/O error occurs
@@ -71,7 +71,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
      * contain INI-style EdgeRc content.
      *
      * @param inputStream an open {@link InputStream} to an EdgeRc file
-     * @param section a config section (null for the default section)
+     * @param section a config section ({@code null} for the default section)
      * @return a {@link ClientCredential}
      * @throws ConfigurationException If an error occurs while reading the configuration
      * @throws IOException if an I/O error occurs
@@ -86,7 +86,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
      * INI-style EdgeRc content.
      *
      * @param reader an open {@link Reader} to an EdgeRc file
-     * @param section a config section (null for the default section)
+     * @param section a config section ({@code null} for the default section)
      * @return a {@link ClientCredential}
      * @throws ConfigurationException If an error occurs while reading the configuration
      * @throws IOException if an I/O error occurs
@@ -119,7 +119,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
      * JVM's user home directory ({@code System.getProperty("user.home")}).
      *
      * @param filename a filename pointing to an EdgeRc file
-     * @param section a config section (null for the default section)
+     * @param section a config section ({@code null} for the default section)
      * @return a {@link ClientCredential}
      * @throws ConfigurationException If an error occurs while reading the configuration
      * @throws IOException if an I/O error occurs

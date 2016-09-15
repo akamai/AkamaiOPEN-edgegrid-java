@@ -38,7 +38,7 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
     /**
      * Creates signer binding with a custom EdgeGrid signer.
      *
-     * @param edgeGridSigner EdgeGrid signer that will be used to sign requests.
+     * @param edgeGridSigner EdgeGrid signer that will be used to sign requests
      */
     public AbstractEdgeGridRequestSigner(EdgeGridV1Signer edgeGridSigner) {
         this.edgeGridSigner = edgeGridSigner;
@@ -48,7 +48,7 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      * Signs {@code request} with {@code credential} using EdgeGrid signer algorithm and replaces
      * {@code request}'s host name with the one specified by the credential.
      *
-     * @param request a HTTP request to sign
+     * @param request an HTTP request to sign
      * @param credential a client credential to sign a request with
      * @throws RequestSigningException if failed to sign a request
      */
@@ -61,8 +61,8 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
     /**
      * Maps HTTP client-specific request to client-agnostic model of this request.
      *
-     * @param request HTTP client-specific request
-     * @return an instance of <code>Request</code> corresponding to a given
+     * @param request an HTTP client-specific request
+     * @return a {@link Request} representation of {@code request}
      */
     protected abstract Request map(RequestT request);
 
