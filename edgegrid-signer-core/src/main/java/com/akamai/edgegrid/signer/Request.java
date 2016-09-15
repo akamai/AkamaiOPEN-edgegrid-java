@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.Builder;
@@ -64,6 +65,11 @@ public class Request implements Comparable<Request> {
         if (getClass() != o.getClass()) return false;
         final Request that = (Request) o;
         return compareTo(that) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(body, headers, method, uriWithQuery);
     }
 
     @Override
