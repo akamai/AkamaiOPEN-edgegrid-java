@@ -113,7 +113,7 @@ public class EdgeGridV1Signer {
      */
     public String getSignature(Request request, ClientCredential credential)
             throws RequestSigningException {
-        return getAuthorizationHeaderValue(request, credential, System.currentTimeMillis(), UUID.randomUUID());
+        return getSignature(request, credential, System.currentTimeMillis(), UUID.randomUUID());
     }
 
     private boolean containsDuplicateHeaderNames(Request request) {
@@ -175,7 +175,7 @@ public class EdgeGridV1Signer {
         return uri;
     }
 
-    String getAuthorizationHeaderValue(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
+    String getSignature(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
         Validate.notNull(credential, "credential cannot be null");
         Validate.notNull(request, "request cannot be null");
         Validate.isTrue(!containsDuplicateHeaderNames(request), "The protocol does not support multiple request headers with the same header name");

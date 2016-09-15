@@ -56,7 +56,7 @@ public class EdgeGridV1SignerTest {
 
     @Test(dataProvider = "requestsForDefaultSettings")
     public void testForDefaultSettings(String caseName, String expectedAuthorizationHeader, Request request) throws RequestSigningException {
-        String actualAuthorizationHeader = DEFAULT_SIGNER.getAuthorizationHeaderValue(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+        String actualAuthorizationHeader = DEFAULT_SIGNER.getSignature(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
 
@@ -70,7 +70,7 @@ public class EdgeGridV1SignerTest {
                 .host("control.akamai.com")
                 .build();
         EdgeGridV1Signer signer = new EdgeGridV1Signer(Algorithm.EG1_HMAC_SHA256);
-        String actualAuthorizationHeader = signer.getAuthorizationHeaderValue(request, credential, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+        String actualAuthorizationHeader = signer.getSignature(request, credential, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
 
@@ -83,7 +83,7 @@ public class EdgeGridV1SignerTest {
                 .header("Duplicate", "Y")
                 .build();
 
-        DEFAULT_SIGNER.getAuthorizationHeaderValue(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+        DEFAULT_SIGNER.getSignature(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
     }
 
     @DataProvider
