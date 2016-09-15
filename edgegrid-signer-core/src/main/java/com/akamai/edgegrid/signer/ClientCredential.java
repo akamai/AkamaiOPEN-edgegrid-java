@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -46,7 +45,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author mgawinec@akamai.com
  * @author mmeyer@akamai.com
  */
-public class ClientCredential implements Comparator<ClientCredential>, Comparable<ClientCredential> {
+public class ClientCredential implements Comparable<ClientCredential> {
 
     /** This is the default {@code maxBodySize} to apply if not explicitly set in a credential. */
     public static final int DEFAULT_MAX_BODY_SIZE_IN_BYTES = 131072;
@@ -158,19 +157,14 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
     }
 
     @Override
-    public int compare(ClientCredential o1, ClientCredential o2) {
-        return new CompareToBuilder()
-                .append(o1.accessToken, o2.accessToken)
-                .append(o1.clientSecret, o2.clientSecret)
-                .append(o1.clientToken, o2.clientToken)
-                .append(o1.host, o2.host)
-                .append(o1.maxBodySize, o2.maxBodySize)
-                .build();
-    }
-
-    @Override
     public int compareTo(ClientCredential that) {
-        return compare(this, that);
+        return new CompareToBuilder()
+                .append(this.accessToken, that.accessToken)
+                .append(this.clientSecret, that.clientSecret)
+                .append(this.clientToken, that.clientToken)
+                .append(this.host, that.host)
+                .append(this.maxBodySize, that.maxBodySize)
+                .build();
     }
 
     @Override

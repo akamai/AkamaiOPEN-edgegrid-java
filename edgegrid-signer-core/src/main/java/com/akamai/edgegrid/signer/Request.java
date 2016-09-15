@@ -2,7 +2,6 @@ package com.akamai.edgegrid.signer;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -25,7 +24,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author mgawinec@akamai.com
  * @author mmeyer@akamai.com
  */
-public class Request implements Comparator<Request>, Comparable<Request> {
+public class Request implements Comparable<Request> {
 
     private final byte[] body;
     private final String method;
@@ -50,18 +49,13 @@ public class Request implements Comparator<Request>, Comparable<Request> {
     }
 
     @Override
-    public int compare(Request o1, Request o2) {
-        return new CompareToBuilder()
-                .append(o1.body, o2.body)
-                .append(o1.headers, o2.headers)
-                .append(o1.method, o2.method)
-                .append(o1.uriWithQuery, o2.uriWithQuery)
-                .build();
-    }
-
-    @Override
     public int compareTo(Request that) {
-        return compare(this, that);
+        return new CompareToBuilder()
+                .append(this.body, that.body)
+                .append(this.headers, that.headers)
+                .append(this.method, that.method)
+                .append(this.uriWithQuery, that.uriWithQuery)
+                .build();
     }
 
     @Override
