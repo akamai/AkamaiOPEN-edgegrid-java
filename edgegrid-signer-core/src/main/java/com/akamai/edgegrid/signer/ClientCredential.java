@@ -49,7 +49,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ClientCredential implements Comparator<ClientCredential>, Comparable<ClientCredential> {
 
     /** This is the default {@code maxBodySize} to apply if not explicitly set in a credential. */
-    public static final int DEFAULT_MAX_BODY_SIZE = 131072;
+    public static final int DEFAULT_MAX_BODY_SIZE_IN_BYTES = 131072;
 
     /**
      * Loads a {@link ClientCredential} from {@code file}. The {@link File} should contain INI-style
@@ -195,7 +195,7 @@ public class ClientCredential implements Comparator<ClientCredential>, Comparabl
 
     int getMaxBodySize() {
         if (maxBodySize == null) {
-            return DEFAULT_MAX_BODY_SIZE;
+            return DEFAULT_MAX_BODY_SIZE_IN_BYTES;
         }
         return maxBodySize;
     }
