@@ -32,16 +32,7 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      * Creates signer binding with a default EdgeGrid signer.
      */
     public AbstractEdgeGridRequestSigner() {
-        this(new EdgeGridV1Signer());
-    }
-
-    /**
-     * Creates signer binding with a custom EdgeGrid signer.
-     *
-     * @param edgeGridSigner EdgeGrid signer that will be used to sign requests
-     */
-    public AbstractEdgeGridRequestSigner(EdgeGridV1Signer edgeGridSigner) {
-        this.edgeGridSigner = edgeGridSigner;
+        this.edgeGridSigner = new EdgeGridV1Signer();
     }
 
     /**

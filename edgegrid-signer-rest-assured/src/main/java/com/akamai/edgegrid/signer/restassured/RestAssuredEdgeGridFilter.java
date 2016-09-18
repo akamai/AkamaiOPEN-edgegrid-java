@@ -39,31 +39,21 @@ public class RestAssuredEdgeGridFilter implements Filter {
     private final ClientCredential credential;
     private final RestAssuredEdgeGridRequestSigner binding;
 
-    private RestAssuredEdgeGridFilter(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
-        this.binding = new RestAssuredEdgeGridRequestSigner(edgeGridSigner);
+    private RestAssuredEdgeGridFilter(ClientCredential credential) {
+        this.binding = new RestAssuredEdgeGridRequestSigner();
         this.credential = credential;
     }
 
     /**
-     * Creates a REST-assured filter that will sign a request with a given credential using a default signing
-     * configuration. See {@link EdgeGridV1Signer} for default signing configuration.
+     * Creates a REST-assured filter that will sign a request with a given credential using an
+     * {@link EdgeGridV1Signer}.
      *
      * @param credential a client credential to sign a request
-     * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
+     * @return a REST-assured filter to be added to
+     *         {@link io.restassured.specification.RequestSpecification} definition.
      */
     public static RestAssuredEdgeGridFilter sign(ClientCredential credential) {
-        return sign(new EdgeGridV1Signer(), credential);
-    }
-
-    /**
-     * Creates a REST-assured filter that will sign a request with a given credential using a custom signer.
-     *
-     * @param edgeGridSigner a custom signer used to sign a request
-     * @param credential       a client credential to sign a request
-     * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification} definition.
-     */
-    public static RestAssuredEdgeGridFilter sign(EdgeGridV1Signer edgeGridSigner, ClientCredential credential) {
-        return new RestAssuredEdgeGridFilter(edgeGridSigner, credential);
+        return new RestAssuredEdgeGridFilter(credential);
     }
 
     @Override
@@ -75,6 +65,5 @@ public class RestAssuredEdgeGridFilter implements Filter {
         }
         return ctx.next(requestSpec, responseSpec);
     }
-
 
 }

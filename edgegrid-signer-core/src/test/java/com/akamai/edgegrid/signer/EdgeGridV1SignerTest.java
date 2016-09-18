@@ -20,7 +20,6 @@ package com.akamai.edgegrid.signer;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.akamai.edgegrid.signer.Algorithm;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.EdgeGridV1Signer;
 import com.akamai.edgegrid.signer.Request;
@@ -69,8 +68,7 @@ public class EdgeGridV1SignerTest {
                 .headersToSign(headersToSign)
                 .host("control.akamai.com")
                 .build();
-        EdgeGridV1Signer signer = new EdgeGridV1Signer(Algorithm.EG1_HMAC_SHA256);
-        String actualAuthorizationHeader = signer.getSignature(request, credential, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+        String actualAuthorizationHeader = DEFAULT_SIGNER.getSignature(request, credential, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
 

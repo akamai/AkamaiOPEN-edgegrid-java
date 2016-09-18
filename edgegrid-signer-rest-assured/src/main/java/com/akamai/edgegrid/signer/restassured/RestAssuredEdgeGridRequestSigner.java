@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
-import com.akamai.edgegrid.signer.EdgeGridV1Signer;
 import com.akamai.edgegrid.signer.Request;
 
 /**
@@ -51,18 +50,10 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
     }
 
     /**
-     * Creates a signer binding with default EdgeGrid signer.
+     * Creates an EdgeGrid request signer for REST-assured.
      */
     public RestAssuredEdgeGridRequestSigner() {
         super();
-    }
-
-    /**
-     * Creates a signer binding with a custom EdgeGrid signer.
-     * @param edgeGridSigner a custom edge grid signer that will be used to sign requests
-     */
-    public RestAssuredEdgeGridRequestSigner(EdgeGridV1Signer edgeGridSigner) {
-        super(edgeGridSigner);
     }
 
     @Override
@@ -86,7 +77,7 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
         if (requestSpec.getHeaders().hasHeaderWithName("Host")) {
             requestSpec.header("Host", host);
         }
-        // RestAssured needs to deal with the specific hostname at the time of the call.
+        // REST-assured needs to deal with the specific hostname at the time of the call.
         return requestSpec;
     }
 

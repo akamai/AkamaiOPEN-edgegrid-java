@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
-import com.akamai.edgegrid.signer.EdgeGridV1Signer;
 import com.akamai.edgegrid.signer.Request;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.HttpContent;
@@ -61,18 +60,9 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     /**
-     * Creates a signer binding with default EdgeGrid signer.
+     * Creates an EdgeGrid request signer for Google HTTP Client.
      */
     public GoogleHttpClientEdgeGridRequestSigner() {
-        super();
-    }
-
-    /**
-     * Creates a signer binding with a custom EdgeGrid signer.
-     * @param edgeGridSigner a custom edge grid signer that will be used to sign requests
-     */
-    public GoogleHttpClientEdgeGridRequestSigner(EdgeGridV1Signer edgeGridSigner) {
-        super(edgeGridSigner);
     }
 
     @Override

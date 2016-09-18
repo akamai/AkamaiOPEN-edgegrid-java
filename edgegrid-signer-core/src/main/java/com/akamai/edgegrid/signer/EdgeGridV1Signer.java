@@ -63,40 +63,29 @@ import java.util.regex.Pattern;
  */
 public class EdgeGridV1Signer {
 
-    /**
-     * Default algorithm for signing and hashing.
-     */
-    public static final Algorithm DEFAULT_SIGNING_ALGORITHM = Algorithm.EG1_HMAC_SHA256;
+    /** Name of the EdgeGrid signing algorithm. */
+    private static final String ALGORITHM_NAME = "EG1-HMAC-SHA256";
 
-    private static final Logger log = LoggerFactory.getLogger(EdgeGridV1Signer.class);
     private static final String AUTH_CLIENT_TOKEN_NAME = "client_token";
     private static final String AUTH_ACCESS_TOKEN_NAME = "access_token";
     private static final String AUTH_TIMESTAMP_NAME = "timestamp";
     private static final String AUTH_NONCE_NAME = "nonce";
     private static final String AUTH_SIGNATURE_NAME = "signature";
-    private final Algorithm algorithm;
+
+    /** Message digest algorithm. */
+    private static final String DIGEST_ALGORITHM = "SHA-256";
+
+    /** Message signing algorithm. */
+    private static final String SIGNING_ALGORITHM = "HmacSHA256";
+
+    private static final Logger log = LoggerFactory.getLogger(EdgeGridV1Signer.class);
+
     private final Base64.Encoder base64 = Base64.getEncoder();
 
     /**
      * Creates signer with default configuration.
      */
     public EdgeGridV1Signer() {
-        this(DEFAULT_SIGNING_ALGORITHM);
-    }
-
-    /**
-     * Creates EdgeGrid signer with a custom configuration.
-     *
-     * Configuration parameters should be published by the service provider when the service
-     * is published. Refer to the API documentation for any special instructions.
-     *
-     * @param algorithm   algorithm for signing and hashing
-     *
-     * @see <a href="https://developer.akamai.com/">OPEN API documentation</a>
-     */
-    public EdgeGridV1Signer(Algorithm algorithm) {
-        Validate.notNull(algorithm, "algorithm cannot be null");
-        this.algorithm = algorithm;
     }
 
     /**
@@ -137,20 +126,20 @@ public class EdgeGridV1Signer {
         return sb.toString();
     }
 
-    private static byte[] sign(String s, String clientSecret, String algorithm) throws RequestSigningException {
-        return sign(s, clientSecret.getBytes(StandardCharsets.UTF_8), algorithm);
+    private static byte[] sign(String s, String clientSecret) throws RequestSigningException {
+        return sign(s, clientSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    private static byte[] sign(String s, byte[] key, String algorithm) throws RequestSigningException {
+    private static byte[] sign(String s, byte[] key) throws RequestSigningException {
         try {
-            SecretKeySpec signingKey = new SecretKeySpec(key, algorithm);
-            Mac mac = Mac.getInstance(algorithm);
+            SecretKeySpec signingKey = new SecretKeySpec(key, SIGNING_ALGORITHM);
+            Mac mac = Mac.getInstance(SIGNING_ALGORITHM);
             mac.init(signingKey);
 
             byte[] valueBytes = s.getBytes(StandardCharsets.UTF_8);
             return mac.doFinal(valueBytes);
         } catch (NoSuchAlgorithmException e) {
-            throw new RequestSigningException("Failed to sign: your JDK does not recognize signing algorithm <" + algorithm +">", e);
+            throw new RequestSigningException("Failed to sign: your JDK does not recognize signing algorithm <" + SIGNING_ALGORITHM +">", e);
         } catch (InvalidKeyException e) {
             throw new RequestSigningException("Failed to sign: invalid key", e);
         }
@@ -198,12 +187,12 @@ public class EdgeGridV1Signer {
     }
 
     private String signAndEncode(String stringToSign, String signingKey) throws RequestSigningException {
-        byte[] signatureBytes = sign(stringToSign, signingKey, algorithm.getSigningAlgorithm());
+        byte[] signatureBytes = sign(stringToSign, signingKey);
         return base64.encodeToString(signatureBytes);
     }
 
     private String getSigningKey(String timeStamp, String clientSecret) throws RequestSigningException {
-        byte[] signingKeyBytes = sign(timeStamp, clientSecret, algorithm.getSigningAlgorithm());
+        byte[] signingKeyBytes = sign(timeStamp, clientSecret);
         return base64.encodeToString(signingKeyBytes);
     }
 
@@ -213,7 +202,7 @@ public class EdgeGridV1Signer {
 
     private String getAuthData(ClientCredential credential, String timeStamp, UUID nonce) {
         StringBuilder sb = new StringBuilder();
-        sb.append(algorithm.getAlgorithm());
+        sb.append(ALGORITHM_NAME);
         sb.append(' ');
         sb.append(AUTH_CLIENT_TOKEN_NAME);
         sb.append('=');
@@ -269,11 +258,11 @@ public class EdgeGridV1Signer {
 
     private byte[] getHash(byte[] requestBody, int offset, int len) throws RequestSigningException {
         try {
-            MessageDigest md = MessageDigest.getInstance(algorithm.getMessageDigestAlgorithm());
+            MessageDigest md = MessageDigest.getInstance(DIGEST_ALGORITHM);
             md.update(requestBody, offset, len);
             return md.digest();
         } catch (NoSuchAlgorithmException e) {
-            throw new RequestSigningException("Failed to get request hash: your JDK does not recognize algorithm <" + algorithm.getMessageDigestAlgorithm() +">", e);
+            throw new RequestSigningException("Failed to get request hash: your JDK does not recognize algorithm <" + DIGEST_ALGORITHM +">", e);
         }
     }
 
