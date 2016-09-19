@@ -18,6 +18,7 @@ package com.akamai.edgegrid.signer;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -100,7 +101,7 @@ public class Request implements Comparable<Request> {
     }
 
     Map<String, String> getHeaders() {
-        return headers;
+        return Collections.unmodifiableMap(headers);
     }
 
     String getMethod() {
