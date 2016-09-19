@@ -37,6 +37,12 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 
+/**
+ * Unit tests for {@link GoogleHttpClientEdgeGridInterceptor}.
+ *
+ * @author mgawinec@akamai.com
+ * @author mmeyer@akamai.com
+ */
 public class GoogleHttpClientEdgeGridInterceptorTest {
 
     ClientCredential credential = ClientCredential.builder()

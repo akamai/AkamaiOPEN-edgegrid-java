@@ -26,6 +26,11 @@ import java.io.InputStream;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for {@link EdgeRcClientCredentialProvider}.
+ *
+ * @author mmeyer@akamai.com
+ */
 public class EdgeRcClientCredentialProviderTest {
 
     @Test

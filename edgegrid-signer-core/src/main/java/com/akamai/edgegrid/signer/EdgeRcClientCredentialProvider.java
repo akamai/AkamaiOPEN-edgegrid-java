@@ -153,13 +153,13 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
 
     /**
      * Picks an appropriate section name from the configuration to sign {@code request}. By default
-     * this method will always return the default section name provided as part of the object
-     * construction. Users of this class may extend this class and override this method to perform
-     * more complex decisions about how to decide which {@link ClientCredential} will be retrieved
-     * from the EdgeRc file.
+     * this method will always return {@link #defaultSectionName}, which was provided as part the
+     * object construction. Users may extend this class and override this method to
+     * perform more complex decisions about how to decide which {@link ClientCredential} will be
+     * retrieved from the EdgeRc file.
      *
      * @param request a {@link Request}
-     * @return a section name  ({@code null} for the default section)
+     * @return a section name ({@code null} for the default section)
      */
     protected String pickSectionName(Request request) {
         return defaultSectionName;

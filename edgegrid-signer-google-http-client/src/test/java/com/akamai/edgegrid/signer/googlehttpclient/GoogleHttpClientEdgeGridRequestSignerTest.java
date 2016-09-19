@@ -40,6 +40,7 @@ import java.net.URISyntaxException;
  * Example of use of EdgeGrid signer with Google HTTP Client Library.
  *
  * @author mgawinec@akamai.com
+ * @author mmeyer@akamai.com
  */
 public class GoogleHttpClientEdgeGridRequestSignerTest {
 

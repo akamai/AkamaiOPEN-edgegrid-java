@@ -16,6 +16,20 @@
 
 package com.akamai.edgegrid.signer;
 
+/**
+ * <p>
+ * This interface provides a mechanism to select a {@link ClientCredential}. Implementations of
+ * {@link AbstractEdgeGridRequestSigner} will call {@link #getClientCredential(Request)} during the
+ * request signing phase to select the {@link ClientCredential} to be used.
+ * </p>
+ * <p>
+ * If you are looking for a basic implementation of this interface, see
+ * {@link DefaultClientCredentialProvider}. If you would like to read your configuration from an
+ * EdgeRc file, see {@link EdgeRcClientCredentialProvider}.
+ * </p>
+ *
+ * @author mmeyer@akamai.com
+ */
 public interface ClientCredentialProvider {
 
     /**

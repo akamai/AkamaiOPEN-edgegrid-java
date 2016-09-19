@@ -25,6 +25,11 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for {@link Request}.
+ *
+ * @author mmeyer@akamai.com
+ */
 public class RequestTest {
 
     @Test

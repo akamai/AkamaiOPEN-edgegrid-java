@@ -25,6 +25,11 @@ import static org.hamcrest.Matchers.emptyCollectionOf;
 
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for {@link ClientCredential}.
+ *
+ * @author mmeyer@akamai.com
+ */
 public class ClientCredentialTest {
 
     @Test

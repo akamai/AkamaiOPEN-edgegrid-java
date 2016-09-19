@@ -17,13 +17,22 @@
 package com.akamai.edgegrid.signer;
 
 /**
+ * <p>
  * This is an abstract base class for implementing EdgeGrid request signing in a library-specific
  * way. There are several HTTP client libraries available for Java, and this class offers a simple
  * mechanism for supporting them.
+ * </p>
+ * <p>
+ * This class uses a {@link ClientCredentialProvider} to select a {@link ClientCredential}
+ * appropriately for each request. This interface permits sharing a single instance of the class for
+ * a variety of API calls. It also offers a more configurable way to retrieve credentials any way
+ * the user wants.
+ * </p>
  *
  * @param <RequestT> a type of HTTP client specific request.
  *
  * @author mgawinec@akamai.com
+ * @author mmeyer@akamai.com
  */
 public abstract class AbstractEdgeGridRequestSigner<RequestT> {
 
@@ -32,7 +41,9 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
     private final EdgeGridV1Signer edgeGridSigner;
 
     /**
-     * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
+     * Creates an EdgeGrid request signer that will always sign requests with the same
+     * {@link ClientCredential}. This constructor will automatically produce a
+     * {@link DefaultClientCredentialProvider} out of {@code clientCredential}.
      *
      * @param clientCredential a {@link ClientCredential} to be used for all requests
      */

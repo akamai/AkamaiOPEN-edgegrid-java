@@ -38,6 +38,7 @@ import static org.hamcrest.Matchers.is;
  * Unit tests EdgeGridV1Signer.
  *
  * @author mgawinec@akamai.com
+ * @author mmeyer@akamai.com
  */
 public class EdgeGridV1SignerTest {
 
