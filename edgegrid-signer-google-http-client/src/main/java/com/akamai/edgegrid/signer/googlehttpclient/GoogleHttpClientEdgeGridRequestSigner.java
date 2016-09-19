@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
+import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.HttpContent;
@@ -60,9 +62,23 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     /**
-     * Creates an EdgeGrid request signer for Google HTTP Client.
+     * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
+     *
+     * @param clientCredential a {@link ClientCredential} to be used for all requests
      */
-    public GoogleHttpClientEdgeGridRequestSigner() {
+    public GoogleHttpClientEdgeGridRequestSigner(ClientCredential clientCredential) {
+        super(clientCredential);
+    }
+
+    /**
+     * Creates an EdgeGrid request signer selecting a {@link ClientCredential} via
+     * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider} to be used for selecting
+     *        credentials for each request
+     */
+    public GoogleHttpClientEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
+        super(clientCredentialProvider);
     }
 
     @Override

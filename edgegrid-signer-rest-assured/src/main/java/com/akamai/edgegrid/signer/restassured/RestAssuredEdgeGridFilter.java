@@ -18,9 +18,10 @@ package com.akamai.edgegrid.signer.restassured;
 
 
 import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.EdgeGridV1Signer;
+import com.akamai.edgegrid.signer.Request;
 import com.akamai.edgegrid.signer.RequestSigningException;
-
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
 import io.restassured.response.Response;
@@ -36,12 +37,26 @@ import io.restassured.specification.FilterableResponseSpecification;
  */
 public class RestAssuredEdgeGridFilter implements Filter {
 
-    private final ClientCredential credential;
     private final RestAssuredEdgeGridRequestSigner binding;
 
-    private RestAssuredEdgeGridFilter(ClientCredential credential) {
-        this.binding = new RestAssuredEdgeGridRequestSigner();
-        this.credential = credential;
+    /**
+     * Creates an EdgeGrid signing interceptor using the same {@link ClientCredential} for each
+     * request.
+     *
+     * @param credential a {@link ClientCredential}
+     */
+    public RestAssuredEdgeGridFilter(ClientCredential credential) {
+        this.binding = new RestAssuredEdgeGridRequestSigner(credential);
+    }
+
+    /**
+     * Creates an EdgeGrid signing interceptor selecting a {@link ClientCredential} via
+     * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider}
+     */
+    public RestAssuredEdgeGridFilter(ClientCredentialProvider clientCredentialProvider) {
+        this.binding = new RestAssuredEdgeGridRequestSigner(clientCredentialProvider);
     }
 
     /**
@@ -59,7 +74,7 @@ public class RestAssuredEdgeGridFilter implements Filter {
     @Override
     public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec, FilterContext ctx) {
         try {
-            binding.sign(requestSpec, credential);
+            binding.sign(requestSpec);
         } catch (RequestSigningException e) {
             throw new RuntimeException(e);
         }

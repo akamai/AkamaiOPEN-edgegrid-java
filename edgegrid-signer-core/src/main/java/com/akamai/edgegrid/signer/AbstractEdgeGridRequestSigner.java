@@ -26,26 +26,43 @@ package com.akamai.edgegrid.signer;
  */
 public abstract class AbstractEdgeGridRequestSigner<RequestT> {
 
+    private final ClientCredentialProvider clientCredentialProvider;
+
     private final EdgeGridV1Signer edgeGridSigner;
 
     /**
-     * Creates signer binding with a default EdgeGrid signer.
+     * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
+     *
+     * @param clientCredential a {@link ClientCredential} to be used for all requests
      */
-    public AbstractEdgeGridRequestSigner() {
+    public AbstractEdgeGridRequestSigner(ClientCredential clientCredential) {
+        this(new DefaultClientCredentialProvider(clientCredential));
+    }
+
+    /**
+     * Creates an EdgeGrid request signer selecting a {@link ClientCredential} via
+     * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider} to be used for selecting
+     *        credentials for each request
+     */
+    public AbstractEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
+        this.clientCredentialProvider = clientCredentialProvider;
         this.edgeGridSigner = new EdgeGridV1Signer();
     }
 
     /**
-     * Signs {@code request} with {@code credential} using EdgeGrid signer algorithm and replaces
-     * {@code request}'s host name with the one specified by the credential.
+     * Signs {@code request} with appropriate credentials using EdgeGrid signer algorithm and
+     * replaces {@code request}'s host name with the one specified by the credential.
      *
      * @param request an HTTP request to sign
-     * @param credential a client credential to sign a request with
      * @throws RequestSigningException if failed to sign a request
      */
-    public void sign(RequestT request, ClientCredential credential) throws RequestSigningException {
+    public void sign(RequestT request) throws RequestSigningException {
+        Request req = map(request);
+        ClientCredential credential = clientCredentialProvider.getClientCredential(req);
         setHost(request, credential.getHost());
-        String authorization = edgeGridSigner.getSignature(map(request), credential);
+        String authorization = edgeGridSigner.getSignature(req, credential);
         setAuthorization(request, authorization);
     }
 

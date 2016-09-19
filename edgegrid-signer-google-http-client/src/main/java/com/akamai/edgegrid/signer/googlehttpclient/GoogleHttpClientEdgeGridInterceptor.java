@@ -17,6 +17,8 @@ package com.akamai.edgegrid.signer.googlehttpclient;
 
 
 import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.ClientCredentialProvider;
+import com.akamai.edgegrid.signer.Request;
 import com.akamai.edgegrid.signer.RequestSigningException;
 import com.google.api.client.http.HttpExecuteInterceptor;
 import com.google.api.client.http.HttpRequest;
@@ -33,22 +35,31 @@ import java.io.IOException;
 public class GoogleHttpClientEdgeGridInterceptor implements HttpExecuteInterceptor {
 
     private final GoogleHttpClientEdgeGridRequestSigner binding;
-    private final ClientCredential credential;
 
     /**
-     * Creates a sign interceptor with default EdgeGrid signer.
+     * Creates an EdgeGrid signing interceptor using the same {@link ClientCredential} for each
+     * request.
      *
      * @param credential a {@link ClientCredential}
      */
     public GoogleHttpClientEdgeGridInterceptor(ClientCredential credential) {
-        this.binding = new GoogleHttpClientEdgeGridRequestSigner();
-        this.credential = credential;
+        this.binding = new GoogleHttpClientEdgeGridRequestSigner(credential);
+    }
+
+    /**
+     * Creates an EdgeGrid signing interceptor selecting a {@link ClientCredential} via
+     * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider}
+     */
+    public GoogleHttpClientEdgeGridInterceptor(ClientCredentialProvider clientCredentialProvider) {
+        this.binding = new GoogleHttpClientEdgeGridRequestSigner(clientCredentialProvider);
     }
 
     @Override
     public void intercept(HttpRequest request) throws IOException {
         try {
-            binding.sign(request, credential);
+            binding.sign(request);
         } catch (RequestSigningException e) {
             throw new RuntimeException(e);
         }

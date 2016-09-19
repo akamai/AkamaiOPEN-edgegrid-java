@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
+import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
 
 /**
@@ -50,10 +52,23 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
     }
 
     /**
-     * Creates an EdgeGrid request signer for REST-assured.
+     * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
+     *
+     * @param clientCredential a {@link ClientCredential} to be used for all requests
      */
-    public RestAssuredEdgeGridRequestSigner() {
-        super();
+    public RestAssuredEdgeGridRequestSigner(ClientCredential clientCredential) {
+        super(clientCredential);
+    }
+
+    /**
+     * Creates an EdgeGrid request signer selecting a {@link ClientCredential} via
+     * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider} to be used for selecting
+     *        credentials for each request
+     */
+    public RestAssuredEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
+        super(clientCredentialProvider);
     }
 
     @Override
