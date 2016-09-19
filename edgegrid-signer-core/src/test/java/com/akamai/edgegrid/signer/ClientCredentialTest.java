@@ -53,4 +53,20 @@ public class ClientCredentialTest {
         assertThat(credential.getHeadersToSign(), containsInAnyOrder("foo", "bar"));
     }
 
+    @Test
+    public void testHeaderCaseInsensitive() throws Exception {
+        ClientCredential credential = ClientCredential.builder()
+                .accessToken("akaa-ATATATATATATATAT-ATATATATATATATAT")
+                .clientSecret("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")
+                .clientToken("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")
+                .host("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")
+                .headerToSign("FoO")
+                .headerToSign("foo")
+                .headerToSign("FOO")
+                .headerToSign("bar")
+                .build();
+        assertThat(credential.getHeadersToSign(), hasSize(2));
+        assertThat(credential.getHeadersToSign(), containsInAnyOrder("foo", "bar"));
+    }
+
 }

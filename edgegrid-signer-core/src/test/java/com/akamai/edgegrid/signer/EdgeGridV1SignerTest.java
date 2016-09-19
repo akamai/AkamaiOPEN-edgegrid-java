@@ -72,18 +72,6 @@ public class EdgeGridV1SignerTest {
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void shouldRejectRequestWithDuplicateHeaderNames() throws RequestSigningException {
-        Request request = Request.builder()
-                .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
-                .header("Duplicate", "X")
-                .header("Duplicate", "Y")
-                .build();
-
-        DEFAULT_SIGNER.getSignature(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
-    }
-
     @DataProvider
     public Object[][] requestsForDefaultSettings() {
         return new Object[][]{
@@ -123,7 +111,7 @@ public class EdgeGridV1SignerTest {
     }
 
     @DataProvider
-    public Object[][] requestsForHeadersSigning() {
+    public Object[][] requestsForHeadersSigning() throws RequestSigningException {
         Set<String> headerToSign = new HashSet<>();
         headerToSign.add("Content-Type");
         return new Object[][]{
@@ -144,7 +132,6 @@ public class EdgeGridV1SignerTest {
                                 .header("Content-Type", "application/json")
                                 .header("Cache-Control", "no-cache")
                                 .build()}
-
         };
 
     }

@@ -66,6 +66,9 @@ public class EdgeGridV1Signer {
     /** Name of the EdgeGrid signing algorithm. */
     private static final String ALGORITHM_NAME = "EG1-HMAC-SHA256";
 
+    /** Pre-compiled regex to match multiple spaces. */
+    private static final Pattern PATTERN_SPACES = Pattern.compile("\\s+");
+
     private static final String AUTH_CLIENT_TOKEN_NAME = "client_token";
     private static final String AUTH_ACCESS_TOKEN_NAME = "access_token";
     private static final String AUTH_TIMESTAMP_NAME = "timestamp";
@@ -103,15 +106,6 @@ public class EdgeGridV1Signer {
     public String getSignature(Request request, ClientCredential credential)
             throws RequestSigningException {
         return getSignature(request, credential, System.currentTimeMillis(), UUID.randomUUID());
-    }
-
-    private boolean containsDuplicateHeaderNames(Request request) {
-        for (Map.Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
-            if (entry.getValue().size() > 1) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static String getAuthorizationHeaderValue(String authData, String signature) {
@@ -167,7 +161,6 @@ public class EdgeGridV1Signer {
     String getSignature(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
         Validate.notNull(credential, "credential cannot be null");
         Validate.notNull(request, "request cannot be null");
-        Validate.isTrue(!containsDuplicateHeaderNames(request), "The protocol does not support multiple request headers with the same header name");
 
         String timeStamp = formatTimeStamp(timestamp);
         String authData = getAuthData(credential, timeStamp, nonce);
@@ -266,26 +259,25 @@ public class EdgeGridV1Signer {
         }
     }
 
-    private String canonicalizeHeaders(Map<String, List<String>> requestHeaders, ClientCredential credential) {
+    private String canonicalizeHeaders(Map<String, String> requestHeaders, ClientCredential credential) {
         StringBuilder sb = new StringBuilder();
         for (String headerName : credential.getHeadersToSign()) {
-            // we validated before that request contains no multiple headers with same header name
-            Optional<String> headerValue = requestHeaders.get(headerName).stream().findFirst();
-            if (headerValue.isPresent()) {
-                sb.append(headerName.toLowerCase());
-                sb.append(':');
-                sb.append(canonicalizeHeaderValue(headerValue.get()));
-                sb.append('\t');
+            String headerValue = requestHeaders.get(headerName);
+            if (StringUtils.isBlank(headerValue)) {
+                continue;
             }
+            sb.append(headerName.toLowerCase());
+            sb.append(':');
+            sb.append(canonicalizeHeaderValue(headerValue));
+            sb.append('\t');
         }
         return sb.toString();
     }
 
     private String canonicalizeHeaderValue(String headerValue) {
         headerValue = headerValue.trim();
-        if (!headerValue.isEmpty()) {
-            Pattern p = Pattern.compile("\\s+");
-            Matcher matcher = p.matcher(headerValue);
+        if (StringUtils.isNotBlank(headerValue)) {
+            Matcher matcher = PATTERN_SPACES.matcher(headerValue);
             headerValue = matcher.replaceAll(" ");
         }
         return headerValue;

@@ -18,18 +18,15 @@ package com.akamai.edgegrid.signer.googlehttpclient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
+import com.akamai.edgegrid.signer.RequestSigningException;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.HttpContent;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.util.FieldInfo;
 import com.google.api.client.util.Types;
@@ -40,26 +37,6 @@ import com.google.api.client.util.Types;
  * @author mgawinec@akamai.com
  */
 public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest> {
-
-    private static Map<String, List<String>> getHeaders(HttpHeaders headers) {
-        Map<String, List<String>> ret = new HashMap<>();
-        for (Map.Entry<String, Object> e : headers.entrySet()) {
-            List<String> values = ret.get(e.getKey());
-            if (values == null) {
-                values = new LinkedList<>();
-                ret.put(e.getKey(), values);
-            }
-            Object value = e.getValue();
-            if (value instanceof Iterable<?> || value.getClass().isArray()) {
-                for (Object repeatedValue : Types.iterableOf(value)) {
-                    values.add(toStringValue(repeatedValue));
-                }
-            } else {
-                values.add(toStringValue(value));
-            }
-        }
-        return ret;
-    }
 
     /**
      * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
@@ -82,13 +59,23 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     @Override
-    protected Request map(HttpRequest request) {
-        return Request.builder()
+    protected Request map(HttpRequest request) throws RequestSigningException {
+        Request.RequestBuilder builder = Request.builder()
                 .method(request.getRequestMethod())
                 .uriWithQuery(request.getUrl().toURI())
-                .headers(getHeaders(request.getHeaders()))
-                .body(serializeContent(request))
-                .build();
+                .body(serializeContent(request));
+        for (Map.Entry<String, Object> entry : request.getHeaders().entrySet()) {
+            Object value = entry.getValue();
+            if (value instanceof Iterable<?> || value.getClass().isArray()) {
+                for (Object repeatedValue : Types.iterableOf(value)) {
+                    // NOTE: Request is about to throw an exception!
+                    builder.header(entry.getKey(), toStringValue(repeatedValue));
+                }
+            } else {
+                builder.header(entry.getKey(), toStringValue(value));
+            }
+        }
+        return builder.build();
     }
 
     @Override

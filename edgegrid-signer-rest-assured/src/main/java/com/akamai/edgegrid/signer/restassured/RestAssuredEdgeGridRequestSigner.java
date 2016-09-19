@@ -31,6 +31,7 @@ import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
+import com.akamai.edgegrid.signer.RequestSigningException;
 
 /**
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.
@@ -72,13 +73,16 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
     }
 
     @Override
-    protected Request map(FilterableRequestSpecification requestSpec) {
-        return Request.builder()
+    protected Request map(FilterableRequestSpecification requestSpec)
+            throws RequestSigningException {
+        Request.RequestBuilder builder = Request.builder()
                 .method(requestSpec.getMethod())
                 .uriWithQuery(URI.create(requestSpec.getURI()))
-                .headers(getHeaders(requestSpec.getHeaders()))
-                .body(requestSpec.getBody() != null ? requestSpec.<byte[]>getBody() : new byte[]{} )
-                .build();
+                .body(requestSpec.getBody() != null ? requestSpec.<byte[]>getBody() : new byte[]{});
+        for (Header header : requestSpec.getHeaders()) {
+            builder.header(header.getName(), header.getValue());
+        }
+        return builder.build();
     }
 
     @Override

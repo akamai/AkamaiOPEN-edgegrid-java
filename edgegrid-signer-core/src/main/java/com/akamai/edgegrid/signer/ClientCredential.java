@@ -16,7 +16,6 @@
 
 package com.akamai.edgegrid.signer;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -105,9 +104,6 @@ public class ClientCredential implements Comparable<ClientCredential> {
     }
 
     Set<String> getHeadersToSign() {
-        if (headersToSign == null) {
-            return Collections.emptySet();
-        }
         return headersToSign;
     }
 
@@ -136,7 +132,7 @@ public class ClientCredential implements Comparable<ClientCredential> {
         private String accessToken;
         private String clientSecret;
         private String clientToken;
-        private Set<String> headersToSign;
+        private Set<String> headersToSign = new HashSet<>();
         private String host;
         private Integer maxBodySize;
 
@@ -185,9 +181,16 @@ public class ClientCredential implements Comparable<ClientCredential> {
         }
 
         /**
+         * <p>
          * Adds all of {@code headersToSign} into the builder's internal collection. This can be
          * called multiple times to continue adding them. The set passed in is not stored directly,
          * a copy is made instead.
+         * </p>
+         * <p>
+         * <i>NOTE: All header names are lower-cased for storage. In HTTP, header names are
+         * case-insensitive anyway, and EdgeGrid does not support multiple headers with the same
+         * name. Forcing to lowercase here improves our chance of detecting bad requests early.</i>
+         * </p>
          *
          * @param headersToSign a {@link Set} of header names
          * @return reference back to this builder instance
@@ -200,19 +203,23 @@ public class ClientCredential implements Comparable<ClientCredential> {
         }
 
         /**
+         * <p>
          * Adds {@code headerName} into the builder's internal collection. This can be called
          * multiple times to continue adding them.
+         * </p>
+         * <p>
+         * <i>NOTE: All header names are lower-cased for storage. In HTTP, header names are
+         * case-insensitive anyway, and EdgeGrid does not support multiple headers with the same
+         * name. Forcing to lowercase here improves our chance of detecting bad requests early.</i>
+         * </p>
          *
          * @param headerName a header name
          * @return reference back to this builder instance
          */
         public ClientCredentialBuilder headerToSign(String headerName) {
             Validate.notBlank(headerName, "headerName cannot be blank");
-            if (this.headersToSign == null) {
-                this.headersToSign = new HashSet<>();
-            }
 
-            this.headersToSign.add(headerName);
+            this.headersToSign.add(headerName.toLowerCase());
             return this;
         }
 

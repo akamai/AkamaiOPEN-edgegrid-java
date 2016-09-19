@@ -2,10 +2,7 @@ package com.akamai.edgegrid.signer;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,7 +27,7 @@ public class Request implements Comparable<Request> {
     private final byte[] body;
     private final String method;
     private final URI uriWithQuery;
-    private final Map<String, List<String>> headers;
+    private final Map<String, String> headers;
 
     private Request(RequestBuilder b) {
         this.body = b.body;
@@ -86,7 +83,7 @@ public class Request implements Comparable<Request> {
         return body;
     }
 
-    Map<String, List<String>> getHeaders() {
+    Map<String, String> getHeaders() {
         return headers;
     }
 
@@ -105,7 +102,7 @@ public class Request implements Comparable<Request> {
     public static class RequestBuilder implements Builder<Request> {
 
         private byte[] body = new byte[]{};
-        private Map<String, List<String>> headers = new HashMap<>();
+        private Map<String, String> headers = new HashMap<>();
         private String method;
         private URI uriWithQuery;
 
@@ -127,43 +124,47 @@ public class Request implements Comparable<Request> {
          * many headers as needed.
          * </p>
          * <p>
-         * <i><b>WARNING:</b>{@link #headers(Map)} will replace the headers set by this method with
-         * an unmodifiable {@link Map}. {@link #headers(Map)} and {@link #header(String, String)}
-         * should not be used in the same builder instance.</i>
+         * <i>NOTE: All header names are lower-cased for storage. In HTTP, header names are
+         * case-insensitive anyway, and EdgeGrid does not support multiple headers with the same
+         * name. Forcing to lowercase here improves our chance of detecting bad requests early.</i>
          * </p>
          *
          * @param headerName a header name
          * @param value a header value
          * @return reference back to this builder instance
+         * @throws RequestSigningException if a duplicate header name is encountered
          */
-        public RequestBuilder header(String headerName, String value) {
+        public RequestBuilder header(String headerName, String value) throws RequestSigningException {
             Validate.notEmpty(headerName, "headerName cannot be empty");
             Validate.notEmpty(value, "value cannot be empty");
-            List<String> values = headers.get(headerName);
-            if (values == null) {
-                values = new LinkedList<>();
-                headers.put(headerName, values);
+            headerName = headerName.toLowerCase();
+            if (this.headers.containsKey(headerName)) {
+                throw new RequestSigningException("Duplicate header found: " + headerName);
             }
-            values.add(value);
+            headers.put(headerName, value);
             return this;
         }
 
         /**
          * <p>
-         * Sets headers of HTTP request.
+         * Sets headers of HTTP request. The {@code headers} parameter is copied so that changes
+         * to the original {@link Map} will not impact the stored reference.
          * </p>
          * <p>
-         * <i><b>WARNING:</b>This method sets an unmodifiable {@link Map} for the headers, so
-         * subsequent calls to {@link #header(String, String)} will not work. {@link #headers(Map)}
-         * and {@link #header(String, String)} should not be used in the same builder instance.</i>
+         * <i>NOTE: All header names are lower-cased for storage. In HTTP, header names are
+         * case-insensitive anyway, and EdgeGrid does not support multiple headers with the same
+         * name. Forcing to lowercase here improves our chance of detecting bad requests early.</i>
          * </p>
          *
-         * @param headers a {@link Map} of {@link List} of headers
+         * @param headers a {@link Map} of headers
          * @return reference back to this builder instance
+         * @throws RequestSigningException if a duplicate header name is encountered
          */
-        public RequestBuilder headers(Map<String, List<String>> headers) {
+        public RequestBuilder headers(Map<String, String> headers) throws RequestSigningException {
             Validate.notNull(headers, "headers cannot be null");
-            this.headers = Collections.unmodifiableMap(headers);
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                header(entry.getKey(), entry.getValue());
+            }
             return this;
         }
 
