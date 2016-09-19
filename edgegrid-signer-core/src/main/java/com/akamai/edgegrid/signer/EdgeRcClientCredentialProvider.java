@@ -42,9 +42,12 @@ import com.akamai.edgegrid.signer.ClientCredential.ClientCredentialBuilder;
 public class EdgeRcClientCredentialProvider implements ClientCredentialProvider {
 
     /** This is an {@link INIConfiguration} that will hold the EdgeRc configuration. */
-    private final INIConfiguration config;
+    private final INIConfiguration configuration;
 
-    /** This is the default section name to use for signing requests. */
+    /**
+     * This is the default section name that will be returned by {@link #pickSectionName(Request)}
+     * unless it is overridden by a subclass.
+     */
     private final String defaultSectionName;
 
     /**
@@ -99,23 +102,6 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
      * Loads an EdgeRc configuration file and returns an {@link EdgeRcClientCredentialProvider} to
      * read {@link ClientCredential}s from it.
      *
-     * @param reader an open {@link Reader} to an EdgeRc file
-     * @param section a config section ({@code null} for the default section)
-     * @throws ConfigurationException If an error occurs while reading the configuration
-     * @throws IOException if an I/O error occurs
-     */
-    public EdgeRcClientCredentialProvider(Reader reader, String section)
-            throws ConfigurationException, IOException {
-        Validate.notNull(reader, "reader cannot be null");
-        config = new INIConfiguration();
-        config.read(reader);
-        this.defaultSectionName = section;
-    }
-
-    /**
-     * Loads an EdgeRc configuration file and returns an {@link EdgeRcClientCredentialProvider} to
-     * read {@link ClientCredential}s from it.
-     *
      * @param filename a filename pointing to an EdgeRc file
      * @param section a config section ({@code null} for the default section)
      * @return a {@link EdgeRcClientCredentialProvider}
@@ -130,10 +116,27 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
         return fromEdgeRc(new FileReader(file), section);
     }
 
+    /**
+     * Loads an EdgeRc configuration file and returns an {@link EdgeRcClientCredentialProvider} to
+     * read {@link ClientCredential}s from it.
+     *
+     * @param reader an open {@link Reader} to an EdgeRc file
+     * @param section a config section ({@code null} for the default section)
+     * @throws ConfigurationException If an error occurs while reading the configuration
+     * @throws IOException if an I/O error occurs
+     */
+    public EdgeRcClientCredentialProvider(Reader reader, String section)
+            throws ConfigurationException, IOException {
+        Validate.notNull(reader, "reader cannot be null");
+        configuration = new INIConfiguration();
+        configuration.read(reader);
+        this.defaultSectionName = section;
+    }
+
     @Override
     public ClientCredential getClientCredential(Request request) {
         String sectionName = pickSectionName(request);
-        SubnodeConfiguration s = config.getSection(sectionName);
+        SubnodeConfiguration s = configuration.getSection(sectionName);
         ClientCredentialBuilder builder = ClientCredential.builder()
                 .accessToken(s.getString("access_token"))
                 .clientSecret(s.getString("client_secret"))
