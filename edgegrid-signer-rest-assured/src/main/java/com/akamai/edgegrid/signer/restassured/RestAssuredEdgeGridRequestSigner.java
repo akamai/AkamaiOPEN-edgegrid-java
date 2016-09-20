@@ -19,16 +19,11 @@ package com.akamai.edgegrid.signer.restassured;
 
 import com.akamai.edgegrid.signer.*;
 import io.restassured.http.Header;
-import io.restassured.http.Headers;
 import io.restassured.specification.FilterableRequestSpecification;
 import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.
