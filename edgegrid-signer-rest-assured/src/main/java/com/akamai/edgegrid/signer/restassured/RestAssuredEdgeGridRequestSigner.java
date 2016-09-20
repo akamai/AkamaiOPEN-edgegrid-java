@@ -21,17 +21,16 @@ import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.specification.FilterableRequestSpecification;
 
+import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
 import com.akamai.edgegrid.signer.RequestSigningException;
+import org.apache.commons.lang3.Validate;
 
 /**
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.
@@ -93,11 +92,29 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
 
     @Override
     protected FilterableRequestSpecification setHost(FilterableRequestSpecification requestSpec, String host) {
-        if (requestSpec.getHeaders().hasHeaderWithName("Host")) {
-            requestSpec.header("Host", host);
-        }
-        // REST-assured needs to deal with the specific hostname at the time of the call.
+
+        // Due to limitations of REST-assured design only requests with relative paths can be updated
+        Validate.isTrue(isRelativeUrl(getRequestPath(requestSpec)), "path in request cannot be absolute");
+
+        requestSpec
+                .baseUri("http://" + host)
+                .header("Host", host);
+
         return requestSpec;
+    }
+
+    private String getRequestPath(FilterableRequestSpecification requestSpec) {
+        try {
+            Field f = requestSpec.getClass().getDeclaredField("path");
+            f.setAccessible(true);
+            return (String) f.get(requestSpec);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e); // should never occur
+        }
+    }
+
+    private boolean isRelativeUrl(String uri) {
+        return ! URI.create(uri).isAbsolute();
     }
 
 }
