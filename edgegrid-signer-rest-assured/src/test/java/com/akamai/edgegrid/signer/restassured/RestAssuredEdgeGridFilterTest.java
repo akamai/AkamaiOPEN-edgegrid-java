@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 Copyright 2016 Akamai Technologies, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.akamai.edgegrid.signer.restassured;
 
 
@@ -5,8 +20,10 @@ import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.RequestSigningException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.restassured.RestAssured;
-
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,6 +32,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 
+/**
+ * Unit tests for {@link RestAssuredEdgeGridFilterTest}.
+ *
+ * @author mgawinec@akamai.com
+ */
 public class RestAssuredEdgeGridFilterTest {
 
     static final String SERVICE_MOCK_HOST = "localhost";
