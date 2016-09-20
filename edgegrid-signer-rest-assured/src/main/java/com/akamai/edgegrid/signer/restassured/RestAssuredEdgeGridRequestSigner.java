@@ -86,7 +86,7 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
         return requestSpec;
     }
 
-    private String getRequestPath(FilterableRequestSpecification requestSpec) {
+    private static String getRequestPath(FilterableRequestSpecification requestSpec) {
         try {
             Field f = requestSpec.getClass().getDeclaredField("path");
             f.setAccessible(true);
@@ -96,7 +96,7 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
         }
     }
 
-    private boolean isRelativeUrl(String uri) {
+    private static boolean isRelativeUrl(String uri) {
         return !URI.create(uri).isAbsolute();
     }
 
