@@ -39,6 +39,6 @@ public interface ClientCredentialProvider {
      * @param request a Request
      * @return a {@link ClientCredential} (can be {@code null})
      */
-    public ClientCredential getClientCredential(Request request);
+    ClientCredential getClientCredential(Request request);
 
 }
