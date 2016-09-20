@@ -34,7 +34,7 @@ ClientCredential credential = ClientCredential.builder()
 build one with its internal builder:
 
 ```java
-Request.RequestBuilder builder = Request.builder()
+Request request = Request.builder()
         .method(request.getRequestMethod())
         .uriWithQuery(request.getUrl().toURI())
         .body("{ field: \"foo\" }")
