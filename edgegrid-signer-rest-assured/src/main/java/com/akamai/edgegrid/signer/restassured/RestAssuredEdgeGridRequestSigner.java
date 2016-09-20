@@ -39,19 +39,6 @@ import java.util.Map;
  */
 public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<FilterableRequestSpecification> {
 
-    private static Map<String, List<String>> getHeaders(Headers headers) {
-        Map<String, List<String>> ret = new HashMap<>();
-        for (Header header : headers) {
-            List<String> values = ret.get(header.getName());
-            if (values == null) {
-                values = new LinkedList<>();
-                ret.put(header.getName(), values);
-            }
-            values.add(header.getValue());
-        }
-        return ret;
-    }
-
     /**
      * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
      *
