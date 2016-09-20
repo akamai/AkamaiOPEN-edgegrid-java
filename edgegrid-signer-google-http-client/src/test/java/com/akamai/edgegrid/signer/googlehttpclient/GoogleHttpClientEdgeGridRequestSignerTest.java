@@ -18,7 +18,7 @@ package com.akamai.edgegrid.signer.googlehttpclient;
 
 
 import com.akamai.edgegrid.signer.ClientCredential;
-import com.akamai.edgegrid.signer.RequestSigningException;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpClientEdgeGridRequestSigner;
 import com.google.api.client.http.*;
 import com.google.api.client.http.apache.ApacheHttpTransport;

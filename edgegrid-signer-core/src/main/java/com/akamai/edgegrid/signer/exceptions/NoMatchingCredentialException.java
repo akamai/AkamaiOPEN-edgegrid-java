@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package com.akamai.edgegrid.signer;
+package com.akamai.edgegrid.signer.exceptions;
+
+import com.akamai.edgegrid.signer.ClientCredential;
 
 /**
- * Exception representing errors during request signing.
+ * Exception representing failure to obtain a {@link ClientCredential} in order to sign a request.
  *
- * @author mgawinec@akamai.com
+ * @author mmeyer@akamai.com
  */
-public class RequestSigningException extends Exception {
+public class NoMatchingCredentialException extends RequestSigningException {
 
-    private static final long serialVersionUID = -4716437270940718895L;
+    private static final String MESSAGE = "No ClientCredential found for request";
 
-    public RequestSigningException() {
-        super();
+    private static final long serialVersionUID = -6663545494847315492L;
+
+    public NoMatchingCredentialException() {
+        super(MESSAGE);
     }
 
-    public RequestSigningException(String message) {
-        super(message);
-    }
-
-    public RequestSigningException(Throwable t) {
-        super(t);
-    }
-
-    public RequestSigningException(String message, Throwable t) {
-        super(message, t);
+    public NoMatchingCredentialException(Exception e) {
+        super(MESSAGE, e);
     }
 }

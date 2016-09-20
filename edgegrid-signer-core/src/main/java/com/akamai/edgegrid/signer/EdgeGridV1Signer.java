@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.akamai.edgegrid.signer.ClientCredential.ClientCredentialBuilder;
 import com.akamai.edgegrid.signer.Request.RequestBuilder;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

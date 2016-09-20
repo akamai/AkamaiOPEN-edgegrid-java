@@ -16,6 +16,9 @@
 
 package com.akamai.edgegrid.signer;
 
+import com.akamai.edgegrid.signer.exceptions.NoMatchingCredentialException;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
+
 /**
  * <p>
  * This is an abstract base class for implementing EdgeGrid request signing in a library-specific
@@ -69,9 +72,19 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      *
      * @param request an HTTP request to sign
      * @throws RequestSigningException if failed to sign a request
+     * @throws NoMatchingCredentialException if acquiring a {@link ClientCredential} throws or
+     *         returns {@code null}
      */
     public void sign(RequestT request) throws RequestSigningException {
-        Request req = map(request);
+        Request req = null;
+        try {
+            req = map(request);
+        } catch (Exception e) {
+            throw new NoMatchingCredentialException(e);
+        }
+        if (req == null) {
+            throw new NoMatchingCredentialException();
+        }
         ClientCredential credential = clientCredentialProvider.getClientCredential(req);
         setHost(request, credential.getHost());
         String authorization = edgeGridSigner.getSignature(req, credential);

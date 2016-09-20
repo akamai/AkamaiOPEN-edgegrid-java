@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.EdgeGridV1Signer;
 import com.akamai.edgegrid.signer.Request;
-import com.akamai.edgegrid.signer.RequestSigningException;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 import java.net.URI;
 import java.util.HashSet;
