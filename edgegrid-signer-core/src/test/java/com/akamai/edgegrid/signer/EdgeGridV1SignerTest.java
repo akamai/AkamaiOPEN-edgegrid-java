@@ -70,11 +70,6 @@ public class EdgeGridV1SignerTest {
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
 
-    @Test
-    public void testTimestampFormat() {
-
-    }
-
     @DataProvider
     public Object[][] requestsForDefaultSettings() {
         return new Object[][]{
