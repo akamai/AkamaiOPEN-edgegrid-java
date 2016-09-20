@@ -109,6 +109,18 @@ given()
     .statusCode(200);
 ```
 
+REST-assured request specifications with absolute path provided in `get(path)`, `post(path)` etc. are not supported. 
+For instance, the following request specification will throw `IllegalArgumentException`:
+
+```java
+given()    
+    .filter(new RestAssuredEdgeGridFilter(credential))
+.when()
+    .get("https://endpoint.net/service/v2/users")
+.then()
+    .statusCode(200);
+```
+
 ## Usage with Google HTTP Client Library for Java
 
 There is an EdgeGrid signer implementation for [Google HTTP Client Library for Java][9].

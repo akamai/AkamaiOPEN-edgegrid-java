@@ -17,23 +17,24 @@
 package com.akamai.edgegrid.signer.restassured;
 
 
+import com.akamai.edgegrid.signer.*;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.specification.FilterableRequestSpecification;
+import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.*;
-
-import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
-import com.akamai.edgegrid.signer.ClientCredential;
-import com.akamai.edgegrid.signer.ClientCredentialProvider;
-import com.akamai.edgegrid.signer.Request;
-import com.akamai.edgegrid.signer.RequestSigningException;
-import org.apache.commons.lang3.Validate;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.
+ * The request specification must contain a relative path in {@code get(path)}, {@code post(path)}, {@code put(path)},
+ * etc. methods. Request specifications with absolute path in those methods will result in {@code IllegalArgumentException }.
+ *
  * @author mgawinec@akamai.com
  */
 public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<FilterableRequestSpecification> {
@@ -65,7 +66,7 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
      * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
      *
      * @param clientCredentialProvider a {@link ClientCredentialProvider} to be used for selecting
-     *        credentials for each request
+     *                                 credentials for each request
      */
     public RestAssuredEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
         super(clientCredentialProvider);
@@ -114,7 +115,7 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
     }
 
     private boolean isRelativeUrl(String uri) {
-        return ! URI.create(uri).isAbsolute();
+        return !URI.create(uri).isAbsolute();
     }
 
 }
