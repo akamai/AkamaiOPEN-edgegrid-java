@@ -36,11 +36,11 @@ public class EdgeRcClientCredentialProviderTest {
     @Test
     public void testGood1() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good1").getClientCredential(null);
-        assertThat(credential.getAccessToken(), is(equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
-        assertThat(credential.getClientSecret(), is(equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
-        assertThat(credential.getClientToken(), is(equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
-        assertThat(credential.getHost(), is(equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
+        ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good1").getClientCredential("good1");
+        assertThat(credential.getAccessToken(), is(equalTo("AT1")));
+        assertThat(credential.getClientSecret(), is(equalTo("CS1")));
+        assertThat(credential.getClientToken(), is(equalTo("CT1")));
+        assertThat(credential.getHost(), is(equalTo("HOST1")));
         assertThat(credential.getHeadersToSign(), is(empty()));
         assertThat(credential.getMaxBodySize(), is(65536));
     }
@@ -48,11 +48,11 @@ public class EdgeRcClientCredentialProviderTest {
     @Test
     public void testGood2() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good2").getClientCredential(null);
-        assertThat(credential.getAccessToken(), is(equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
-        assertThat(credential.getClientSecret(), is(equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
-        assertThat(credential.getClientToken(), is(equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
-        assertThat(credential.getHost(), is(equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
+        ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good2").getClientCredential("good2");
+        assertThat(credential.getAccessToken(), is(equalTo("AT2")));
+        assertThat(credential.getClientSecret(), is(equalTo("CS2")));
+        assertThat(credential.getClientToken(), is(equalTo("CT2")));
+        assertThat(credential.getHost(), is(equalTo("HOST2")));
         assertThat(credential.getHeadersToSign(), is(empty()));
         assertThat(credential.getMaxBodySize(), is(131072));
     }
@@ -60,11 +60,11 @@ public class EdgeRcClientCredentialProviderTest {
     @Test
     public void testGood3() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good3").getClientCredential(null);
-        assertThat(credential.getAccessToken(), is(equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
-        assertThat(credential.getClientSecret(), is(equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
-        assertThat(credential.getClientToken(), is(equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
-        assertThat(credential.getHost(), is(equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
+        ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good3").getClientCredential("good3");
+        assertThat(credential.getAccessToken(), is(equalTo("AT3")));
+        assertThat(credential.getClientSecret(), is(equalTo("CS3")));
+        assertThat(credential.getClientToken(), is(equalTo("CT3")));
+        assertThat(credential.getHost(), is(equalTo("HOST3")));
         assertThat(credential.getHeadersToSign(), is(empty()));
         assertThat(credential.getMaxBodySize(), is(131072));
     }
@@ -72,11 +72,11 @@ public class EdgeRcClientCredentialProviderTest {
     @Test
     public void testGood4() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good4").getClientCredential(null);
-        assertThat(credential.getAccessToken(), is(equalTo("akaa-ATATATATATATATAT-ATATATATATATATAT")));
-        assertThat(credential.getClientSecret(), is(equalTo("CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=")));
-        assertThat(credential.getClientToken(), is(equalTo("akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT")));
-        assertThat(credential.getHost(), is(equalTo("akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net")));
+        ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good4").getClientCredential("good4");
+        assertThat(credential.getAccessToken(), is(equalTo("AT4")));
+        assertThat(credential.getClientSecret(), is(equalTo("CS4")));
+        assertThat(credential.getClientToken(), is(equalTo("CT4")));
+        assertThat(credential.getHost(), is(equalTo("HOST4")));
         assertThat(credential.getHeadersToSign(), is(empty()));
         assertThat(credential.getMaxBodySize(), is(131072));
     }
@@ -84,19 +84,20 @@ public class EdgeRcClientCredentialProviderTest {
     @Test(expectedExceptions=NullPointerException.class)
     public void testMalformedEdgeRc() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc_malformed");
-        EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "broken").getClientCredential(null);
+        EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "broken").getClientCredential("broken");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void testMissingEdgeRc() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("no_such_file");
-        EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "broken").getClientCredential(null);
+        EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "broken").getClientCredential("broken");
     }
 
     @Test(expectedExceptions=NullPointerException.class, dataProvider = "badSections")
     public void testUnparseableSections(String sectionName) throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
-        EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, null).getClientCredential(null);
+        // NOTE: Specifying a different default section name ensures we honor the method argument.
+        EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "good1").getClientCredential(sectionName);
     }
 
     @DataProvider
@@ -108,4 +109,5 @@ public class EdgeRcClientCredentialProviderTest {
                 {"bad4" },
         };
     }
+
 }
