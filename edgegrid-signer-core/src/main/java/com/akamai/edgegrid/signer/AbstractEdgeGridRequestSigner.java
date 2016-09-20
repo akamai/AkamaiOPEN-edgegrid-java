@@ -76,16 +76,16 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      *         returns {@code null}
      */
     public void sign(RequestT request) throws RequestSigningException {
-        Request req = null;
+        Request req = map(request);
+        ClientCredential credential = null;
         try {
-            req = map(request);
+            credential = clientCredentialProvider.getClientCredential(req);
         } catch (Exception e) {
             throw new NoMatchingCredentialException(e);
         }
-        if (req == null) {
+        if (credential == null) {
             throw new NoMatchingCredentialException();
         }
-        ClientCredential credential = clientCredentialProvider.getClientCredential(req);
         setHost(request, credential.getHost());
         String authorization = edgeGridSigner.getSignature(req, credential);
         setAuthorization(request, authorization);
