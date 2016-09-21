@@ -24,6 +24,16 @@ import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
+import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.ClientCredentialProvider;
+import com.akamai.edgegrid.signer.Request;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 /**
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.

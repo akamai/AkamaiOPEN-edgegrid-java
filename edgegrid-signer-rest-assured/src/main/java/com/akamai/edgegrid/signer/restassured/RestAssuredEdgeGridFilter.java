@@ -21,7 +21,8 @@ import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.EdgeGridV1Signer;
 import com.akamai.edgegrid.signer.Request;
-import com.akamai.edgegrid.signer.RequestSigningException;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
+
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
 import io.restassured.response.Response;

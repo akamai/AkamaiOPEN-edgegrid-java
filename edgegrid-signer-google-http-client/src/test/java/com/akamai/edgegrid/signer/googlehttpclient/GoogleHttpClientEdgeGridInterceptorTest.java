@@ -29,7 +29,7 @@ import java.net.URISyntaxException;
 import org.testng.annotations.Test;
 
 import com.akamai.edgegrid.signer.ClientCredential;
-import com.akamai.edgegrid.signer.RequestSigningException;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;

@@ -16,6 +16,8 @@
 
 package com.akamai.edgegrid.signer;
 
+import com.akamai.edgegrid.signer.exceptions.NoMatchingCredentialException;
+
 /**
  * <p>
  * This interface provides a mechanism to select a {@link ClientCredential}. Implementations of
@@ -38,7 +40,9 @@ public interface ClientCredentialProvider {
      *
      * @param request a Request
      * @return a {@link ClientCredential} (can be {@code null})
+     * @throws NoMatchingCredentialException if no {@link ClientCredential} can be selected
      */
-    ClientCredential getClientCredential(Request request);
+    public ClientCredential getClientCredential(Request request)
+            throws NoMatchingCredentialException;
 
 }

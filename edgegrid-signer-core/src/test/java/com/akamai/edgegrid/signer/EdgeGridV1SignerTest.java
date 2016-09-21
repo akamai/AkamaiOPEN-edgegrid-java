@@ -20,6 +20,11 @@ package com.akamai.edgegrid.signer;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.EdgeGridV1Signer;
+import com.akamai.edgegrid.signer.Request;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
+
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;

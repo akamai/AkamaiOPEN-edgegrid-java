@@ -29,6 +29,8 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
+
 
 /**
  * Library-agnostic representation of an HTTP request. This object is immutable, so you probably
