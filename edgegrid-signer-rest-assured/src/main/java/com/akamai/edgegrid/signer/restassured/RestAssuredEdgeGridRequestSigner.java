@@ -31,7 +31,7 @@ import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
-import com.akamai.edgegrid.signer.RequestSigningException;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 /**
  * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.

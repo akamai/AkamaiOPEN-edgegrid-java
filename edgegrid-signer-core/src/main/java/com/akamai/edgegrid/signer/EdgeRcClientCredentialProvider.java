@@ -136,6 +136,16 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
     @Override
     public ClientCredential getClientCredential(Request request) {
         String sectionName = pickSectionName(request);
+        return getClientCredential(sectionName);
+    }
+
+    /**
+     * Gets the {@link ClientCredential} defined in section {@code sectionName}.
+     *
+     * @param sectionName a section name ({@code null} for the default section)
+     * @return a {@link ClientCredential}
+     */
+    protected ClientCredential getClientCredential(String sectionName) {
         SubnodeConfiguration s = configuration.getSection(sectionName);
         ClientCredentialBuilder builder = ClientCredential.builder()
                 .accessToken(s.getString("access_token"))

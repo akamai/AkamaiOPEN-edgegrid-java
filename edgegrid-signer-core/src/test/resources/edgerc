@@ -1,46 +1,46 @@
 [good1]
-host=akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net
-access_token=akaa-ATATATATATATATAT-ATATATATATATATAT
-client_token=akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT
-client_secret=CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=
+host=HOST1
+access_token=AT1
+client_token=CT1
+client_secret=CS1
 max-body=65536
 
 [good2]
-host=akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net
-access_token=akaa-ATATATATATATATAT-ATATATATATATATAT
-client_token=akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT
-client_secret=CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=
+host=HOST2
+access_token=AT2
+client_token=CT2
+client_secret=CS2
 
 [good3]
-host=akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net
-access_token=akaa-ATATATATATATATAT-ATATATATATATATAT
-client_token=akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT
-client_secret=CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=
+host=HOST3
+access_token=AT3
+client_token=CT3
+client_secret=CS3
 headers=header1
 
 [good4]
-host=akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net
-access_token=akaa-ATATATATATATATAT-ATATATATATATATAT
-client_token=akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT
-client_secret=CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=
+host=HOST4
+access_token=AT4
+client_token=CT4
+client_secret=CS4
 headers=header1,header2
 
 [bad1]
-access_token=akaa-ATATATATATATATAT-ATATATATATATATAT
-client_token=akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT
-client_secret=CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=
+access_token=BAD-AT1
+client_token=BAD-CT1
+client_secret=BAD-CS1
 
 [bad2]
-host=akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net
-client_token=akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT
-client_secret=CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=
+host=BAD-HOST2
+client_token=BAD-CT2
+client_secret=BAD-CS2
 
 [bad3]
-host=akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net
-access_token=akaa-ATATATATATATATAT-ATATATATATATATAT
-client_secret=CSCSCSC+SCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCSCS=
+host=BAD-HOST3
+access_token=BAD-AT3
+client_secret=BAD-CS3
 
 [bad4]
-host=akaa-4AAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA.luna.akamaiapis.net
-access_token=akaa-ATATATATATATATAT-ATATATATATATATAT
-client_token=akaa-CTCTCTCTCTCTCTCT-CTCTCTCTCTCTCTCT
+host=BAD-HOST4
+access_token=BAD-AT4
+client_token=BAD-CT4

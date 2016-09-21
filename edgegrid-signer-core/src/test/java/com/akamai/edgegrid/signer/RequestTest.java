@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
+
 /**
  * Unit tests for {@link Request}.
  *
