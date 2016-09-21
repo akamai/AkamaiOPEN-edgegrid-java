@@ -100,7 +100,7 @@ public class RestAssuredEdgeGridFilterTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void dontSignEachRequestWithoutBaseUri() throws URISyntaxException, IOException {
+    public void dontSignEachRequestWithAbsolutePath() throws URISyntaxException, IOException {
 
         RestAssured.given()
                 .filter(new RestAssuredEdgeGridFilter(credential))
