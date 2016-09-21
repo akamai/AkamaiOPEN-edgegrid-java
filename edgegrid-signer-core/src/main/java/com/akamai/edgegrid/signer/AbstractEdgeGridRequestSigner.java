@@ -77,11 +77,11 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      */
     public void sign(RequestT request) throws RequestSigningException {
         Request req = map(request);
-        ClientCredential credential = null;
+        ClientCredential credential;
         try {
             credential = clientCredentialProvider.getClientCredential(req);
-        } catch (Exception e) {
-            throw new NoMatchingCredentialException(e);
+        } catch (NoMatchingCredentialException e) {
+            throw e;
         }
         if (credential == null) {
             throw new NoMatchingCredentialException();
