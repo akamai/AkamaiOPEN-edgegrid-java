@@ -106,17 +106,15 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      *
      * @param request HTTP request to update
      * @param signature HTTP request signature
-     * @return updated request
      */
-    protected abstract RequestT setAuthorization(RequestT request, String signature);
+    protected abstract void setAuthorization(RequestT request, String signature);
 
     /**
      * Updates a given HTTP request by replacing the request hostname with {@code host} instead.
      *
      * @param request HTTP request to update
      * @param host an OPEN API hostname
-     * @return updated request
      */
-    protected abstract RequestT setHost(RequestT request, String host);
+    protected abstract void setHost(RequestT request, String host);
 
 }

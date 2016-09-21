@@ -86,18 +86,15 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
     }
 
     @Override
-    protected FilterableRequestSpecification setAuthorization(FilterableRequestSpecification requestSpec, String signature) {
+    protected void setAuthorization(FilterableRequestSpecification requestSpec, String signature) {
         requestSpec.header("Authorization", signature);
-        return requestSpec;
     }
 
     @Override
-    protected FilterableRequestSpecification setHost(FilterableRequestSpecification requestSpec, String host) {
+    protected void setHost(FilterableRequestSpecification requestSpec, String host) {
         if (requestSpec.getHeaders().hasHeaderWithName("Host")) {
             requestSpec.header("Host", host);
         }
-        // REST-assured needs to deal with the specific hostname at the time of the call.
-        return requestSpec;
     }
 
 }
