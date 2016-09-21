@@ -17,7 +17,6 @@ package com.akamai.edgegrid.signer.restassured;
 
 
 import com.akamai.edgegrid.signer.ClientCredential;
-import com.akamai.edgegrid.signer.RequestSigningException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.restassured.RestAssured;
 import org.testng.annotations.AfterClass;
@@ -64,7 +63,7 @@ public class RestAssuredEdgeGridFilterTest {
     }
 
     @Test
-    public void signEachRequest() throws URISyntaxException, IOException, RequestSigningException {
+    public void signEachRequest() throws URISyntaxException, IOException {
 
         wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources"))
                 .withHeader("Authorization", matching(".*"))
@@ -82,7 +81,7 @@ public class RestAssuredEdgeGridFilterTest {
     }
 
     @Test
-    public void signWithHostHeader() throws URISyntaxException, IOException, RequestSigningException {
+    public void signWithHostHeader() throws URISyntaxException, IOException {
 
         wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources"))
                 .withHeader("Authorization", matching(".*"))
@@ -101,7 +100,7 @@ public class RestAssuredEdgeGridFilterTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void dontSignEachRequestWithoutBaseUri() throws URISyntaxException, IOException, RequestSigningException {
+    public void dontSignEachRequestWithoutBaseUri() throws URISyntaxException, IOException {
 
         RestAssured.given()
                 .filter(new RestAssuredEdgeGridFilter(credential))
