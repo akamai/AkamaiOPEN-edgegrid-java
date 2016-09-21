@@ -79,9 +79,8 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     @Override
-    protected HttpRequest setAuthorization(HttpRequest request, String signature) {
+    protected void setAuthorization(HttpRequest request, String signature) {
         request.getHeaders().setAuthorization(signature);
-        return request;
     }
 
     private byte[] serializeContent(HttpRequest request) {
@@ -112,13 +111,12 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     @Override
-    protected HttpRequest setHost(HttpRequest request, String host) {
+    protected void setHost(HttpRequest request, String host) {
         // NOTE: Header names are lower-cased by the library.
         if (request.getHeaders().containsKey("host")) {
             request.getHeaders().put("host", host);
         }
         request.getUrl().setHost(host);
-        return request;
     }
 
 }

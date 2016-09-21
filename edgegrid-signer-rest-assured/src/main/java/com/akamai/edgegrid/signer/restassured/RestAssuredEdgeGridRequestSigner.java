@@ -91,22 +91,15 @@ public class RestAssuredEdgeGridRequestSigner extends
     }
 
     @Override
-    protected FilterableRequestSpecification setAuthorization(FilterableRequestSpecification requestSpec, String signature) {
+    protected void setAuthorization(FilterableRequestSpecification requestSpec, String signature) {
         requestSpec.header("Authorization", signature);
-        return requestSpec;
     }
 
     @Override
-    protected FilterableRequestSpecification setHost(FilterableRequestSpecification requestSpec, String host) {
-
-        // Due to limitations of REST-assured design only requests with relative paths can be updated
-        Validate.isTrue(isRelativeUrl(getRequestPath(requestSpec)), "path in request cannot be absolute");
-
-        requestSpec
-                .baseUri("https://" + host)
-                .header("Host", host);
-
-        return requestSpec;
+    protected void setHost(FilterableRequestSpecification requestSpec, String host) {
+        if (requestSpec.getHeaders().hasHeaderWithName("Host")) {
+            requestSpec.header("Host", host);
+        }
     }
 
 

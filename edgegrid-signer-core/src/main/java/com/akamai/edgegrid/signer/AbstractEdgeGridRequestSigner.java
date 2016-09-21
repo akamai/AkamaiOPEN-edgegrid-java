@@ -20,20 +20,14 @@ import com.akamai.edgegrid.signer.exceptions.NoMatchingCredentialException;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 /**
- * <p>
- * This is an abstract base class for implementing EdgeGrid request signing in a library-specific
- * way. There are several HTTP client libraries available for Java, and this class offers a simple
- * mechanism for supporting them.
- * </p>
- * <p>
- * This class uses a {@link ClientCredentialProvider} to select a {@link ClientCredential}
- * appropriately for each request. This interface permits sharing a single instance of the class for
- * a variety of API calls. It also offers a more configurable way to retrieve credentials any way
- * the user wants.
- * </p>
+ * <p> This is an abstract base class for implementing EdgeGrid request signing in a
+ * library-specific way. There are several HTTP client libraries available for Java, and this class
+ * offers a simple mechanism for supporting them. </p> <p> This class uses a {@link
+ * ClientCredentialProvider} to select a {@link ClientCredential} appropriately for each request.
+ * This interface permits sharing a single instance of the class for a variety of API calls. It also
+ * offers a more configurable way to retrieve credentials any way the user wants. </p>
  *
  * @param <RequestT> a type of HTTP client specific request.
- *
  * @author mgawinec@akamai.com
  * @author mmeyer@akamai.com
  */
@@ -44,9 +38,9 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
     private final EdgeGridV1Signer edgeGridSigner;
 
     /**
-     * Creates an EdgeGrid request signer that will always sign requests with the same
-     * {@link ClientCredential}. This constructor will automatically produce a
-     * {@link DefaultClientCredentialProvider} out of {@code clientCredential}.
+     * Creates an EdgeGrid request signer that will always sign requests with the same {@link
+     * ClientCredential}. This constructor will automatically produce a {@link
+     * DefaultClientCredentialProvider} out of {@code clientCredential}.
      *
      * @param clientCredential a {@link ClientCredential} to be used for all requests
      */
@@ -55,11 +49,11 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
     }
 
     /**
-     * Creates an EdgeGrid request signer selecting a {@link ClientCredential} via
-     * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
+     * Creates an EdgeGrid request signer selecting a {@link ClientCredential} via {@link
+     * ClientCredentialProvider#getClientCredential(Request)} for each request.
      *
      * @param clientCredentialProvider a {@link ClientCredentialProvider} to be used for selecting
-     *        credentials for each request
+     *                                 credentials for each request
      */
     public AbstractEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
         this.clientCredentialProvider = clientCredentialProvider;
@@ -71,9 +65,9 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      * replaces {@code request}'s host name with the one specified by the credential.
      *
      * @param request an HTTP request to sign
-     * @throws RequestSigningException if failed to sign a request
-     * @throws NoMatchingCredentialException if acquiring a {@link ClientCredential} throws or
-     *         returns {@code null}
+     * @throws RequestSigningException       if failed to sign a request
+     * @throws NoMatchingCredentialException if acquiring a {@link ClientCredential} throws {@code
+     *                                       NoMatchingCredentialException} or returns {@code null}
      */
     public void sign(RequestT request) throws RequestSigningException {
         Request req = map(request);
@@ -104,19 +98,17 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      * Updates a given HTTP request by adding Authorization header with a value containing request
      * signature.
      *
-     * @param request HTTP request to update
+     * @param request   HTTP request to update
      * @param signature HTTP request signature
-     * @return updated request
      */
-    protected abstract RequestT setAuthorization(RequestT request, String signature);
+    protected abstract void setAuthorization(RequestT request, String signature);
 
     /**
      * Updates a given HTTP request by replacing the request hostname with {@code host} instead.
      *
      * @param request HTTP request to update
-     * @param host an OPEN API hostname
-     * @return updated request
+     * @param host    an OPEN API hostname
      */
-    protected abstract RequestT setHost(RequestT request, String host);
+    protected abstract void setHost(RequestT request, String host);
 
 }
