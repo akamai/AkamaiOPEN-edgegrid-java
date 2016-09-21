@@ -16,18 +16,20 @@
 
 package com.akamai.edgegrid.signer;
 
+import org.apache.commons.lang3.Validate;
+
 /**
  * This is a basic implementation of {@link ClientCredentialProvider} that returns the same
  * {@link ClientCredential} for every request.
  *
- * @author mmeyer
+ * @author mmeyer@akamai.com
  */
 public class DefaultClientCredentialProvider implements ClientCredentialProvider {
 
     private ClientCredential clientCredential;
 
     public DefaultClientCredentialProvider(ClientCredential clientCredential) {
-        this.clientCredential = clientCredential;
+        this.clientCredential = Validate.notNull(clientCredential, "clientCredential cannot be null");
     }
     @Override
     public ClientCredential getClientCredential(Request request) {
