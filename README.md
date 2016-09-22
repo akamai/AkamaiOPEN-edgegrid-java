@@ -35,7 +35,7 @@ build one with its internal builder:
 
 ```java
 Request request = Request.builder()
-        .method(request.getRequestMethod())
+        .method("POST")
         .uriWithQuery(URI.create("https://localhost/service/v2/users"))
         .body("{ field: \"foo\" }")
         .header("content-type", "application/json")
