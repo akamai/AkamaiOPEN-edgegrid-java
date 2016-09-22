@@ -36,9 +36,8 @@ build one with its internal builder:
 ```java
 Request request = Request.builder()
         .method(request.getRequestMethod())
-        .uriWithQuery(request.getUrl().toURI())
+        .uriWithQuery(URI.create("https://localhost/service/v2/users"))
         .body("{ field: \"foo\" }")
-        .header("host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
         .header("content-type", "application/json")
         .build();
 ```
