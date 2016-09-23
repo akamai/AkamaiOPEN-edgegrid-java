@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Use "org.apache.http.headers" to log only HTTP headers -->
+    <logger name="org.apache.http.wire" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+
+    <logger name="org.apache.http.headers" level="NONE">
+
+    </logger>
+
+
+    <logger name="com.github.tomakehurst.wiremock" level="TRACE">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+
+</configuration>

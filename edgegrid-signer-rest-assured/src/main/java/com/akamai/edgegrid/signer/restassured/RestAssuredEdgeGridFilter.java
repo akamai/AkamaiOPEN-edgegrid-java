@@ -30,11 +30,13 @@ import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 
 /**
- * REST-assured filter that signs a request using EdgeGrid V1 signing algorithm.
- * Signing is a process of adding an Authorization header with a request signature. If signing fails then <code>RuntimeException</code> is thrown.
+ * REST-assured filter that signs a request using EdgeGrid V1 signing algorithm. Signing is a
+ * process of adding an Authorization header with a request signature. If signing fails then
+ * <code>RuntimeException</code> is thrown.
  *
- * @see <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">REST-assured filters</a>
  * @author mgawinec@akamai.com
+ * @see <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">REST-assured
+ * filters</a>
  */
 public class RestAssuredEdgeGridFilter implements Filter {
 
@@ -51,8 +53,8 @@ public class RestAssuredEdgeGridFilter implements Filter {
     }
 
     /**
-     * Creates an EdgeGrid signing interceptor selecting a {@link ClientCredential} via
-     * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
+     * Creates an EdgeGrid signing interceptor selecting a {@link ClientCredential} via {@link
+     * ClientCredentialProvider#getClientCredential(Request)} for each request.
      *
      * @param clientCredentialProvider a {@link ClientCredentialProvider}
      */
@@ -65,8 +67,8 @@ public class RestAssuredEdgeGridFilter implements Filter {
      * {@link EdgeGridV1Signer}.
      *
      * @param credential a client credential to sign a request
-     * @return a REST-assured filter to be added to
-     *         {@link io.restassured.specification.RequestSpecification} definition.
+     * @return a REST-assured filter to be added to {@link io.restassured.specification.RequestSpecification}
+     * definition.
      */
     public static RestAssuredEdgeGridFilter sign(ClientCredential credential) {
         return new RestAssuredEdgeGridFilter(credential);

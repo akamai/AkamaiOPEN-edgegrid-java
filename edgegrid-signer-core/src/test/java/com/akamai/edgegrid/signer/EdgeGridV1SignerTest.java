@@ -42,8 +42,8 @@ import static org.hamcrest.Matchers.is;
  */
 public class EdgeGridV1SignerTest {
 
-    static final EdgeGridV1Signer DEFAULT_SIGNER = new EdgeGridV1Signer();
     static final UUID DEFAULT_NONCE = UUID.fromString("ec9d20ee-1e9b-4c1f-925a-f0017754f86c");
+
     static final ClientCredential DEFAULT_CREDENTIAL = ClientCredential.builder()
             .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234")
             .clientSecret("12rvdn/myhSSiuYAC6ZPGaI91ezhdbYd7WyTRKhGxms=")
@@ -56,7 +56,8 @@ public class EdgeGridV1SignerTest {
 
     @Test(dataProvider = "requestsForDefaultSettings")
     public void testForDefaultSettings(String caseName, String expectedAuthorizationHeader, Request request) throws RequestSigningException {
-        String actualAuthorizationHeader = DEFAULT_SIGNER.getSignature(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+        String actualAuthorizationHeader = new EdgeGridV1Signer().getSignature(request, DEFAULT_CREDENTIAL, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
 
@@ -69,7 +70,8 @@ public class EdgeGridV1SignerTest {
                 .headersToSign(headersToSign)
                 .host("control.akamai.com")
                 .build();
-        String actualAuthorizationHeader = DEFAULT_SIGNER.getSignature(request, credential, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+        String actualAuthorizationHeader = new EdgeGridV1Signer().getSignature(request, credential, DEFAULT_TIMESTAMP, DEFAULT_NONCE);
+
         assertThat(actualAuthorizationHeader, is(equalTo(expectedAuthorizationHeader)));
     }
 

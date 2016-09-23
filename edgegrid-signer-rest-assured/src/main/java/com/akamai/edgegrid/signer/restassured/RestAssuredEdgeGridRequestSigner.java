@@ -17,39 +17,44 @@
 package com.akamai.edgegrid.signer.restassured;
 
 
-import io.restassured.http.Header;
-import io.restassured.http.Headers;
-import io.restassured.specification.FilterableRequestSpecification;
-
-import java.net.URI;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
+import org.apache.commons.lang3.Validate;
+
+import java.lang.reflect.Field;
+import java.net.URI;
+
+import io.restassured.http.Header;
+import io.restassured.specification.FilterableRequestSpecification;
+
 /**
- * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}.
+ * REST-assured binding of EdgeGrid signer for signing {@link FilterableRequestSpecification}. The
+ * request specification must contain a relative path in {@code get(path)}, {@code post(path)},
+ * {@code put(path)}, etc. methods. Request specifications with absolute path in those methods will
+ * result in {@code IllegalArgumentException }.
+ *
  * @author mgawinec@akamai.com
  */
-public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<FilterableRequestSpecification> {
+public class RestAssuredEdgeGridRequestSigner extends
+        AbstractEdgeGridRequestSigner<FilterableRequestSpecification> {
 
-    private static Map<String, List<String>> getHeaders(Headers headers) {
-        Map<String, List<String>> ret = new HashMap<>();
-        for (Header header : headers) {
-            List<String> values = ret.get(header.getName());
-            if (values == null) {
-                values = new LinkedList<>();
-                ret.put(header.getName(), values);
-            }
-            values.add(header.getValue());
+
+    private static String getRequestPath(FilterableRequestSpecification requestSpec) {
+        try {
+            Field f = requestSpec.getClass().getDeclaredField("path");
+            f.setAccessible(true);
+            return (String) f.get(requestSpec);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e); // should never occur
         }
-        return ret;
+    }
+
+    private static boolean isRelativeUrl(String uri) {
+        return !URI.create(uri).isAbsolute();
     }
 
     /**
@@ -62,11 +67,11 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
     }
 
     /**
-     * Creates an EdgeGrid request signer selecting a {@link ClientCredential} via
-     * {@link ClientCredentialProvider#getClientCredential(Request)} for each request.
+     * Creates an EdgeGrid request signer selecting a {@link ClientCredential} via {@link
+     * ClientCredentialProvider#getClientCredential(Request)} for each request.
      *
      * @param clientCredentialProvider a {@link ClientCredentialProvider} to be used for selecting
-     *        credentials for each request
+     *                                 credentials for each request
      */
     public RestAssuredEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
         super(clientCredentialProvider);
@@ -96,5 +101,7 @@ public class RestAssuredEdgeGridRequestSigner extends AbstractEdgeGridRequestSig
             requestSpec.header("Host", host);
         }
     }
+
+
 
 }

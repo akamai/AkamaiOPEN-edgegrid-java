@@ -35,10 +35,9 @@ build one with its internal builder:
 
 ```java
 Request request = Request.builder()
-        .method(request.getRequestMethod())
-        .uriWithQuery(request.getUrl().toURI())
+        .method("POST")
+        .uriWithQuery(URI.create("https://localhost/service/v2/users"))
         .body("{ field: \"foo\" }")
-        .header("host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
         .header("content-type", "application/json")
         .build();
 ```
@@ -108,6 +107,9 @@ given()
 .then()
     .statusCode(200);
 ```
+
+REST-assured request specifications *must* contain a relative path in `get(path)`, `post
+(path)` etc. 
 
 ## Usage with Google HTTP Client Library for Java
 
