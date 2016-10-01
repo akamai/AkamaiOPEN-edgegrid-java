@@ -35,7 +35,7 @@ import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 public class RequestTest {
 
     @Test
-    public void basicTest() throws RequestSigningException {
+    public void testAcceptRequestWithAbsoluteUri() throws RequestSigningException {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
@@ -50,6 +50,34 @@ public class RequestTest {
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
 
+    @Test
+    public void testAcceptRequestWithRelativeUri() throws RequestSigningException {
+        Request request = Request.builder()
+                .body("body".getBytes())
+                .method("GET")
+                .uriWithQuery(URI.create("/check"))
+                .header("header", "h")
+                .build();
+
+        assertThat(request.getBody(), equalTo("body".getBytes()));
+        assertThat(request.getMethod(), equalTo("GET"));
+        assertThat(request.getUriWithQuery(), equalTo(URI.create("/check")));
+        assertThat(request.getHeaders().size(), equalTo(1));
+        assertThat(request.getHeaders().get("header"), equalTo("h"));
+    }
+
+    @Test
+    public void testHeadersLowercasing() throws RequestSigningException {
+        Request request = Request.builder()
+                .body("body".getBytes())
+                .method("GET")
+                .uriWithQuery(URI.create("/check"))
+                .header("HeaDer", "h")
+                .build();
+
+        assertThat(request.getHeaders().get("header"), equalTo("h"));
+    }
+
     @Test(expectedExceptions = RequestSigningException.class)
     public void testRejectDuplicateHeaderNames() throws RequestSigningException {
         Request.builder()
@@ -57,6 +85,16 @@ public class RequestTest {
                 .uriWithQuery(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("Duplicate", "Y")
+                .build();
+    }
+
+    @Test(expectedExceptions = RequestSigningException.class)
+    public void testRejectDuplicateCaseInsensitiveHeaderNames() throws RequestSigningException {
+        Request.builder()
+                .method("GET")
+                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .header("Duplicate", "X")
+                .header("DUPLICATE", "Y")
                 .build();
     }
 
@@ -80,5 +118,7 @@ public class RequestTest {
                 .header("DUPLICATE", "Y")
                 .build();
     }
+
+
 
 }

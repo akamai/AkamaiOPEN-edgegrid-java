@@ -16,6 +16,7 @@
 
 package com.akamai.edgegrid.signer;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.Builder;
@@ -106,7 +107,11 @@ public class EdgeGridV1Signer {
      */
     public String getSignature(Request request, ClientCredential credential)
             throws RequestSigningException {
-        return getSignature(request, credential, System.currentTimeMillis(), UUID.randomUUID());
+        return getSignature(request, credential, System.currentTimeMillis(), generateNonce());
+    }
+
+    private static String generateNonce() {
+        return UUID.randomUUID().toString();
     }
 
     private static String getAuthorizationHeaderValue(String authData, String signature) {
@@ -159,7 +164,8 @@ public class EdgeGridV1Signer {
         return uri;
     }
 
-    String getSignature(Request request, ClientCredential credential, long timestamp, UUID nonce) throws RequestSigningException {
+    String getSignature(Request request, ClientCredential credential, long timestamp, String nonce)
+            throws RequestSigningException {
         Validate.notNull(credential, "credential cannot be null");
         Validate.notNull(request, "request cannot be null");
 
@@ -171,13 +177,17 @@ public class EdgeGridV1Signer {
         return getAuthorizationHeaderValue(authData, signature);
     }
 
-    private String getSignature(Request request, ClientCredential credential, String timeStamp, String authData) throws RequestSigningException {
+    private String getSignature(Request request, ClientCredential credential, String timeStamp,
+                                String authData) throws RequestSigningException {
         String signingKey = getSigningKey(timeStamp, credential.getClientSecret());
         String canonicalizedRequest = getCanonicalizedRequest(request, credential);
-        String stringToSign = getStringToSign(canonicalizedRequest, authData);
-        log.debug(String.format("String to sign: '%s'", stringToSign));
+        log.debug(String.format("Canonicalized request: '%s'",
+                StringEscapeUtils.escapeJava(canonicalizedRequest)));
+        String dataToSign = getDataToSign(canonicalizedRequest, authData);
+        log.debug(String.format("Data to sign: '%s'",
+                StringEscapeUtils.escapeJava(dataToSign)));
 
-        return signAndEncode(stringToSign, signingKey);
+        return signAndEncode(dataToSign, signingKey);
     }
 
     private String signAndEncode(String stringToSign, String signingKey) throws RequestSigningException {
@@ -190,11 +200,11 @@ public class EdgeGridV1Signer {
         return base64.encodeToString(signingKeyBytes);
     }
 
-    private String getStringToSign(String canonicalizedRequest, String authData) {
+    private String getDataToSign(String canonicalizedRequest, String authData) {
         return canonicalizedRequest + authData;
     }
 
-    private String getAuthData(ClientCredential credential, String timeStamp, UUID nonce) {
+    private String getAuthData(ClientCredential credential, String timeStamp, String nonce) {
         StringBuilder sb = new StringBuilder();
         sb.append(ALGORITHM_NAME);
         sb.append(' ');
@@ -215,7 +225,7 @@ public class EdgeGridV1Signer {
 
         sb.append(AUTH_NONCE_NAME);
         sb.append('=');
-        sb.append(nonce.toString());
+        sb.append(nonce);
         sb.append(';');
         return sb.toString();
     }
@@ -261,18 +271,15 @@ public class EdgeGridV1Signer {
     }
 
     private String canonicalizeHeaders(Map<String, String> requestHeaders, ClientCredential credential) {
-        StringBuilder sb = new StringBuilder();
+        List<String> headers = new ArrayList<>();
         for (String headerName : credential.getHeadersToSign()) {
             String headerValue = requestHeaders.get(headerName);
             if (StringUtils.isBlank(headerValue)) {
                 continue;
             }
-            sb.append(headerName.toLowerCase());
-            sb.append(':');
-            sb.append(canonicalizeHeaderValue(headerValue));
-            sb.append('\t');
+            headers.add(headerName.toLowerCase() + ":" + canonicalizeHeaderValue(headerValue));
         }
-        return sb.toString();
+        return StringUtils.join(headers, "\t");
     }
 
     private String canonicalizeHeaderValue(String headerValue) {
@@ -291,7 +298,7 @@ public class EdgeGridV1Signer {
             return "";
         }
 
-        if (requestBody == null) {
+        if (requestBody == null || requestBody.length == 0) {
             return "";
         }
 

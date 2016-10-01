@@ -97,9 +97,12 @@ public class RestAssuredEdgeGridRequestSigner extends
 
     @Override
     protected void setHost(FilterableRequestSpecification requestSpec, String host) {
-        if (requestSpec.getHeaders().hasHeaderWithName("Host")) {
-            requestSpec.header("Host", host);
-        }
+        // Due to limitations of REST-assured design only requests with relative paths can be updated
+        Validate.isTrue(isRelativeUrl(getRequestPath(requestSpec)), "path in request cannot be absolute");
+
+        requestSpec
+                .baseUri("http://" + host)
+                .header("Host", host);
     }
 
 
