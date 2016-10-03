@@ -159,7 +159,7 @@ public class EdgeGridV1SignerTest {
         long fixedTimestamp = 1395430461000L;
         return new Object[][]{
 
-            /*    {"simple GET",
+                {"simple GET",
                         Request.builder()
                                 .method("GET")
                                 .uriWithQuery(URI.create("/"))
@@ -220,7 +220,7 @@ public class EdgeGridV1SignerTest {
                         "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxxxxxxxxxxxxxxx;" +
                                 "access_token=akab-access-token-xxx-xxxxxxxxxxxxxxxx;" +
                                 "timestamp=20140321T19:34:21+0000;" +
-                                "nonce=nonce-xx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;signature=6Q6PiTipLae6n4GsSIDTCJ54bEbHUBp+4MUXrbQCBoY="},*/
+                                "nonce=nonce-xx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;signature=6Q6PiTipLae6n4GsSIDTCJ54bEbHUBp+4MUXrbQCBoY="},
 
                 {"POST empty body",
                         Request.builder()
@@ -235,7 +235,7 @@ public class EdgeGridV1SignerTest {
                                 "timestamp=20140321T19:34:21+0000;" +
                                 "nonce=nonce-xx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;signature=1gEDxeQGD5GovIkJJGcBaKnZ+VaPtrc4qBUHixjsPCQ="},
 
-           /*     {"Simple header signing with GET",
+                {"Simple header signing with GET",
                         Request.builder()
                                 .method("GET")
                                 .uriWithQuery(URI.create("/testapi/v1/t4"))
@@ -303,7 +303,7 @@ public class EdgeGridV1SignerTest {
                         "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxxxxxxxxxxxxxxx;" +
                                 "access_token=akab-access-token-xxx-xxxxxxxxxxxxxxxx;" +
                                 "timestamp=20140321T19:34:21+0000;" +
-                                "nonce=nonce-xx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;signature=GNBWEYSEWOLtu+7dD52da2C39aX/Jchpon3K/AmBqBU="},*/
+                                "nonce=nonce-xx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;signature=GNBWEYSEWOLtu+7dD52da2C39aX/Jchpon3K/AmBqBU="}
 
         };
     }
