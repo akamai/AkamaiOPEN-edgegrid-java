@@ -1,56 +1,213 @@
-# edgegrid-auth-java
+# EdgeGrid for Java
 
-Java library for EdgeGrid Client Authentication
+Java implementation of Akamai {OPEN} EdgeGrid signing in Java.
 
-## CHANGES
+## Description
 
-May 29th 2014
-* A POST request body larger than the maxBodySize is allowed but only the first maxBodySize bytes are used in the [Content hash aspect of the request signature](https://developer.akamai.com/stuff/Getting_Started_with_OPEN_APIs/Client_Auth.html).
+This library implements [Akamai {OPEN} EdgeGrid Authentication][11] for Java.
+It is presented as a core module which can be used independently of any
+particular HTTP client library and two implementations for specific HTTP client
+libraries.
 
+## Overview of core library
 
-## Summary
+The core library is designed to be agnostic to any particular HTTP Client
+library. The core algorithm can be used directly in a non-request context to
+generate a signature for testing and verification. There are separate libraries
+for actually making HTTP requests - see below.
 
-edgegrid-auth-java is a Java library for signing requests to APIs that are carried on the Akamai EdgeGrid network. It builds on the [Google HTTP Client Library for Java](https://code.google.com/p/google-http-java-client/) and adds the EdgeGrid signature to a normal [HttpRequest](http://javadoc.google-http-java-client.googlecode.com/hg/1.17.0-rc/com/google/api/client/http/HttpRequest.html).
+The EdgeGrid Signer Core library consists of three key classes.
 
+`ClientCredential` is an immutable container to hold the credential data used
+for signing requests. You can build one with its internal builder:
 
-## Usage
-
-Use the library is pretty simple.
-
-First, create a `RequestSigner` object. `EdgeGridV1Signer` is one (the only currently provided) implementation of the `RequestSigner` interface.
-
-The constructor of `EdgeGridV1Signer` takes two parameters:
-
-* `headers`: for specifying the ordered list of request headers to be included in the request signature. This is provided by the API service provider.
-* `maxBodySize`: for specifying the maximum allowed size in bytes of the request body, for POST and PUT requests. This value is also provided by the API service provider.
-
-This `RequestSigner` object can then be used to sign the requests.
-
-To sign an [HttpRequest](http://javadoc.google-http-java-client.googlecode.com/hg/1.17.0-rc/com/google/api/client/http/HttpRequest.html):
-
-1. first, add the Host header with the hostname of the request;
-
-2. then, sign the request with a `ClientCredential` that encapsulates the following:
-
- * `clientToken`: for specifying the client token obtained from the client provisioning process
- * `accessToken`: for specifying the access token obtained from the client authorization process
- * `clientSecret`: for specifying the client secret that is associated with the client token
-
-
-## Example
-
-Here is an example code snippet:
-
-```java         
-RequestSigner signer = new EdgeGridV1Signer(Collections.EMPTY_LIST, 1024 * 2);
-URI uri = new URI("https", "akaa-u5x3btzf44hplb4q-6jrzwnvo7llch3po.luna.akamaiapis.net",			 
-	"/billing-usage/v1/reportSources", null, null);
-HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
-HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
-HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
-HttpHeaders headers = request.getHeaders();
-headers.set("Host", "akaa-u5x3btzf44hplb4q-6jrzwnvo7llch3po.luna.akamaiapis.net");
-ClientCredential credential = new DefaultCredential("akaa-nev5k66unzize2gx-5uz4svbszp4ko5wq",
-	"akaa-ublu6mqdcqkjw5lz-542a56pcogddddow", "SOMESECRET");
-HttpRequest signedRequest = signer.sign(request, credential);
+```java
+ClientCredential credential = ClientCredential.builder()
+        .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp")
+        .clientToken("akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj")
+        .clientSecret("SOMESECRET")
+        .host("akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
+        .build();
 ```
+
+`Request` is an immutable container to hold data about an HTTP request. You can
+build one with its internal builder:
+
+```java
+Request request = Request.builder()
+        .method("POST")
+        .uriWithQuery(URI.create("https://localhost/service/v2/users"))
+        .body("{ field: \"foo\" }")
+        .header("content-type", "application/json")
+        .build();
+```
+
+`EdgeGridV1Signer` is an implementation of the EdgeGrid V1 Signing Algorithm.
+You can use `EdgeGridV1Signer#getSignature(Request, ClientCredential)` to
+generate the `Authorization` header for an EdgeGrid request:
+
+```java
+String authHeader = new EdgeGridV1Signer().getSignature(request, credential);
+```
+
+## Client Library Bindings
+
+The core signing library is agnostic to any particular HTTP client. Most users
+will not want or need to use it directly, they will want to use one of the
+library binding implementations.
+
+The core signing library provides some additional classes and interfaces to
+facilitate usage of `EdgeGridV1Signer` in real HTTP requests.
+
+`AbstractEdgeGridRequestSigner` is an abstract class that provides most of the
+scaffolding for library-specific signing implementations. Each implementation
+has a constructor that takes a `ClientCredential` and another that takes a
+`ClientCredentialProvider`.
+
+`ClientCredentialProvider` is an interface to permit the user to code their
+own mechanism for retrieving a `ClientCredential` at the time a request is
+signed based on the request itself. This means that implementations can, for
+example, inspect the path being requested in order to select an appropriate
+credential.
+
+`DefaultClientCredentialProvider` is a simple implementation of
+`ClientCredentialProvider` which always returns the same `ClientCredential`.
+The constructors for all the `AbstractEdgeGridRequestSigner` implementations
+create one of these transparently whenever they are passed a `ClientCredential`.
+
+`EdgeRcClientCredentialProvider` is another implementation of
+`ClientCredentialProvider` that can read from the EdgeRc configuration files
+ that are used in various other EdgeGrid signing library implementations. The
+`#pickSectionName()` method can be overridden by the user to select different
+sections from the configuration file based on the current request.
+
+
+## Usage with REST-assured
+
+There is an EdgeGrid signer implementation for [REST-assured][10].
+
+Include the following Maven dependency in your project POM:
+
+```xml
+<dependency>
+    <groupId>com.akamai.edgegrid</groupId>
+    <artifactId>edgegrid-signer-rest-assured</artifactId>
+    <version>2.0-SNAPSHOT</version>
+</dependency>
+```
+
+Sign your REST-assured request specification with a defined client credential:
+
+```java
+given()
+    .baseUri("https://endpoint.net")
+    .filter(new RestAssuredEdgeGridFilter(credential))
+.when()
+    .get("/service/v2/users")
+.then()
+    .statusCode(200);
+```
+
+REST-assured request specifications *must* contain a relative path in `get(path)`, `post
+(path)` etc. 
+
+## Usage with Google HTTP Client Library for Java
+
+There is an EdgeGrid signer implementation for [Google HTTP Client Library for Java][9].
+
+Include the following Maven dependency in your project POM:
+
+```xml
+<dependency>
+    <groupId>com.akamai.edgegrid</groupId>
+    <artifactId>edgegrid-signer-google-http-client</artifactId>
+    <version>2.0-SNAPSHOT</version>
+</dependency>
+```
+
+Sign your HTTP request with a defined client credential:
+
+```java
+HttpTransport httpTransport = new ApacheHttpTransport();
+HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
+URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
+HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
+
+GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner();
+requestSigner.sign(request, credential);
+request.execute();
+```
+
+This, however, requires remembering to sign explicitly every request. Alternatively, you may create <code>HttpRequestFactory</code>
+that will be doing it for yourself:
+
+```java
+private HttpRequestFactory createSigningRequestFactory(HttpTransport httpTransport) {
+    return httpTransport.createRequestFactory(new HttpRequestInitializer() {
+        public void initialize(HttpRequest request) throws IOException {
+            request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(credential));
+        }
+    });
+}
+```
+
+And then
+
+```java
+HttpTransport httpTransport = new ApacheHttpTransport();
+HttpRequestFactory requestFactory = createSigningRequestFactory(httpTransport);
+URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
+HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
+
+request.execute();
+```
+
+## Releases
+
+2.0:
+
+- signing algorithm tweaks
+- binding for Google HTTP Client Library for Java
+- binding for REST-assured
+- Unit tests with TestNG
+- 2.0 will be published to Maven Central!
+
+## Similar tools
+
+A number of similar libraries for signing requests exist for popular
+programming languages:
+
+* There are two Python bindings: a [command line tool similar to curl][1] and a [Python library][2].
+* [Ruby binding][2]
+* [Perl binding][3]
+* [Powershell binding][4]
+* [NodeJS binding][5]
+* [C# binding][6]
+* [Go binding][7]
+
+[1]: https://github.com/akamai-open/edgegrid-curl
+[2]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-python
+[3]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-ruby
+[4]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-perl
+[5]: https://github.com/akamai-open/AkamaiOPEN-powershell
+[6]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-node
+[7]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-C-Sharp
+[8]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-golang
+[9]: https://github.com/google/google-http-java-client
+[10]: https://github.com/rest-assured/rest-assured
+[11]: https://developer.akamai.com/introduction/Client_Auth.html
+[12]: https://developer.akamai.com/
+
+## Authors
+
+Maciej Gawinecki <mgawinec@akamai.com>
+
+Martin Meyer <mmeyer@akamai.com>
+
+
+## Contribute!
+
+This is an open-source library, and contributions are welcome. You're welcome
+to fork this project and send us a pull request.
+
+For more information about OPEN API visit the [Akamai {OPEN} Developer Community][12].
