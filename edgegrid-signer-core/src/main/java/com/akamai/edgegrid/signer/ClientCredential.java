@@ -84,31 +84,31 @@ public class ClientCredential implements Comparable<ClientCredential> {
         return compareTo(that) == 0;
     }
 
-    String getAccessToken() {
+    public String getAccessToken() {
         return accessToken;
     }
 
-    String getClientSecret() {
+    public String getClientSecret() {
         return clientSecret;
     }
 
-    String getClientToken() {
+    public String getClientToken() {
         return clientToken;
     }
 
-    int getMaxBodySize() {
+    public Set<String> getHeadersToSign() {
+        return headersToSign;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getMaxBodySize() {
         if (maxBodySize == null) {
             return DEFAULT_MAX_BODY_SIZE_IN_BYTES;
         }
         return maxBodySize;
-    }
-
-    Set<String> getHeadersToSign() {
-        return headersToSign;
-    }
-
-    String getHost() {
-        return host;
     }
 
     @Override
