@@ -65,8 +65,7 @@ public class EdgeGridV1SignerTest {
     @DataProvider
     public Object[][] testData() throws RequestSigningException {
         return combine(
-               //  basicTests(),
-
+                basicTests(),
                 pythonCases());
     }
 
