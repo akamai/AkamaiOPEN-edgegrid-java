@@ -24,8 +24,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -49,7 +53,9 @@ public class RestAssuredEdgeGridFilterTest {
             .host(SERVICE_MOCK)
             .build();
 
-    WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(SERVICE_MOCK_PORT));
+    WireMockServer wireMockServer = new WireMockServer(wireMockConfig().httpsPort(SERVICE_MOCK_PORT));
+
+
 
     @BeforeClass
     public void setUp() {
@@ -74,6 +80,7 @@ public class RestAssuredEdgeGridFilterTest {
                         .withBody("<response>Some content</response>")));
 
         RestAssured.given()
+                .relaxedHTTPSValidation()
                 .filter(new RestAssuredEdgeGridFilter(credential))
                 .baseUri("https://ignored-hostname.com")
                 .get("/billing-usage/v1/reportSources")
@@ -92,6 +99,7 @@ public class RestAssuredEdgeGridFilterTest {
                         .withBody("<response>Some content</response>")));
 
         RestAssured.given()
+                .relaxedHTTPSValidation()
                 .filter(new RestAssuredEdgeGridFilter(credential))
                 .header("Host", "ignored-hostname.com")
                 .baseUri("https://ignored-hostname.com")
@@ -105,6 +113,39 @@ public class RestAssuredEdgeGridFilterTest {
         RestAssured.given()
                 .filter(new RestAssuredEdgeGridFilter(credential))
                 .get("https://ignored-hostname.com/billing-usage/v1/reportSources")
+                .then().statusCode(200);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void dontSignRequestWithFileContent() throws URISyntaxException, IOException {
+
+        RestAssured.given()
+                .filter(new RestAssuredEdgeGridFilter(credential))
+                .baseUri("https://ignored-hostname.com")
+                .body(new File("/home/johan/some_large_file.bin"))
+                .post("/billing-usage/v1/reportSources")
+                .then().statusCode(200);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void dontSignRequestWithInputStreamContent() throws URISyntaxException, IOException {
+
+        RestAssured.given()
+                .filter(new RestAssuredEdgeGridFilter(credential))
+                .baseUri("https://ignored-hostname.com")
+                .body(new ByteArrayInputStream("exampleString".getBytes(StandardCharsets.UTF_8)))
+                .post("/billing-usage/v1/reportSources")
+        .then().statusCode(200);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void dontSignRequestWithMultipartContent() throws URISyntaxException, IOException {
+
+        RestAssured.given()
+                .filter(new RestAssuredEdgeGridFilter(credential))
+                .baseUri("https://ignored-hostname.com")
+                .multiPart("file", new File("/home/johan/some_large_file.bin"))
+                .post("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
     }
 
