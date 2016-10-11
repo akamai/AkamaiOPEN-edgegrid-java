@@ -101,7 +101,7 @@ public class RestAssuredEdgeGridRequestSigner extends
         Validate.isTrue(isRelativeUrl(getRequestPath(requestSpec)), "path in request cannot be absolute");
 
         requestSpec
-                .baseUri("http://" + host)
+                .baseUri("https://" + host)
                 .header("Host", host);
     }
 
