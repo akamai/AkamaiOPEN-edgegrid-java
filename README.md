@@ -38,7 +38,7 @@ Request request = Request.builder()
         .method("POST")
         .uriWithQuery(URI.create("https://localhost/service/v2/users"))
         .body("{ field: \"foo\" }")
-        .header("content-type", "application/json")
+        .header("Content-Type", "application/json")
         .build();
 ```
 
