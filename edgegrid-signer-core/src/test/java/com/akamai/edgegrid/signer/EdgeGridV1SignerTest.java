@@ -84,43 +84,43 @@ public class EdgeGridV1SignerTest {
                 {"GET request",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("http://any-hostname-at-all.com/check"))
+                                .uriWithQuery(URI.create("https://any-hostname-at-all.com/check"))
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
                                 "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
-                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=0dCwIUaObZaXrTO1CwojlVBwuNbh1av+nO7VS2YC8is=",
+                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=8GpKbZnIx4XEw/zXtQdbVwIu0zJSG0RpNiVTSyIUwr0=",
                 },
                 {"GET request with query",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("http://control.akamai.com/check?maciek=value"))
+                                .uriWithQuery(URI.create("https://control.akamai.com/check?maciek=value"))
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
                                 "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
-                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=OkiBaPX/HORjhPPu2Vyo35aQrO3+GhDM1x4NHXUoOio=",
+                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=x10Wq9yA03bt+1nvPJPgVdReeIp91yLWjR0UPDSbL1Q=",
                 },
                 {"POST request",
                         Request.builder()
                                 .method("POST")
-                                .uriWithQuery(URI.create("http://any-hostname-at-all.com/send"))
+                                .uriWithQuery(URI.create("https://any-hostname-at-all.com/send"))
                                 .body("x=y&a=b".getBytes())
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
-                                "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=AY5RxJqWU9EO3iMM1x/Fd6AdsJF8kzz7NYVmyc8QixA=",
+                                "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=fN+xqlaSh0P07vBQ5cSCNK8gCYJfFIltzl6xrTjC6i0=",
                 },
                 {"For PUT request we ignore body",
                         Request.builder()
                                 .method("PUT")
-                                .uriWithQuery(URI.create("http://control.akamai.com/send"))
+                                .uriWithQuery(URI.create("https://control.akamai.com/send"))
                                 .body("x=y&a=b".getBytes())
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
                                 "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
-                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=DvV3p2X66F3qHopVX3tk3pHm8vIqLR9aJCKFCgIQS5Q=",
+                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=OFMfMK4ROsW+TTmauMOjyrFuBr7jcJ1b6sb0+jIYj24=",
                 },
                 {"GET without scheme or hostname",
                         Request.builder()

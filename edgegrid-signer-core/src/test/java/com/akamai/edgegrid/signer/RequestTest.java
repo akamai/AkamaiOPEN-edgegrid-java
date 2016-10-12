@@ -39,13 +39,13 @@ public class RequestTest {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uriWithQuery(URI.create("https://control.akamai.com/check"))
                 .header("header", "h")
                 .build();
 
         assertThat(request.getBody(), equalTo("body".getBytes()));
         assertThat(request.getMethod(), equalTo("GET"));
-        assertThat(request.getUriWithQuery(), equalTo(URI.create("http://control.akamai.com/check")));
+        assertThat(request.getUriWithQuery(), equalTo(URI.create("https://control.akamai.com/check")));
         assertThat(request.getHeaders().size(), equalTo(1));
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
@@ -82,7 +82,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNames() throws RequestSigningException {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uriWithQuery(URI.create("https://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("Duplicate", "Y")
                 .build();
@@ -92,7 +92,7 @@ public class RequestTest {
     public void testRejectDuplicateCaseInsensitiveHeaderNames() throws RequestSigningException {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uriWithQuery(URI.create("https://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
@@ -102,7 +102,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNamesMap() throws RequestSigningException {
         Request.RequestBuilder builder = Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uriWithQuery(URI.create("https://control.akamai.com/check"))
                 .header("Duplicate", "X");
         Map<String, String> headers = new HashMap<>();
         headers.put("Duplicate", "y");
@@ -113,7 +113,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNamesMixedCase() throws RequestSigningException {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uriWithQuery(URI.create("https://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
