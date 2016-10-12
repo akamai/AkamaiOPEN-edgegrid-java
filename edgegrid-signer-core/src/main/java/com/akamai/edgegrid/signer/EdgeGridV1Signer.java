@@ -236,8 +236,9 @@ public class EdgeGridV1Signer {
         sb.append(request.getMethod().toUpperCase());
         sb.append('\t');
 
-        String scheme = StringUtils.defaultString(request.getUriWithQuery().getScheme(), "https");
-        sb.append(scheme.toLowerCase());
+        // all OPEN APIs use HTTPS, non
+        String scheme = "https";
+        sb.append(scheme);
         sb.append('\t');
 
         String host = credential.getHost();
