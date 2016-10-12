@@ -38,7 +38,7 @@ Request request = Request.builder()
         .method("POST")
         .uriWithQuery(URI.create("https://localhost/service/v2/users"))
         .body("{ field: \"foo\" }")
-        .header("content-type", "application/json")
+        .header("Content-Type", "application/json")
         .build();
 ```
 
@@ -133,8 +133,8 @@ HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
 URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
 HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
 
-GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner();
-requestSigner.sign(request, credential);
+GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner(credential);
+requestSigner.sign(request);
 request.execute();
 ```
 

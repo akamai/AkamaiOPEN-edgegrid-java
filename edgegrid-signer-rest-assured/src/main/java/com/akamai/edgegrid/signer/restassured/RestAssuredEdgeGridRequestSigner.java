@@ -25,6 +25,8 @@ import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 import org.apache.commons.lang3.Validate;
 
+import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URI;
 
@@ -57,6 +59,25 @@ public class RestAssuredEdgeGridRequestSigner extends
         return !URI.create(uri).isAbsolute();
     }
 
+    private static byte[] serialize(Object requestBody) {
+        if (requestBody == null) {
+            return new byte[0];
+        }
+
+        if (requestBody instanceof byte[]) {
+            return (byte[]) requestBody;
+        } else if (requestBody instanceof String){
+            // FIXME(mgawinec) default charset might wrong
+            return ((String)requestBody).getBytes();
+        } else if (requestBody instanceof File){
+            throw new IllegalArgumentException("File as request body unsupported");
+        } else if (requestBody instanceof InputStream) {
+            throw new IllegalArgumentException("InputStream as request body unsupported");
+        } else {
+            throw new IllegalArgumentException("Unsupported request body type: " + requestBody.getClass());
+        }
+    }
+
     /**
      * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
      *
@@ -80,10 +101,14 @@ public class RestAssuredEdgeGridRequestSigner extends
     @Override
     protected Request map(FilterableRequestSpecification requestSpec)
             throws RequestSigningException {
+
+        Validate.isTrue(requestSpec.getMultiPartParams().isEmpty(),
+                "multipart request is not supported");
+
         Request.RequestBuilder builder = Request.builder()
                 .method(requestSpec.getMethod())
                 .uriWithQuery(URI.create(requestSpec.getURI()))
-                .body(requestSpec.getBody() != null ? requestSpec.<byte[]>getBody() : new byte[]{});
+                .body(serialize(requestSpec.getBody()));
         for (Header header : requestSpec.getHeaders()) {
             builder.header(header.getName(), header.getValue());
         }
@@ -101,7 +126,7 @@ public class RestAssuredEdgeGridRequestSigner extends
         Validate.isTrue(isRelativeUrl(getRequestPath(requestSpec)), "path in request cannot be absolute");
 
         requestSpec
-                .baseUri("http://" + host)
+                .baseUri("https://" + host)
                 .header("Host", host);
     }
 
