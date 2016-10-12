@@ -44,7 +44,7 @@ Request request = Request.builder()
 ```
 
 NOTE: You only need to include headers in your `Request` that will be included
-in the EdgeGrid request signature. Many APIs to not require any headers to be
+in the EdgeGrid request signature. Many APIs do not require any headers to be
 signed.
 
 `EdgeGridV1Signer` is an implementation of the EdgeGrid V1 Signing Algorithm.
