@@ -99,8 +99,7 @@ Include the following Maven dependency in your project POM:
 Sign your REST-assured request specification with a defined client credential:
 
 ```java
-given()
-    .baseUri("https://endpoint.net")
+given()    
     .filter(new RestAssuredEdgeGridFilter(credential))
 .when()
     .get("/service/v2/users")
