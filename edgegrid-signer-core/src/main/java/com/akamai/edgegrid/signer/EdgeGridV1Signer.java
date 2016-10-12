@@ -275,6 +275,7 @@ public class EdgeGridV1Signer {
 
     private String canonicalizeHeaders(Map<String, String> requestHeaders, ClientCredential credential) {
         List<String> headers = new ArrayList<>();
+        // NOTE: Headers are expected to be in order. ClientCredential#headersToSign is a TreeSet.
         for (String headerName : credential.getHeadersToSign()) {
             String headerValue = requestHeaders.get(headerName);
             if (StringUtils.isBlank(headerValue)) {

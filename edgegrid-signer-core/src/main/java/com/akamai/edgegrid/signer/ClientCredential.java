@@ -16,9 +16,9 @@
 
 package com.akamai.edgegrid.signer;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.Builder;
@@ -42,7 +42,7 @@ public class ClientCredential implements Comparable<ClientCredential> {
     private String accessToken;
     private String clientSecret;
     private String clientToken;
-    private Set<String> headersToSign;
+    private TreeSet<String> headersToSign;
     private String host;
     private Integer maxBodySize;
 
@@ -132,7 +132,8 @@ public class ClientCredential implements Comparable<ClientCredential> {
         private String accessToken;
         private String clientSecret;
         private String clientToken;
-        private Set<String> headersToSign = new HashSet<>();
+        // NOTE: Headers are expected to be in order, so we pre-sort them here by using TreeSet.
+        private TreeSet<String> headersToSign = new TreeSet<>();
         private String host;
         private Integer maxBodySize;
 
