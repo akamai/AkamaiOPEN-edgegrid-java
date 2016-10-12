@@ -239,7 +239,7 @@ public class EdgeGridV1Signer {
         sb.append(request.getMethod().toUpperCase());
         sb.append('\t');
 
-        String scheme = StringUtils.defaultString(request.getUriWithQuery().getScheme(), "https");
+        String scheme = StringUtils.defaultString(request.getUri().getScheme(), "https");
         sb.append(scheme.toLowerCase());
         sb.append('\t');
 
@@ -247,7 +247,7 @@ public class EdgeGridV1Signer {
         sb.append(host.toLowerCase());
         sb.append('\t');
 
-        String relativePath = getRelativePathWithQuery(request.getUriWithQuery());
+        String relativePath = getRelativePathWithQuery(request.getUri());
         String relativeUrl = canonicalizeUri(relativePath);
         sb.append(relativeUrl);
         sb.append('\t');

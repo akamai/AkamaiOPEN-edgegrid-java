@@ -62,7 +62,7 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     protected Request map(HttpRequest request) throws RequestSigningException {
         Request.RequestBuilder builder = Request.builder()
                 .method(request.getRequestMethod())
-                .uriWithQuery(request.getUrl().toURI())
+                .uri(request.getUrl().toURI())
                 .body(serializeContent(request));
         for (Map.Entry<String, Object> entry : request.getHeaders().entrySet()) {
             Object value = entry.getValue();

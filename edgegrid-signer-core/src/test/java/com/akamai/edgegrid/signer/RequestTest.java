@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
@@ -34,18 +35,44 @@ import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
  */
 public class RequestTest {
 
-    @Test
-    public void testAcceptRequestWithAbsoluteUri() throws RequestSigningException {
+    @Test(dataProvider = "absoluteUriTestData")
+    public void testAcceptRequestWithAbsoluteUriAsString(
+            String caseName,
+            String uri,
+            String expectedPath,
+            String expectedQuery) throws RequestSigningException {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
-                .uriWithQuery(URI.create("https://control.akamai.com/check"))
+                .uri(uri)
                 .header("header", "h")
                 .build();
 
         assertThat(request.getBody(), equalTo("body".getBytes()));
         assertThat(request.getMethod(), equalTo("GET"));
-        assertThat(request.getUriWithQuery(), equalTo(URI.create("https://control.akamai.com/check")));
+        assertThat(request.getUri().getPath(), equalTo(expectedPath));
+        assertThat(request.getUri().getQuery(), equalTo(expectedQuery));
+        assertThat(request.getHeaders().size(), equalTo(1));
+        assertThat(request.getHeaders().get("header"), equalTo("h"));
+    }
+
+    @Test(dataProvider = "absoluteUriTestData")
+    public void testAcceptRequestWithAbsoluteUriAsURI(
+            String caseName,
+            String uri,
+            String expectedPath,
+            String expectedQuery) throws RequestSigningException {
+        Request request = Request.builder()
+                .body("body".getBytes())
+                .method("GET")
+                .uri(URI.create(uri))
+                .header("header", "h")
+                .build();
+
+        assertThat(request.getBody(), equalTo("body".getBytes()));
+        assertThat(request.getMethod(), equalTo("GET"));
+        assertThat(request.getUri().getPath(), equalTo(expectedPath));
+        assertThat(request.getUri().getQuery(), equalTo(expectedQuery));
         assertThat(request.getHeaders().size(), equalTo(1));
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
@@ -55,13 +82,13 @@ public class RequestTest {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
-                .uriWithQuery(URI.create("/check"))
+                .uri(URI.create("/check"))
                 .header("header", "h")
                 .build();
 
         assertThat(request.getBody(), equalTo("body".getBytes()));
         assertThat(request.getMethod(), equalTo("GET"));
-        assertThat(request.getUriWithQuery(), equalTo(URI.create("/check")));
+        assertThat(request.getUri(), equalTo(URI.create("/check")));
         assertThat(request.getHeaders().size(), equalTo(1));
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
@@ -71,7 +98,7 @@ public class RequestTest {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
-                .uriWithQuery(URI.create("/check"))
+                .uri(URI.create("/check"))
                 .header("HeaDer", "h")
                 .build();
 
@@ -82,7 +109,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNames() throws RequestSigningException {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("https://control.akamai.com/check"))
+                .uri(URI.create("https://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("Duplicate", "Y")
                 .build();
@@ -92,7 +119,7 @@ public class RequestTest {
     public void testRejectDuplicateCaseInsensitiveHeaderNames() throws RequestSigningException {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("https://control.akamai.com/check"))
+                .uri(URI.create("https://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
@@ -102,7 +129,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNamesMap() throws RequestSigningException {
         Request.RequestBuilder builder = Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("https://control.akamai.com/check"))
+                .uri(URI.create("https://control.akamai.com/check"))
                 .header("Duplicate", "X");
         Map<String, String> headers = new HashMap<>();
         headers.put("Duplicate", "y");
@@ -113,12 +140,24 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNamesMixedCase() throws RequestSigningException {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("https://control.akamai.com/check"))
+                .uri(URI.create("https://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
     }
 
-
+    @DataProvider
+    Object[][] absoluteUriTestData() {
+        return new Object[][] {
+                {"http/yes/yes", "http://anything.com/foo.html?a=b&c=d", "/foo.html", "a=b&c=d"},
+                {"http/yes/no", "http://anything.com/bar.html", "/bar.html", null},
+                {"http/no/yes", "http://anything.com?a=b", "", "a=b"},
+                {"http/no/no", "http://anything.com", "", null},
+                {"https/yes/yes", "https://anything.com/foo.html?a=b&c=d", "/foo.html", "a=b&c=d"},
+                {"https/yes/no", "https://anything.com/bar.html", "/bar.html", null},
+                {"https/no/yes", "https://anything.com?a=b", "", "a=b"},
+                {"https/no/no", "https://anything.com", "", null},
+        };
+    }
 
 }
