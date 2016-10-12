@@ -78,6 +78,11 @@ public class RestAssuredEdgeGridRequestSigner extends
         }
     }
 
+    private static URI getRelativePath(String uriString) {
+        final URI uri = URI.create(uriString);
+        return URI.create(uri.getPath() + "?" + uri.getQuery());
+    }
+
     /**
      * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
      *
@@ -99,16 +104,16 @@ public class RestAssuredEdgeGridRequestSigner extends
     }
 
     @Override
-    protected Request map(FilterableRequestSpecification requestSpec)
-            throws RequestSigningException {
+    protected Request map(FilterableRequestSpecification requestSpec) {
 
         Validate.isTrue(requestSpec.getMultiPartParams().isEmpty(),
                 "multipart request is not supported");
 
         Request.RequestBuilder builder = Request.builder()
                 .method(requestSpec.getMethod())
-                .uriWithQuery(URI.create(requestSpec.getURI()))
+                .uriPathWithQuery(getRelativePath(requestSpec.getURI()))
                 .body(serialize(requestSpec.getBody()));
+
         for (Header header : requestSpec.getHeaders()) {
             builder.header(header.getName(), header.getValue());
         }

@@ -245,7 +245,7 @@ public class EdgeGridV1Signer {
         sb.append(host.toLowerCase());
         sb.append('\t');
 
-        String relativePath = getRelativePathWithQuery(request.getUriWithQuery());
+        String relativePath = getRelativePathWithQuery(request.getUriPathWithQuery());
         String relativeUrl = canonicalizeUri(relativePath);
         sb.append(relativeUrl);
         sb.append('\t');

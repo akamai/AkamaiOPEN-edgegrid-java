@@ -29,8 +29,6 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
-
 
 /**
  * Library-agnostic representation of an HTTP request. This object is immutable, so you probably
@@ -45,14 +43,14 @@ public class Request implements Comparable<Request> {
 
     private final byte[] body;
     private final String method;
-    private final URI uriWithQuery;
+    private final URI uriPathWithQuery;
     private final Map<String, String> headers;
 
     private Request(RequestBuilder b) {
         this.body = b.body;
         this.method = b.method;
         this.headers = b.headers;
-        this.uriWithQuery = b.uriWithQuery;
+        this.uriPathWithQuery = b.uriPathWithQuery;
     }
 
     /**
@@ -71,7 +69,7 @@ public class Request implements Comparable<Request> {
                 .append(this.body, that.body)
                 .append(this.headers, that.headers)
                 .append(this.method, that.method)
-                .append(this.uriWithQuery, that.uriWithQuery)
+                .append(this.uriPathWithQuery, that.uriPathWithQuery)
                 .build();
     }
 
@@ -85,7 +83,7 @@ public class Request implements Comparable<Request> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(body, headers, method, uriWithQuery);
+        return Objects.hash(body, headers, method, uriPathWithQuery);
     }
 
     @Override
@@ -94,7 +92,7 @@ public class Request implements Comparable<Request> {
                 .append("body", body)
                 .append("headers", headers)
                 .append("method", method)
-                .append("uriWithQuery", uriWithQuery)
+                .append("uriWithQuery", uriPathWithQuery)
                 .build();
     }
 
@@ -110,8 +108,8 @@ public class Request implements Comparable<Request> {
         return method;
     }
 
-    URI getUriWithQuery() {
-        return uriWithQuery;
+    URI getUriPathWithQuery() {
+        return uriPathWithQuery;
     }
 
     /**
@@ -123,7 +121,7 @@ public class Request implements Comparable<Request> {
         private byte[] body = new byte[]{};
         private Map<String, String> headers = new HashMap<>();
         private String method;
-        private URI uriWithQuery;
+        private URI uriPathWithQuery;
 
         /**
          * Sets a content of HTTP request body. If not set, body is empty by default.
@@ -151,14 +149,14 @@ public class Request implements Comparable<Request> {
          * @param headerName a header name
          * @param value a header value
          * @return reference back to this builder instance
-         * @throws RequestSigningException if a duplicate header name is encountered
+         * @throws IllegalArgumentException if a duplicate header name is encountered
          */
-        public RequestBuilder header(String headerName, String value) throws RequestSigningException {
+        public RequestBuilder header(String headerName, String value)  {
             Validate.notEmpty(headerName, "headerName cannot be empty");
             Validate.notEmpty(value, "value cannot be empty");
             headerName = headerName.toLowerCase();
             if (this.headers.containsKey(headerName)) {
-                throw new RequestSigningException("Duplicate header found: " + headerName);
+                throw new IllegalArgumentException("Duplicate header found: " + headerName);
             }
             headers.put(headerName, value);
             return this;
@@ -177,9 +175,9 @@ public class Request implements Comparable<Request> {
          *
          * @param headers a {@link Map} of headers
          * @return reference back to this builder instance
-         * @throws RequestSigningException if a duplicate header name is encountered
+         * @throws IllegalArgumentException if a duplicate header name is encountered
          */
-        public RequestBuilder headers(Map<String, String> headers) throws RequestSigningException {
+        public RequestBuilder headers(Map<String, String> headers)  {
             Validate.notNull(headers, "headers cannot be null");
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 header(entry.getKey(), entry.getValue());
@@ -202,12 +200,13 @@ public class Request implements Comparable<Request> {
         /**
          * Sets absolute URI of HTTP request including query string. Mandatory to set.
          *
-         * @param uriWithQuery a {@link URI}
+         * @param uriPathWithQuery a {@link URI}
          * @return reference back to this builder instance
          */
-        public RequestBuilder uriWithQuery(URI uriWithQuery) {
-            Validate.notNull(uriWithQuery, "uriWithQuery cannot be blank");
-            this.uriWithQuery = uriWithQuery;
+        public RequestBuilder uriPathWithQuery(URI uriPathWithQuery) {
+            Validate.notNull(uriPathWithQuery, "uriPathWithQuery cannot be blank");
+            Validate.isTrue(!uriPathWithQuery.isAbsolute(), "uriPathWithQuery cannot be absolute URI");
+            this.uriPathWithQuery = uriPathWithQuery;
             return this;
         }
 
@@ -218,7 +217,7 @@ public class Request implements Comparable<Request> {
         public Request build() {
             Validate.notNull(body, "body cannot be blank");
             Validate.notBlank(method, "method cannot be blank");
-            Validate.notNull(uriWithQuery, "uriWithQuery cannot be blank");
+            Validate.notNull(uriPathWithQuery, "uriWithQuery cannot be blank");
             return new Request(this);
         }
 

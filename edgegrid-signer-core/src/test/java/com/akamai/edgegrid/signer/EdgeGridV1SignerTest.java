@@ -84,7 +84,7 @@ public class EdgeGridV1SignerTest {
                 {"GET request",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("https://any-hostname-at-all.com/check"))
+                                .uriPathWithQuery(URI.create("/check"))
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
@@ -94,8 +94,7 @@ public class EdgeGridV1SignerTest {
                 {"GET request with query",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("https://control.akamai" +
-                                        ".com/check?maciek=value"))
+                                .uriPathWithQuery(URI.create("/check?maciek=value"))
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
@@ -105,7 +104,7 @@ public class EdgeGridV1SignerTest {
                 {"POST request",
                         Request.builder()
                                 .method("POST")
-                                .uriWithQuery(URI.create("https://any-hostname-at-all.com/send"))
+                                .uriPathWithQuery(URI.create("/send"))
                                 .body("x=y&a=b".getBytes())
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
@@ -116,7 +115,7 @@ public class EdgeGridV1SignerTest {
                 {"For PUT request we ignore body",
                         Request.builder()
                                 .method("PUT")
-                                .uriWithQuery(URI.create("https://control.akamai.com/send"))
+                                .uriPathWithQuery(URI.create("/send"))
                                 .body("x=y&a=b".getBytes())
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
@@ -127,7 +126,7 @@ public class EdgeGridV1SignerTest {
                 {"GET without scheme or hostname",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("/check"))
+                                .uriPathWithQuery(URI.create("/check"))
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
@@ -163,7 +162,7 @@ public class EdgeGridV1SignerTest {
                 {"simple GET",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("/"))
+                                .uriPathWithQuery(URI.create("/"))
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
@@ -175,7 +174,7 @@ public class EdgeGridV1SignerTest {
                 {"GET with querystring",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("/testapi/v1/t1?p1=1&p2=2"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t1?p1=1&p2=2"))
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
@@ -187,7 +186,7 @@ public class EdgeGridV1SignerTest {
                 {"POST inside limit",
                         Request.builder()
                                 .method("POST")
-                                .uriWithQuery(URI.create("/testapi/v1/t3"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t3"))
                                 .body("datadatadatadatadatadatadatadata".getBytes())
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .build(),
@@ -200,7 +199,7 @@ public class EdgeGridV1SignerTest {
                 {"POST too large",
                         Request.builder()
                                 .method("POST")
-                                .uriWithQuery(URI.create("/testapi/v1/t3"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t3"))
                                 .body(repeat('d', maxSize + 1).getBytes())
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .build(),
@@ -213,7 +212,7 @@ public class EdgeGridV1SignerTest {
                 {"POST too large",
                         Request.builder()
                                 .method("POST")
-                                .uriWithQuery(URI.create("/testapi/v1/t3"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t3"))
                                 .body(repeat('d', maxSize).getBytes())
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .build(),
@@ -226,7 +225,7 @@ public class EdgeGridV1SignerTest {
                 {"POST empty body",
                         Request.builder()
                                 .method("POST")
-                                .uriWithQuery(URI.create("/testapi/v1/t6"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t6"))
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .body("".getBytes())
                                 .build(),
@@ -239,7 +238,7 @@ public class EdgeGridV1SignerTest {
                 {"Simple header signing with GET",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("/testapi/v1/t4"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t4"))
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .header("X-Test1", "test-simple-header")
                                 .build(),
@@ -252,7 +251,7 @@ public class EdgeGridV1SignerTest {
                 {"Header with leading and interior spaces",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("/testapi/v1/t4"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t4"))
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .header("X-Test1", "     first-thing      second-thing")
                                 .build(),
@@ -265,7 +264,7 @@ public class EdgeGridV1SignerTest {
                 {"Headers out of order",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("/testapi/v1/t4"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t4"))
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .header("X-Test2", "t2")
                                 .header("X-Test1", "t1")
@@ -280,7 +279,7 @@ public class EdgeGridV1SignerTest {
                 {"Extra header",
                         Request.builder()
                                 .method("GET")
-                                .uriWithQuery(URI.create("/testapi/v1/t5"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t5"))
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .header("X-Test2", "t2")
                                 .header("X-Test1", "t1")
@@ -296,7 +295,7 @@ public class EdgeGridV1SignerTest {
                 {"PUT test",
                         Request.builder()
                                 .method("PUT")
-                                .uriWithQuery(URI.create("/testapi/v1/t6"))
+                                .uriPathWithQuery(URI.create("/testapi/v1/t6"))
                                 .header("Host", "akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
                                 .body("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP".getBytes())
                                 .build(),
