@@ -109,7 +109,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNames() {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uri(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("Duplicate", "Y")
                 .build();
@@ -119,7 +119,7 @@ public class RequestTest {
     public void testRejectDuplicateCaseInsensitiveHeaderNames() {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uri(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
@@ -129,7 +129,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNamesMap() {
         Request.RequestBuilder builder = Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uri(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X");
         Map<String, String> headers = new HashMap<>();
         headers.put("Duplicate", "y");
@@ -140,7 +140,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNamesMixedCase() {
         Request.builder()
                 .method("GET")
-                .uriWithQuery(URI.create("http://control.akamai.com/check"))
+                .uri(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
