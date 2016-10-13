@@ -243,17 +243,6 @@ public class Request implements Comparable<Request> {
             return this;
         }
 
-        /**
-         * Please use {@link #uri(URI)} instead.
-         *
-         * @param uri a {@link URI}
-         * @return reference back to this builder instance
-         * @deprecated
-         */
-        @Deprecated
-        public RequestBuilder uriWithQuery(URI uri) {
-            return uri(uri);
-        }
 
         /**
          * Returns a newly-created immutable HTTP request.
