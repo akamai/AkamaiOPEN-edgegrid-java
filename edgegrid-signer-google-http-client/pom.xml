@@ -11,6 +11,7 @@
 
     <artifactId>edgegrid-signer-google-http-client</artifactId>
     <packaging>jar</packaging>
+    <name>Google HTTP Client Library binding for EdgeGrid Client</name>
 
     <dependencies>
         <dependency>

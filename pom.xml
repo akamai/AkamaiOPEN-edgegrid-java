@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <url>https://github.com/akamai-open/AkamaiOPEN-edgegrid-java</url>
-    <name>AkamaiOPEN-edgegrid-java</name>
+    <name>Parent for EdgeGrid Client for Java</name>
     <description>
         Signs HTTP requests to OPEN API services, using EdgeGrid V1 signing algorithm.
     </description>
