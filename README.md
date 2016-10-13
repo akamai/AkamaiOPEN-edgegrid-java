@@ -1,4 +1,4 @@
-# EdgeGrid for Java
+# EdgeGrid Client for Java
 
 Java implementation of Akamai {OPEN} EdgeGrid signing in Java.
 
@@ -105,7 +105,6 @@ Sign your REST-assured request specification with a defined client credential:
 
 ```java
 given()
-    .baseUri("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
     .filter(new RestAssuredEdgeGridFilter(clientCredential))
 .when()
     .get("/billing-usage/v1/reportSources")
@@ -135,24 +134,22 @@ Sign your HTTP request with a defined client credential:
 ```java
 HttpTransport httpTransport = new ApacheHttpTransport();
 HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
-URI uri = URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources");
+URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
 HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
 
-GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner(clientCredential);
+GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner(credential);
 requestSigner.sign(request);
 request.execute();
 ```
 
-This, however, requires remembering to sign explicitly every request.
-Alternately, you may create an `HttpRequestFactory` that will automatically
-sign requests via an Interceptor:
+This, however, requires remembering to sign explicitly every request. Alternatively, you may create <code>HttpRequestFactory</code>
+that will be doing it for yourself:
 
 ```java
-private HttpRequestFactory createSigningRequestFactory() {
-    HttpTransport httpTransport = new ApacheHttpTransport();
+private HttpRequestFactory createSigningRequestFactory(HttpTransport httpTransport) {
     return httpTransport.createRequestFactory(new HttpRequestInitializer() {
         public void initialize(HttpRequest request) throws IOException {
-            request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(clientCredentialProvider));
+            request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(credential));
         }
     });
 }
@@ -161,18 +158,13 @@ private HttpRequestFactory createSigningRequestFactory() {
 And then
 
 ```java
-HttpRequestFactory requestFactory = createSigningRequestFactory();
-URI uri = URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources");
+HttpTransport httpTransport = new ApacheHttpTransport();
+HttpRequestFactory requestFactory = createSigningRequestFactory(httpTransport);
+URI uri = URI.create("https://endpoint.net/billing-usage/v1/reportSources");
 HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
 
 request.execute();
 ```
-
-NOTE: In this example we have used a `ClientCredentialProvider` rather than
-a more simple `ClientCredential`. `ClientCredentialProvider` provides a
-mechanism to construct a `ClientCredential` at the time of a request based on
-any logic you may want. For example, your own implementation could read
-credentials from a database or other secret store.
 
 ## Releases
 
@@ -190,12 +182,12 @@ A number of similar libraries for signing requests exist for popular
 programming languages:
 
 * There are two Python bindings: a [command line tool similar to curl][1] and a [Python library][2].
-* [Ruby binding][3]
-* [Perl binding][4]
-* [Powershell binding][5]
-* [NodeJS binding][6]
-* [C# binding][7]
-* [Go binding][8]
+* [Ruby binding][2]
+* [Perl binding][3]
+* [Powershell binding][4]
+* [NodeJS binding][5]
+* [C# binding][6]
+* [Go binding][7]
 
 [1]: https://github.com/akamai-open/edgegrid-curl
 [2]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-python

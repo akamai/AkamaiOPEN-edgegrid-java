@@ -99,8 +99,7 @@ public class RestAssuredEdgeGridRequestSigner extends
     }
 
     @Override
-    protected Request map(FilterableRequestSpecification requestSpec)
-            throws RequestSigningException {
+    protected Request map(FilterableRequestSpecification requestSpec) {
 
         Validate.isTrue(requestSpec.getMultiPartParams().isEmpty(),
                 "multipart request is not supported");
@@ -109,6 +108,7 @@ public class RestAssuredEdgeGridRequestSigner extends
                 .method(requestSpec.getMethod())
                 .uri(URI.create(requestSpec.getURI()))
                 .body(serialize(requestSpec.getBody()));
+
         for (Header header : requestSpec.getHeaders()) {
             builder.header(header.getName(), header.getValue());
         }

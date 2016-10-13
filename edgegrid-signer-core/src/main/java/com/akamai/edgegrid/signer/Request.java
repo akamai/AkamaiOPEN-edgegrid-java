@@ -30,7 +30,6 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 
 /**
@@ -152,14 +151,14 @@ public class Request implements Comparable<Request> {
          * @param headerName a header name
          * @param value a header value
          * @return reference back to this builder instance
-         * @throws RequestSigningException if a duplicate header name is encountered
+         * @throws IllegalArgumentException if a duplicate header name is encountered
          */
-        public RequestBuilder header(String headerName, String value) throws RequestSigningException {
+        public RequestBuilder header(String headerName, String value)  {
             Validate.notEmpty(headerName, "headerName cannot be empty");
             Validate.notEmpty(value, "value cannot be empty");
             headerName = headerName.toLowerCase();
             if (this.headers.containsKey(headerName)) {
-                throw new RequestSigningException("Duplicate header found: " + headerName);
+                throw new IllegalArgumentException("Duplicate header found: " + headerName);
             }
             headers.put(headerName, value);
             return this;
@@ -178,9 +177,9 @@ public class Request implements Comparable<Request> {
          *
          * @param headers a {@link Map} of headers
          * @return reference back to this builder instance
-         * @throws RequestSigningException if a duplicate header name is encountered
+         * @throws IllegalArgumentException if a duplicate header name is encountered
          */
-        public RequestBuilder headers(Map<String, String> headers) throws RequestSigningException {
+        public RequestBuilder headers(Map<String, String> headers)  {
             Validate.notNull(headers, "headers cannot be null");
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 header(entry.getKey(), entry.getValue());
@@ -244,25 +243,13 @@ public class Request implements Comparable<Request> {
         }
 
         /**
-         * Please use {@link #uri(URI)} instead.
-         *
-         * @param uri a {@link URI}
-         * @return reference back to this builder instance
-         * @deprecated
-         */
-        @Deprecated
-        public RequestBuilder uriWithQuery(URI uri) {
-            return uri(uri);
-        }
-
-        /**
          * Returns a newly-created immutable HTTP request.
          */
         @Override
         public Request build() {
             Validate.notNull(body, "body cannot be blank");
             Validate.notBlank(method, "method cannot be blank");
-            Validate.notNull(uri, "uriWithQuery cannot be blank");
+            Validate.notNull(uri, "uri cannot be blank");
             return new Request(this);
         }
 

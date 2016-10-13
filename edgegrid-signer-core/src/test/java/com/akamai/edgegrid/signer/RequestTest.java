@@ -94,7 +94,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testHeadersLowercasing() throws RequestSigningException {
+    public void testHeadersLowercasing() {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
@@ -105,59 +105,47 @@ public class RequestTest {
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
 
-    @Test(expectedExceptions = RequestSigningException.class)
-    public void testRejectDuplicateHeaderNames() throws RequestSigningException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testRejectDuplicateHeaderNames() {
         Request.builder()
                 .method("GET")
-                .uri(URI.create("https://control.akamai.com/check"))
+                .uri(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("Duplicate", "Y")
                 .build();
     }
 
-    @Test(expectedExceptions = RequestSigningException.class)
-    public void testRejectDuplicateCaseInsensitiveHeaderNames() throws RequestSigningException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testRejectDuplicateCaseInsensitiveHeaderNames() {
         Request.builder()
                 .method("GET")
-                .uri(URI.create("https://control.akamai.com/check"))
+                .uri(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
     }
 
-    @Test(expectedExceptions = RequestSigningException.class)
-    public void testRejectDuplicateHeaderNamesMap() throws RequestSigningException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testRejectDuplicateHeaderNamesMap() {
         Request.RequestBuilder builder = Request.builder()
                 .method("GET")
-                .uri(URI.create("https://control.akamai.com/check"))
+                .uri(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X");
         Map<String, String> headers = new HashMap<>();
         headers.put("Duplicate", "y");
         builder.headers(headers);
     }
 
-    @Test(expectedExceptions = RequestSigningException.class)
-    public void testRejectDuplicateHeaderNamesMixedCase() throws RequestSigningException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testRejectDuplicateHeaderNamesMixedCase() {
         Request.builder()
                 .method("GET")
-                .uri(URI.create("https://control.akamai.com/check"))
+                .uri(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
     }
 
-    @DataProvider
-    Object[][] absoluteUriTestData() {
-        return new Object[][] {
-                {"http/yes/yes", "http://anything.com/foo.html?a=b&c=d", "/foo.html", "a=b&c=d"},
-                {"http/yes/no", "http://anything.com/bar.html", "/bar.html", null},
-                {"http/no/yes", "http://anything.com?a=b", "", "a=b"},
-                {"http/no/no", "http://anything.com", "", null},
-                {"https/yes/yes", "https://anything.com/foo.html?a=b&c=d", "/foo.html", "a=b&c=d"},
-                {"https/yes/no", "https://anything.com/bar.html", "/bar.html", null},
-                {"https/no/yes", "https://anything.com?a=b", "", "a=b"},
-                {"https/no/no", "https://anything.com", "", null},
-        };
-    }
+
 
 }

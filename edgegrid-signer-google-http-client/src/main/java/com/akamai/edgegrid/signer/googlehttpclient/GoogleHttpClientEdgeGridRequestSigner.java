@@ -24,7 +24,6 @@ import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
-import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
@@ -37,6 +36,11 @@ import com.google.api.client.util.Types;
  * @author mgawinec@akamai.com
  */
 public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest> {
+
+    private static String toStringValue(Object headerValue) {
+        return headerValue instanceof Enum<?>
+                ? FieldInfo.of((Enum<?>) headerValue).getName() : headerValue.toString();
+    }
 
     /**
      * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
@@ -59,7 +63,7 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     @Override
-    protected Request map(HttpRequest request) throws RequestSigningException {
+    protected Request map(HttpRequest request)  {
         Request.RequestBuilder builder = Request.builder()
                 .method(request.getRequestMethod())
                 .uri(request.getUrl().toURI())
@@ -83,7 +87,7 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
         request.getHeaders().setAuthorization(signature);
     }
 
-    private byte[] serializeContent(HttpRequest request) {
+    private static byte[] serializeContent(HttpRequest request) {
 
         byte[] contentBytes;
         try {
@@ -103,11 +107,6 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static String toStringValue(Object headerValue) {
-        return headerValue instanceof Enum<?>
-                ? FieldInfo.of((Enum<?>) headerValue).getName() : headerValue.toString();
     }
 
     @Override

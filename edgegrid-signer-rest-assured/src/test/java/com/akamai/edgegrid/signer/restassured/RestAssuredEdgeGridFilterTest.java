@@ -82,7 +82,6 @@ public class RestAssuredEdgeGridFilterTest {
         RestAssured.given()
                 .relaxedHTTPSValidation()
                 .filter(new RestAssuredEdgeGridFilter(credential))
-                .baseUri("https://ignored-hostname.com")
                 .get("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
     }
@@ -102,7 +101,6 @@ public class RestAssuredEdgeGridFilterTest {
                 .relaxedHTTPSValidation()
                 .filter(new RestAssuredEdgeGridFilter(credential))
                 .header("Host", "ignored-hostname.com")
-                .baseUri("https://ignored-hostname.com")
                 .get("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
     }
@@ -121,7 +119,6 @@ public class RestAssuredEdgeGridFilterTest {
 
         RestAssured.given()
                 .filter(new RestAssuredEdgeGridFilter(credential))
-                .baseUri("https://ignored-hostname.com")
                 .body(new File("/home/johan/some_large_file.bin"))
                 .post("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
@@ -132,7 +129,6 @@ public class RestAssuredEdgeGridFilterTest {
 
         RestAssured.given()
                 .filter(new RestAssuredEdgeGridFilter(credential))
-                .baseUri("https://ignored-hostname.com")
                 .body(new ByteArrayInputStream("exampleString".getBytes(StandardCharsets.UTF_8)))
                 .post("/billing-usage/v1/reportSources")
         .then().statusCode(200);
@@ -143,7 +139,6 @@ public class RestAssuredEdgeGridFilterTest {
 
         RestAssured.given()
                 .filter(new RestAssuredEdgeGridFilter(credential))
-                .baseUri("https://ignored-hostname.com")
                 .multiPart("file", new File("/home/johan/some_large_file.bin"))
                 .post("/billing-usage/v1/reportSources")
                 .then().statusCode(200);

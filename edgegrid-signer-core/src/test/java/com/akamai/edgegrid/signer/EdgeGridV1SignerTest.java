@@ -104,7 +104,7 @@ public class EdgeGridV1SignerTest {
                 {"POST request",
                         Request.builder()
                                 .method("POST")
-                                .uri(URI.create("https://any-hostname-at-all.com/send"))
+                                .uri(URI.create("http://any-hostname-at-all.com/send"))
                                 .body("x=y&a=b".getBytes())
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
