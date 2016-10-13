@@ -36,11 +36,16 @@ build one with its internal builder:
 ```java
 Request request = Request.builder()
         .method("POST")
-        .uriWithQuery(URI.create("https://localhost/service/v2/users"))
-        .body("{ field: \"foo\" }")
-        .header("Content-Type", "application/json")
+        .uriWithQuery(URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources"))
+        .body("{ \"field\": \"field value\" }")
+        .header("X-Some-Signed-Header", "header value")
+        .header("X-Some-Other-Signed-Header", "header value 2")
         .build();
 ```
+
+NOTE: You only need to include headers in your `Request` that will be included
+in the EdgeGrid request signature. Many APIs do not require any headers to be
+signed.
 
 `EdgeGridV1Signer` is an implementation of the EdgeGrid V1 Signing Algorithm.
 You can use `EdgeGridV1Signer#getSignature(Request, ClientCredential)` to
@@ -99,16 +104,16 @@ Include the following Maven dependency in your project POM:
 Sign your REST-assured request specification with a defined client credential:
 
 ```java
-given()    
-    .filter(new RestAssuredEdgeGridFilter(credential))
+given()
+    .filter(new RestAssuredEdgeGridFilter(clientCredential))
 .when()
-    .get("/service/v2/users")
+    .get("/billing-usage/v1/reportSources")
 .then()
     .statusCode(200);
 ```
 
 REST-assured request specifications *must* contain a relative path in `get(path)`, `post
-(path)` etc. 
+(path)` etc.
 
 ## Usage with Google HTTP Client Library for Java
 

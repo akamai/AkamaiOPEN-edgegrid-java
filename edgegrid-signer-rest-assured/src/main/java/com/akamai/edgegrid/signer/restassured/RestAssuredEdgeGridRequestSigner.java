@@ -78,11 +78,6 @@ public class RestAssuredEdgeGridRequestSigner extends
         }
     }
 
-    private static URI getRelativePath(String uriString) {
-        final URI uri = URI.create(uriString);
-        return URI.create(uri.getPath() + "?" + uri.getQuery());
-    }
-
     /**
      * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
      *
@@ -111,7 +106,7 @@ public class RestAssuredEdgeGridRequestSigner extends
 
         Request.RequestBuilder builder = Request.builder()
                 .method(requestSpec.getMethod())
-                .uriPathWithQuery(getRelativePath(requestSpec.getURI()))
+                .uri(URI.create(requestSpec.getURI()))
                 .body(serialize(requestSpec.getBody()));
 
         for (Header header : requestSpec.getHeaders()) {

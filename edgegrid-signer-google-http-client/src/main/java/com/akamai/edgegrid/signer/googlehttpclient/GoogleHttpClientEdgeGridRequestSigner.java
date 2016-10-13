@@ -18,16 +18,13 @@ package com.akamai.edgegrid.signer.googlehttpclient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Map;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
-import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.google.api.client.http.ByteArrayContent;
-import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.util.FieldInfo;
@@ -39,11 +36,6 @@ import com.google.api.client.util.Types;
  * @author mgawinec@akamai.com
  */
 public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest> {
-
-    private static URI getRelativePath(GenericUrl url) {
-        final URI uri = url.toURI();
-        return URI.create(uri.getPath() + "?" + uri.getQuery());
-    }
 
     private static String toStringValue(Object headerValue) {
         return headerValue instanceof Enum<?>
@@ -74,7 +66,7 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     protected Request map(HttpRequest request)  {
         Request.RequestBuilder builder = Request.builder()
                 .method(request.getRequestMethod())
-                .uriPathWithQuery(getRelativePath(request.getUrl()))
+                .uri(request.getUrl().toURI())
                 .body(serializeContent(request));
         for (Map.Entry<String, Object> entry : request.getHeaders().entrySet()) {
             Object value = entry.getValue();
@@ -116,8 +108,6 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
             throw new RuntimeException(e);
         }
     }
-
-
 
     @Override
     protected void setHost(HttpRequest request, String host) {

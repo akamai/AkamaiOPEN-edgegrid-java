@@ -17,6 +17,7 @@
 package com.akamai.edgegrid.signer;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.builder.Builder;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 
 
 /**
@@ -43,14 +45,14 @@ public class Request implements Comparable<Request> {
 
     private final byte[] body;
     private final String method;
-    private final URI uriPathWithQuery;
+    private final URI uri;
     private final Map<String, String> headers;
 
     private Request(RequestBuilder b) {
         this.body = b.body;
         this.method = b.method;
         this.headers = b.headers;
-        this.uriPathWithQuery = b.uriPathWithQuery;
+        this.uri = b.uri;
     }
 
     /**
@@ -69,7 +71,7 @@ public class Request implements Comparable<Request> {
                 .append(this.body, that.body)
                 .append(this.headers, that.headers)
                 .append(this.method, that.method)
-                .append(this.uriPathWithQuery, that.uriPathWithQuery)
+                .append(this.uri, that.uri)
                 .build();
     }
 
@@ -83,7 +85,7 @@ public class Request implements Comparable<Request> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(body, headers, method, uriPathWithQuery);
+        return Objects.hash(body, headers, method, uri);
     }
 
     @Override
@@ -92,7 +94,7 @@ public class Request implements Comparable<Request> {
                 .append("body", body)
                 .append("headers", headers)
                 .append("method", method)
-                .append("uriWithQuery", uriPathWithQuery)
+                .append("uri", uri)
                 .build();
     }
 
@@ -108,8 +110,8 @@ public class Request implements Comparable<Request> {
         return method;
     }
 
-    URI getUriPathWithQuery() {
-        return uriPathWithQuery;
+    URI getUri() {
+        return uri;
     }
 
     /**
@@ -121,7 +123,7 @@ public class Request implements Comparable<Request> {
         private byte[] body = new byte[]{};
         private Map<String, String> headers = new HashMap<>();
         private String method;
-        private URI uriPathWithQuery;
+        private URI uri;
 
         /**
          * Sets a content of HTTP request body. If not set, body is empty by default.
@@ -198,16 +200,58 @@ public class Request implements Comparable<Request> {
         }
 
         /**
-         * Sets absolute URI of HTTP request including query string. Mandatory to set.
+         * <p>
+         * Sets the URI of the HTTP request. This URI <i>MUST</i> have the correct path and query
+         * segments set. Scheme is assumed to be "HTTPS" for the purpose of this library. Host is
+         * actually taken from a {@link ClientCredential} as signing time; any value in this URI is
+         * discarded. Fragments are not signed.
+         * </p>
+         * <p>
+         * A path and/or query string is required.
+         * </p>
          *
-         * @param uriPathWithQuery a {@link URI}
+         * @param uri a {@link URI}
          * @return reference back to this builder instance
          */
-        public RequestBuilder uriPathWithQuery(URI uriPathWithQuery) {
-            Validate.notNull(uriPathWithQuery, "uriPathWithQuery cannot be blank");
-            Validate.isTrue(!uriPathWithQuery.isAbsolute(), "uriPathWithQuery cannot be absolute URI");
-            this.uriPathWithQuery = uriPathWithQuery;
+        public RequestBuilder uri(String uri) {
+            Validate.notEmpty(uri, "uri cannot be blank");
+            return uri(URI.create(uri));
+        }
+
+        /**
+         * <p>
+         * Sets the URI of the HTTP request. This URI <i>MUST</i> have the correct path and query
+         * segments set. Scheme is assumed to be "HTTPS" for the purpose of this library. Host is
+         * actually taken from a {@link ClientCredential} as signing time; any value in this URI is
+         * discarded. Fragments are not signed.
+         * </p>
+         * <p>
+         * A path and/or query string is required.
+         * </p>
+         *
+         * @param uri a {@link URI}
+         * @return reference back to this builder instance
+         */
+        public RequestBuilder uri(URI uri) {
+            Validate.notNull(uri, "uri cannot be null");
+            try {
+                this.uri = new URI(null, null, uri.getPath(), uri.getQuery(), null);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("Error setting URI", e);
+            }
             return this;
+        }
+
+        /**
+         * Please use {@link #uri(URI)} instead.
+         *
+         * @param uri a {@link URI}
+         * @return reference back to this builder instance
+         * @deprecated
+         */
+        @Deprecated
+        public RequestBuilder uriWithQuery(URI uri) {
+            return uri(uri);
         }
 
         /**
@@ -217,7 +261,7 @@ public class Request implements Comparable<Request> {
         public Request build() {
             Validate.notNull(body, "body cannot be blank");
             Validate.notBlank(method, "method cannot be blank");
-            Validate.notNull(uriPathWithQuery, "uriWithQuery cannot be blank");
+            Validate.notNull(uri, "uri cannot be blank");
             return new Request(this);
         }
 

@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
@@ -34,34 +35,60 @@ import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
  */
 public class RequestTest {
 
-    @Test
-    public void testAcceptRequestWithAbsoluteUri() {
+    @Test(dataProvider = "absoluteUriTestData")
+    public void testAcceptRequestWithAbsoluteUriAsString(
+            String caseName,
+            String uri,
+            String expectedPath,
+            String expectedQuery) throws RequestSigningException {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
-                .uriPathWithQuery(URI.create("/check"))
+                .uri(uri)
                 .header("header", "h")
                 .build();
 
         assertThat(request.getBody(), equalTo("body".getBytes()));
         assertThat(request.getMethod(), equalTo("GET"));
-        assertThat(request.getUriPathWithQuery(), equalTo(URI.create("/check")));
+        assertThat(request.getUri().getPath(), equalTo(expectedPath));
+        assertThat(request.getUri().getQuery(), equalTo(expectedQuery));
+        assertThat(request.getHeaders().size(), equalTo(1));
+        assertThat(request.getHeaders().get("header"), equalTo("h"));
+    }
+
+    @Test(dataProvider = "absoluteUriTestData")
+    public void testAcceptRequestWithAbsoluteUriAsURI(
+            String caseName,
+            String uri,
+            String expectedPath,
+            String expectedQuery) throws RequestSigningException {
+        Request request = Request.builder()
+                .body("body".getBytes())
+                .method("GET")
+                .uri(URI.create(uri))
+                .header("header", "h")
+                .build();
+
+        assertThat(request.getBody(), equalTo("body".getBytes()));
+        assertThat(request.getMethod(), equalTo("GET"));
+        assertThat(request.getUri().getPath(), equalTo(expectedPath));
+        assertThat(request.getUri().getQuery(), equalTo(expectedQuery));
         assertThat(request.getHeaders().size(), equalTo(1));
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
 
     @Test
-    public void testAcceptRequestWithRelativeUri() {
+    public void testAcceptRequestWithRelativeUri() throws RequestSigningException {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
-                .uriPathWithQuery(URI.create("/check"))
+                .uri(URI.create("/check"))
                 .header("header", "h")
                 .build();
 
         assertThat(request.getBody(), equalTo("body".getBytes()));
         assertThat(request.getMethod(), equalTo("GET"));
-        assertThat(request.getUriPathWithQuery(), equalTo(URI.create("/check")));
+        assertThat(request.getUri(), equalTo(URI.create("/check")));
         assertThat(request.getHeaders().size(), equalTo(1));
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
@@ -71,7 +98,7 @@ public class RequestTest {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
-                .uriPathWithQuery(URI.create("/check"))
+                .uri(URI.create("/check"))
                 .header("HeaDer", "h")
                 .build();
 
@@ -82,7 +109,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNames() {
         Request.builder()
                 .method("GET")
-                .uriPathWithQuery(URI.create("/check"))
+                .uriWithQuery(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("Duplicate", "Y")
                 .build();
@@ -92,7 +119,7 @@ public class RequestTest {
     public void testRejectDuplicateCaseInsensitiveHeaderNames() {
         Request.builder()
                 .method("GET")
-                .uriPathWithQuery(URI.create("/check"))
+                .uriWithQuery(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
@@ -102,7 +129,7 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNamesMap() {
         Request.RequestBuilder builder = Request.builder()
                 .method("GET")
-                .uriPathWithQuery(URI.create("/check"))
+                .uriWithQuery(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X");
         Map<String, String> headers = new HashMap<>();
         headers.put("Duplicate", "y");
@@ -113,19 +140,12 @@ public class RequestTest {
     public void testRejectDuplicateHeaderNamesMixedCase() {
         Request.builder()
                 .method("GET")
-                .uriPathWithQuery(URI.create("/check"))
+                .uriWithQuery(URI.create("http://control.akamai.com/check"))
                 .header("Duplicate", "X")
                 .header("DUPLICATE", "Y")
                 .build();
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testRejectRequestWithAbsoluteUri(){
-        Request.builder()
-                .method("GET")
-                .uriPathWithQuery(URI.create("https://absolute.com/check"))
-                .build();
-    }
 
 
 }

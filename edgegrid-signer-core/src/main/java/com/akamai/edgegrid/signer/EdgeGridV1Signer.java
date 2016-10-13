@@ -16,6 +16,25 @@
 
 package com.akamai.edgegrid.signer;
 
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -26,18 +45,6 @@ import org.slf4j.LoggerFactory;
 import com.akamai.edgegrid.signer.ClientCredential.ClientCredentialBuilder;
 import com.akamai.edgegrid.signer.Request.RequestBuilder;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -84,8 +91,6 @@ public class EdgeGridV1Signer {
     private static final String SIGNING_ALGORITHM = "HmacSHA256";
 
     private static final Logger log = LoggerFactory.getLogger(EdgeGridV1Signer.class);
-
-    private final Base64.Encoder base64 = Base64.getEncoder();
 
     /**
      * Creates signer with default configuration.
@@ -172,7 +177,7 @@ public class EdgeGridV1Signer {
         String timeStamp = formatTimeStamp(timestamp);
         String authData = getAuthData(credential, timeStamp, nonce);
         String signature = getSignature(request, credential, timeStamp, authData);
-        log.debug(String.format("Signature: '%s'", signature));
+        log.debug("Signature: {}", signature);
 
         return getAuthorizationHeaderValue(authData, signature);
     }
@@ -181,23 +186,21 @@ public class EdgeGridV1Signer {
                                 String authData) throws RequestSigningException {
         String signingKey = getSigningKey(timeStamp, credential.getClientSecret());
         String canonicalizedRequest = getCanonicalizedRequest(request, credential);
-        log.debug(String.format("Canonicalized request: '%s'",
-                StringEscapeUtils.escapeJava(canonicalizedRequest)));
+        log.debug("Canonicalized request: {}", StringEscapeUtils.escapeJava(canonicalizedRequest));
         String dataToSign = getDataToSign(canonicalizedRequest, authData);
-        log.debug(String.format("Data to sign: '%s'",
-                StringEscapeUtils.escapeJava(dataToSign)));
+        log.debug("Data to sign: {}", StringEscapeUtils.escapeJava(dataToSign));
 
         return signAndEncode(dataToSign, signingKey);
     }
 
     private String signAndEncode(String stringToSign, String signingKey) throws RequestSigningException {
         byte[] signatureBytes = sign(stringToSign, signingKey);
-        return base64.encodeToString(signatureBytes);
+        return Base64.encodeBase64String(signatureBytes);
     }
 
     private String getSigningKey(String timeStamp, String clientSecret) throws RequestSigningException {
         byte[] signingKeyBytes = sign(timeStamp, clientSecret);
-        return base64.encodeToString(signingKeyBytes);
+        return Base64.encodeBase64String(signingKeyBytes);
     }
 
     private String getDataToSign(String canonicalizedRequest, String authData) {
@@ -245,7 +248,7 @@ public class EdgeGridV1Signer {
         sb.append(host.toLowerCase());
         sb.append('\t');
 
-        String relativePath = getRelativePathWithQuery(request.getUriPathWithQuery());
+        String relativePath = getRelativePathWithQuery(request.getUri());
         String relativeUrl = canonicalizeUri(relativePath);
         sb.append(relativeUrl);
         sb.append('\t');
@@ -273,6 +276,7 @@ public class EdgeGridV1Signer {
 
     private String canonicalizeHeaders(Map<String, String> requestHeaders, ClientCredential credential) {
         List<String> headers = new ArrayList<>();
+        // NOTE: Headers are expected to be in order. ClientCredential#headersToSign is a TreeSet.
         for (String headerName : credential.getHeadersToSign()) {
             String headerValue = requestHeaders.get(headerName);
             if (StringUtils.isBlank(headerValue)) {
@@ -305,18 +309,21 @@ public class EdgeGridV1Signer {
 
         int lengthToHash = requestBody.length;
         if (lengthToHash > maxBodySize) {
-            log.info(String.format("Content length '%d' is larger than the max '%d'. " +
-                    "Using first '%d' bytes for computing the hash.", lengthToHash, maxBodySize, maxBodySize));
+            log.info("Content length '{}' exceeds signing length of '{}'. Less than the entire message will be signed.",
+                    lengthToHash,
+                    maxBodySize);
             lengthToHash = maxBodySize;
         } else {
-            log.debug(String.format("Content (Base64): %s", base64.encodeToString(requestBody)));
+            if (log.isTraceEnabled()) {
+                log.trace("Content (Base64): {}", Base64.encodeBase64String(requestBody));
+            }
         }
 
         byte[] digestBytes = getHash(requestBody, 0, lengthToHash);
-        log.debug(String.format("Content hash (Base64): %s", base64.encodeToString(digestBytes)));
+        log.debug("Content hash (Base64): {}", Base64.encodeBase64String(digestBytes));
 
         // (mgawinec) I removed support for non-retryable content, that used to reset the content for downstream handlers
-        return base64.encodeToString(digestBytes);
+        return Base64.encodeBase64String(digestBytes);
     }
 
 }
