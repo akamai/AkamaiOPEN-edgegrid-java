@@ -107,7 +107,7 @@ public class RestAssuredEdgeGridRequestSigner extends
 
         Request.RequestBuilder builder = Request.builder()
                 .method(requestSpec.getMethod())
-                .uriWithQuery(URI.create(requestSpec.getURI()))
+                .uri(URI.create(requestSpec.getURI()))
                 .body(serialize(requestSpec.getBody()));
         for (Header header : requestSpec.getHeaders()) {
             builder.header(header.getName(), header.getValue());
