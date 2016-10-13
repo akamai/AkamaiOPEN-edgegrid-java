@@ -99,8 +99,7 @@ public class RestAssuredEdgeGridRequestSigner extends
     }
 
     @Override
-    protected Request map(FilterableRequestSpecification requestSpec)
-            throws RequestSigningException {
+    protected Request map(FilterableRequestSpecification requestSpec) {
 
         Validate.isTrue(requestSpec.getMultiPartParams().isEmpty(),
                 "multipart request is not supported");

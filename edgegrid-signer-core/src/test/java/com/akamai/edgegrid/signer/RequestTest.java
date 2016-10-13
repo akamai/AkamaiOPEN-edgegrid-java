@@ -26,7 +26,6 @@ import java.util.Map;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 /**
  * Unit tests for {@link Request}.
@@ -40,7 +39,7 @@ public class RequestTest {
             String caseName,
             String uri,
             String expectedPath,
-            String expectedQuery) throws RequestSigningException {
+            String expectedQuery) {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
@@ -61,7 +60,7 @@ public class RequestTest {
             String caseName,
             String uri,
             String expectedPath,
-            String expectedQuery) throws RequestSigningException {
+            String expectedQuery) {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
@@ -78,7 +77,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testAcceptRequestWithRelativeUri() throws RequestSigningException {
+    public void testAcceptRequestWithRelativeUri() {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
@@ -94,7 +93,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testHeadersLowercasing() throws RequestSigningException {
+    public void testHeadersLowercasing()  {
         Request request = Request.builder()
                 .body("body".getBytes())
                 .method("GET")
@@ -105,8 +104,8 @@ public class RequestTest {
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
 
-    @Test(expectedExceptions = RequestSigningException.class)
-    public void testRejectDuplicateHeaderNames() throws RequestSigningException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testRejectDuplicateHeaderNames() {
         Request.builder()
                 .method("GET")
                 .uri(URI.create("https://control.akamai.com/check"))
@@ -115,8 +114,8 @@ public class RequestTest {
                 .build();
     }
 
-    @Test(expectedExceptions = RequestSigningException.class)
-    public void testRejectDuplicateCaseInsensitiveHeaderNames() throws RequestSigningException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testRejectDuplicateCaseInsensitiveHeaderNames() {
         Request.builder()
                 .method("GET")
                 .uri(URI.create("https://control.akamai.com/check"))
@@ -125,8 +124,8 @@ public class RequestTest {
                 .build();
     }
 
-    @Test(expectedExceptions = RequestSigningException.class)
-    public void testRejectDuplicateHeaderNamesMap() throws RequestSigningException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testRejectDuplicateHeaderNamesMap() {
         Request.RequestBuilder builder = Request.builder()
                 .method("GET")
                 .uri(URI.create("https://control.akamai.com/check"))
@@ -136,8 +135,8 @@ public class RequestTest {
         builder.headers(headers);
     }
 
-    @Test(expectedExceptions = RequestSigningException.class)
-    public void testRejectDuplicateHeaderNamesMixedCase() throws RequestSigningException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testRejectDuplicateHeaderNamesMixedCase() {
         Request.builder()
                 .method("GET")
                 .uri(URI.create("https://control.akamai.com/check"))

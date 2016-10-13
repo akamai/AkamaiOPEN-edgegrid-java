@@ -1,4 +1,4 @@
-# EdgeGrid for Java
+# EdgeGrid Client for Java
 
 Java implementation of Akamai {OPEN} EdgeGrid signing in Java.
 

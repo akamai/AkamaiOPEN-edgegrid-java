@@ -59,7 +59,7 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     @Override
-    protected Request map(HttpRequest request) throws RequestSigningException {
+    protected Request map(HttpRequest request) {
         Request.RequestBuilder builder = Request.builder()
                 .method(request.getRequestMethod())
                 .uri(request.getUrl().toURI())

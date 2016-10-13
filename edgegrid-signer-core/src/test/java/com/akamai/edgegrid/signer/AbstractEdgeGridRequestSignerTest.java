@@ -54,7 +54,7 @@ public class AbstractEdgeGridRequestSignerTest {
 
         return new AbstractEdgeGridRequestSigner(clientCredentialProvider) {
             @Override
-            protected Request map(Object request) throws RequestSigningException {
+            protected Request map(Object request)  {
                 return null;
             }
 
