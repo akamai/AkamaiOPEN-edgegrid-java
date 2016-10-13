@@ -6,7 +6,7 @@
 
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-parent</artifactId>
-    <version>2.0.0-RC1</version>
+    <version>2.0.0-RC2</version>
 
     <modules>
         <module>edgegrid-signer-core</module>
