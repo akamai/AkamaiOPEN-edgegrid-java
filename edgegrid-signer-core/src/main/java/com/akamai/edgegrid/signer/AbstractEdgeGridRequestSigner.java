@@ -90,9 +90,9 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      *
      * @param request an HTTP client-specific request
      * @return a {@link Request} representation of {@code request}
-     * @throws RequestSigningException if duplicate header definitions are found
+     * @throws IllegalArgumentException if duplicate header definitions are found
      */
-    protected abstract Request map(RequestT request) throws RequestSigningException;
+    protected abstract Request map(RequestT request);
 
     /**
      * Updates a given HTTP request by adding Authorization header with a value containing request
