@@ -7,19 +7,8 @@
         </encoder>
     </appender>
 
-    <!-- Use "org.apache.http.headers" to log only HTTP headers -->
-    <logger name="org.apache.http.wire" level="DEBUG">
-        <appender-ref ref="STDOUT"/>
-    </logger>
-
-
-    <logger name="org.apache.http.headers" level="NONE">
-
-    </logger>
-
     <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
-
 
 </configuration>
