@@ -49,7 +49,10 @@ public class RestAssuredEdgeGridRequestSigner extends
         try {
             Field f = requestSpec.getClass().getDeclaredField("path");
             f.setAccessible(true);
-            return (String) f.get(requestSpec);
+            String requestPath = (String) f.get(requestSpec);
+            // remove path placeholder parameter brackets
+            requestPath = requestPath.replaceAll("[{}]*", "");
+            return requestPath;
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e); // should never occur
         }
@@ -106,7 +109,7 @@ public class RestAssuredEdgeGridRequestSigner extends
 
         Request.RequestBuilder builder = Request.builder()
                 .method(requestSpec.getMethod())
-                .uri(URI.create(requestSpec.getURI()))
+                .uri(URI.create(requestSpec.getDerivedPath()))
                 .body(serialize(requestSpec.getBody()));
         for (Header header : requestSpec.getHeaders()) {
             builder.header(header.getName(), header.getValue());

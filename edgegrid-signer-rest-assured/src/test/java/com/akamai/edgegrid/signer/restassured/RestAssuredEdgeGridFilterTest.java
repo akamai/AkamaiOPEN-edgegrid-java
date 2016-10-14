@@ -88,6 +88,25 @@ public class RestAssuredEdgeGridFilterTest {
     }
 
     @Test
+    public void signEachRequestWithPathParams() throws URISyntaxException, IOException {
+
+        wireMockServer.stubFor(get(urlPathMatching("/config-gtm/v1/domains/.*"))
+                .withHeader("Authorization", matching(".*"))
+                .withHeader("Host", equalTo(SERVICE_MOCK))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody("<response>Some content</response>")));
+
+        RestAssured.given()
+                .relaxedHTTPSValidation()
+                .filter(new RestAssuredEdgeGridFilter(credential))
+                .baseUri("https://ignored-hostname.com")
+                .get("/config-gtm/v1/domains/{domain}", "storage1.akadns.net")
+                .then().statusCode(200);
+    }
+
+    @Test
     public void signWithHostHeader() throws URISyntaxException, IOException {
 
         wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources"))
