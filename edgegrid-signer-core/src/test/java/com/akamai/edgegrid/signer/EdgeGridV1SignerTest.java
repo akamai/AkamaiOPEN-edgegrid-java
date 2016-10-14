@@ -65,9 +65,8 @@ public class EdgeGridV1SignerTest {
     @DataProvider
     public Object[][] testData() throws RequestSigningException {
         return combine(
-                basicTests()//,
-        //        pythonCases()
-        );
+                basicTests(),
+                pythonCases());
     }
 
     public Object[][] basicTests() {
@@ -77,23 +76,12 @@ public class EdgeGridV1SignerTest {
                 .clientToken("akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj")
                 .host("control.akamai.com")
                 .build();
-
-        ClientCredential clientCredential2 = ClientCredential.builder()
-                .host("akaa-prt5zkgop53igku5-vcgg27ifaojb6tgt.luna-dev.akamaiapis.net")
-
-                .accessToken("akaa-ta62mb6jhp5rw6af-7nvqryf7zsopb2rj")
-                .clientToken("akaa-e4xdyg77myjpdheq-tbbbeuuo4u5drjpx")
-                .clientSecret("N6lCuVuyWZXFKmBME7HhNpNX8lD3IJxA0ooK9VAr6ac=")
-
-                .build();
-
         String fixedNonce = "ec9d20ee-1e9b-4c1f-925a-f0017754f86c";
         // Fixed timestamp corresponds to 2016-08-04T07:00:00+0000.
         long fixedTimestamp = 1470294000000L;
 
-
         return new Object[][]{
-             /*   {"GET request",
+                {"GET request",
                         Request.builder()
                                 .method("GET")
                                 .uri(URI.create("https://any-hostname-at-all.com/check"))
@@ -143,17 +131,10 @@ public class EdgeGridV1SignerTest {
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
                                 "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
                                 "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=8GpKbZnIx4XEw/zXtQdbVwIu0zJSG0RpNiVTSyIUwr0=",
-                },*/
-                {"Mariusz test",
-                        Request.builder()
-                                .method("GET")
-                                .uri("/lds/v1/dictionaries/PRODUCT_GROUPS_FOR_ACGS?objectType=CP_CODE")
-                                .build(),
-                        clientCredential2, 1476451872000L,
-                        "7f316561-8341-4be9-9563-fb429bed4113",
-                        ""}
+                },
         };
     }
+
 
 
     /**
