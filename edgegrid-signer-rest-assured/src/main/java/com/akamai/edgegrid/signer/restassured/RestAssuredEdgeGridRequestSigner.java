@@ -127,6 +127,9 @@ public class RestAssuredEdgeGridRequestSigner extends
         // Due to limitations of REST-assured design only requests with relative paths can be updated
         Validate.isTrue(isRelativeUrl(getRequestPath(requestSpec)), "path in request cannot be absolute");
 
+        // Avoid redundant Host headers
+        requestSpec.removeHeader("Host");
+
         requestSpec
                 .baseUri("https://" + host)
                 .header("Host", host);

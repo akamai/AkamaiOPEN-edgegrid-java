@@ -17,8 +17,18 @@ package com.akamai.edgegrid.signer.restassured;
 
 
 import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.restassured.RestAssured;
+import io.restassured.filter.Filter;
+import io.restassured.filter.FilterContext;
+import io.restassured.response.Response;
+import io.restassured.specification.FilterableRequestSpecification;
+import io.restassured.specification.FilterableResponseSpecification;
+import io.restassured.specification.RequestSpecification;
+
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -33,6 +43,7 @@ import java.nio.charset.StandardCharsets;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 /**
@@ -121,6 +132,31 @@ public class RestAssuredEdgeGridFilterTest {
                 .header("Host", "ignored-hostname.com")
                 .get("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
+    }
+
+    @Test
+    public void replacesProvidedHostHeader() throws URISyntaxException, IOException,
+            RequestSigningException {
+
+
+        RestAssured.given()
+                .relaxedHTTPSValidation()
+                .header("Host", "ignored-hostname.com")
+                .filter(new RestAssuredEdgeGridFilter(credential))
+                .filter(new Filter() {
+                    @Override
+                    public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec, FilterContext ctx) {
+                        MatcherAssert.assertThat(requestSpec.getHeaders().getList("Host").size(),
+                                CoreMatchers.equalTo(1));
+                        MatcherAssert.assertThat(requestSpec.getHeaders().get("Host").getValue(),
+                                CoreMatchers.equalTo(credential.getHost()));
+
+                        return ctx.next(requestSpec, responseSpec);
+                    }
+                })
+                .get();
+
+
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
