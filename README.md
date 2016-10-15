@@ -36,8 +36,7 @@ build one with its internal builder:
 ```java
 Request request = Request.builder()
         .method("POST")
-        .uri(URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis
-        .net/billing-usage/v1/reportSources"))
+        .uri("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources")
         .body("{ \"field\": \"field value\" }".getBytes())
         .header("X-Some-Signed-Header", "header value")
         .header("X-Some-Other-Signed-Header", "header value 2")
