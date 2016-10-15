@@ -1,6 +1,6 @@
 # EdgeGrid Client for Java
 
-Java implementation of Akamai {OPEN} EdgeGrid signing in Java.
+Java implementation of Akamai {OPEN} EdgeGrid signing.
 
 ## Description
 
@@ -36,8 +36,8 @@ build one with its internal builder:
 ```java
 Request request = Request.builder()
         .method("POST")
-        .uriWithQuery(URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources"))
-        .body("{ \"field\": \"field value\" }")
+        .uri("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources")
+        .body("{ \"field\": \"field value\" }".getBytes())
         .header("X-Some-Signed-Header", "header value")
         .header("X-Some-Other-Signed-Header", "header value 2")
         .build();
@@ -105,7 +105,6 @@ Sign your REST-assured request specification with a defined client credential:
 
 ```java
 given()
-    .baseUri("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
     .filter(new RestAssuredEdgeGridFilter(clientCredential))
 .when()
     .get("/billing-usage/v1/reportSources")

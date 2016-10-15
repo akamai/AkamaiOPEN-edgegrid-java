@@ -49,7 +49,10 @@ public class RestAssuredEdgeGridRequestSigner extends
         try {
             Field f = requestSpec.getClass().getDeclaredField("path");
             f.setAccessible(true);
-            return (String) f.get(requestSpec);
+            String requestPath = (String) f.get(requestSpec);
+            // remove path placeholder parameter brackets
+            requestPath = requestPath.replaceAll("[{}]*", "");
+            return requestPath;
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e); // should never occur
         }
@@ -123,6 +126,9 @@ public class RestAssuredEdgeGridRequestSigner extends
     protected void setHost(FilterableRequestSpecification requestSpec, String host) {
         // Due to limitations of REST-assured design only requests with relative paths can be updated
         Validate.isTrue(isRelativeUrl(getRequestPath(requestSpec)), "path in request cannot be absolute");
+
+        // Avoid redundant Host headers
+        requestSpec.removeHeader("Host");
 
         requestSpec
                 .baseUri("https://" + host)
