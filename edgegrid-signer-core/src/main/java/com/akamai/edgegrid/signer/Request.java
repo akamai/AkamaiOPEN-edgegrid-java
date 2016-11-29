@@ -234,7 +234,7 @@ public class Request implements Comparable<Request> {
         public RequestBuilder uri(URI uri) {
             Validate.notNull(uri, "uri cannot be null");
             try {
-                this.uri = new URI(null, null, uri.getPath(), uri.getQuery(), null);
+                this.uri = new URI(null, null, uri.getPath(), uri.getRawQuery(), null);
             } catch (URISyntaxException e) {
                 throw new IllegalArgumentException("Error setting URI", e);
             }
