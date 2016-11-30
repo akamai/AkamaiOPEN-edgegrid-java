@@ -19,6 +19,9 @@ package com.akamai.edgegrid.signer.restassured;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.matching.RequestPattern;
+import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+
 import io.restassured.RestAssured;
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
@@ -29,6 +32,7 @@ import io.restassured.specification.RequestSpecification;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -40,6 +44,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -77,6 +82,36 @@ public class RestAssuredEdgeGridFilterTest {
     public void reset() {
         wireMockServer.resetMappings();
         wireMockServer.resetRequests();
+    }
+
+    @Test
+    public void signFollowedRedirects() throws URISyntaxException, IOException {
+
+        wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources"))
+                .withHeader("Authorization", matching(".*"))
+                .withHeader("Host", equalTo(SERVICE_MOCK))
+                .willReturn(aResponse()
+                        .withStatus(302)
+                        .withHeader("Location", "/billing-usage/v1/reportSources/alternative")));
+
+        wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources/alternative"))
+                .withHeader("Authorization", matching(".*"))
+                .withHeader("Host", equalTo(SERVICE_MOCK))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody("<response>Some content</response>")));
+
+        RestAssured.given()
+                .relaxedHTTPSValidation()
+                .filter(new RestAssuredEdgeGridFilter(credential))
+                .get("/billing-usage/v1/reportSources")
+                .then().statusCode(200);
+
+        List<LoggedRequest> loggedRequests = wireMockServer.findRequestsMatching(RequestPattern
+                .everything()).getRequests();
+        MatcherAssert.assertThat(loggedRequests.get(0).getHeader("Authorization"),
+                Matchers.not(CoreMatchers.equalTo(loggedRequests.get(1).getHeader("Authorization"))));
     }
 
     @Test
