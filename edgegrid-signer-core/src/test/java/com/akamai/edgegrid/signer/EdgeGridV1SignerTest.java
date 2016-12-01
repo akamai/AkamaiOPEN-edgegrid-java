@@ -23,6 +23,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,13 +64,13 @@ public class EdgeGridV1SignerTest {
     }
 
     @DataProvider
-    public Object[][] testData() throws RequestSigningException {
+    public Object[][] testData() throws RequestSigningException, URISyntaxException {
         return combine(
                 basicTests(),
                 pythonCases());
     }
 
-    public Object[][] basicTests() {
+    public Object[][] basicTests() throws URISyntaxException {
         ClientCredential clientCredential = ClientCredential.builder()
                 .accessToken("akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234")
                 .clientSecret("12rvdn/myhSSiuYAC6ZPGaI91ezhdbYd7WyTRKhGxms=")
@@ -131,6 +132,21 @@ public class EdgeGridV1SignerTest {
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
                                 "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
                                 "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=8GpKbZnIx4XEw/zXtQdbVwIu0zJSG0RpNiVTSyIUwr0=",
+                },
+                {"GET with special characters",
+                        Request.builder()
+                                .method("GET")
+                                .uri(new URI(null, null, null, 0,
+                                        "/security-monitor/v1/report-packs/123456/data",
+                                        "filterParams=[{\"id\":12,\"type\":\"dimension\"," +
+                                                "\"values\":[\"US\"]," +
+                                                "\"condition\":\"in\"},{\"id\":56,\"type\":\"metric\",\"values\":[50],\"condition\":\"gt\"}]",
+                                        null))
+                                .build(),
+                        clientCredential, fixedTimestamp, fixedNonce,
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
+                                "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
+                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=sEzaxksZPAOPcKTwNZokVTCe+iny25w4xlwU9XYKK1s=",
                 },
         };
     }
