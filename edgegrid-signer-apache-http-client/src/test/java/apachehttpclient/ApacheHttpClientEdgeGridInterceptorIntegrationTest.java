@@ -111,7 +111,7 @@ public class ApacheHttpClientEdgeGridInterceptorIntegrationTest {
 
         HttpGet request = new HttpGet("http://endpoint.net/billing-usage/v1/reportSources");
 
-        HttpClient client = getHttpClientWithRelaxedSsl()
+        HttpClient client = HttpClientSetup.getHttpClientWithRelaxedSsl()
                 .addInterceptorFirst(new ApacheHttpClientEdgeGridInterceptor(credential))
                 .setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(credential))
                 .build();
@@ -125,46 +125,10 @@ public class ApacheHttpClientEdgeGridInterceptorIntegrationTest {
                 Matchers.not(CoreMatchers.equalTo(loggedRequests.get(1).getHeader("Authorization"))));
     }
 
-    private static HttpClientBuilder getHttpClientWithRelaxedSsl() {
-        return HttpClientBuilder.create()
-                .setSSLContext(trustAllCertificates())
-                .setSSLHostnameVerifier(trustAllHosts());
-    }
-
-    private static HostnameVerifier trustAllHosts() {
-        return new HostnameVerifier() {
-            @Override
-            public boolean verify(String s, SSLSession sslSession) {
-                return true;
-            }
-        };
-    }
-
     @AfterClass
     public void tearDownAll() {
         wireMockServer.stop();
     }
 
-    private static SSLContext trustAllCertificates() {
-        // set up a TrustManager that trusts everything
-        try {
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, new TrustManager[]{new X509TrustManager() {
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
 
-                public void checkClientTrusted(X509Certificate[] certs,
-                                               String authType) {
-                }
-
-                public void checkServerTrusted(X509Certificate[] certs,
-                                               String authType) {
-                }
-            }}, new SecureRandom());
-            return sslContext;
-        } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

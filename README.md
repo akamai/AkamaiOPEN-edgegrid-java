@@ -199,6 +199,35 @@ HttpGet request = new HttpGet("http://endpoint.net/billing-usage/v1/reportSource
 client.execute(request);
 ```
 
+There's also a possibility to use Apache HTTP Client in combination with REST-assured. First, you 
+need to define `HttpClientFactory`:
+
+```java
+public HttpClientFactory getSigningHttpClientFactory() {
+    return new HttpClientConfig.HttpClientFactory() {
+            @Override
+            public HttpClient createHttpClient() {
+                final DefaultHttpClient client = new DefaultHttpClient();
+                client.addRequestInterceptor(new ApacheHttpClientEdgeGridInterceptor(clientCredential));
+                client.setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(clientCredential));
+                return client;
+            }
+        };
+}
+```
+
+Next, make `REST-assured` use it:
+
+```java
+given()
+    .config()
+        .httpClient(HttpClientConfig.httpClientConfig().httpClientFactory(getSigningHttpClientFactory()))
+.when()
+    .get("/billing-usage/v1/reportSources")
+.then()
+    .statusCode(200);
+```
+
 ## Releases
 
 2.1:
