@@ -97,7 +97,7 @@ Include the following Maven dependency in your project POM:
 <dependency>
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-rest-assured</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -125,7 +125,7 @@ Include the following Maven dependency in your project POM:
 <dependency>
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-google-http-client</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -173,7 +173,65 @@ mechanism to construct a `ClientCredential` at the time of a request based on
 any logic you may want. For example, your own implementation could read
 credentials from a database or other secret store.
 
+## Usage with Apache HTTP Client 
+
+There is an EdgeGrid signer implementation for [Apache HTTP Client][13].
+
+Include the following Maven dependency in your project POM:
+
+```xml
+<dependency>
+    <groupId>com.akamai.edgegrid</groupId>
+    <artifactId>edgegrid-signer-apache-http-client</artifactId>
+    <version>2.1.0</version>
+</dependency>
+```
+
+Create an HTTP client that will sign your HTTP request with a defined client credential:
+
+```java
+HttpClient client = HttpClientBuilder.create()
+                .addInterceptorFirst(new ApacheHttpClientEdgeGridInterceptor(clientCredential))
+                .setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(clientCredential))
+                .build();
+
+HttpGet request = new HttpGet("http://endpoint.net/billing-usage/v1/reportSources");
+client.execute(request);
+```
+
+There's also a possibility to use Apache HTTP Client in combination with REST-assured. First, you 
+need to define `HttpClientFactory`:
+
+```java
+public HttpClientFactory getSigningHttpClientFactory() {
+    return new HttpClientConfig.HttpClientFactory() {
+            @Override
+            public HttpClient createHttpClient() {
+                final DefaultHttpClient client = new DefaultHttpClient();
+                client.addRequestInterceptor(new ApacheHttpClientEdgeGridInterceptor(clientCredential));
+                client.setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(clientCredential));
+                return client;
+            }
+        };
+}
+```
+
+Next, make `REST-assured` use it:
+
+```java
+given()
+    .config()
+        .httpClient(HttpClientConfig.httpClientConfig().httpClientFactory(getSigningHttpClientFactory()))
+.when()
+    .get("/billing-usage/v1/reportSources")
+.then()
+    .statusCode(200);
+```
+
 ## Releases
+
+2.1:
+- binding for Apache HTTP Client
 
 2.0:
 
@@ -208,6 +266,7 @@ programming languages:
 [10]: https://github.com/rest-assured/rest-assured
 [11]: https://developer.akamai.com/introduction/Client_Auth.html
 [12]: https://developer.akamai.com/
+[13]: https://hc.apache.org/
 
 ## Authors
 

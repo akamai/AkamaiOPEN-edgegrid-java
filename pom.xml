@@ -12,6 +12,7 @@
         <module>edgegrid-signer-core</module>
         <module>edgegrid-signer-rest-assured</module>
         <module>edgegrid-signer-google-http-client</module>
+        <module>edgegrid-signer-apache-http-client</module>
     </modules>
 
     <packaging>pom</packaging>

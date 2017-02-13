@@ -60,6 +60,11 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
         this.edgeGridSigner = new EdgeGridV1Signer();
     }
 
+
+    public final ClientCredentialProvider getClientCredentialProvider() {
+        return clientCredentialProvider;
+    }
+
     /**
      * Signs {@code request} with appropriate credentials using EdgeGrid signer algorithm and
      * replaces {@code request}'s host name with the one specified by the credential.

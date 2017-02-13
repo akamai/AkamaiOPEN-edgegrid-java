@@ -1,35 +1,16 @@
-/*
- * Copyright 2016 Copyright 2016 Akamai Technologies, Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.akamai.edgegrid.signer.restassured;
+package apachehttpclient;
 
 
 import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.apachehttpclient.ApacheHttpClientEdgeGridInterceptor;
+import com.akamai.edgegrid.signer.apachehttpclient.ApacheHttpClientEdgeGridRoutePlanner;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 
-import io.restassured.RestAssured;
-import io.restassured.filter.Filter;
-import io.restassured.filter.FilterContext;
-import io.restassured.response.Response;
-import io.restassured.specification.FilterableRequestSpecification;
-import io.restassured.specification.FilterableResponseSpecification;
-import io.restassured.specification.RequestSpecification;
-
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,23 +21,31 @@ import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import io.restassured.RestAssured;
+import io.restassured.config.HttpClientConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.filter.Filter;
+import io.restassured.filter.FilterContext;
+import io.restassured.response.Response;
+import io.restassured.specification.FilterableRequestSpecification;
+import io.restassured.specification.FilterableResponseSpecification;
+import io.restassured.specification.RequestSpecification;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.hamcrest.MatcherAssert.assertThat;
 
-
-/**
- * Unit tests for {@link RestAssuredEdgeGridFilterTest}.
- *
- * @author mgawinec@akamai.com
- */
-public class RestAssuredEdgeGridFilterTest {
+public class RestAssuredIntegrationTest {
 
     static final String SERVICE_MOCK_HOST = "localhost";
     static final int SERVICE_MOCK_PORT = 9089;
@@ -85,9 +74,7 @@ public class RestAssuredEdgeGridFilterTest {
     }
 
     @Test
-    // Due to limitations of REST-assured we cannot sign again followed redirects
-    // https://github.com/akamai-open/AkamaiOPEN-edgegrid-java/issues/21
-    public void cannotSignAgainFollowedRedirects() throws URISyntaxException, IOException {
+    public void signAgainFollowedRedirects() throws URISyntaxException, IOException {
 
         wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources"))
                 .withHeader("Authorization", matching(".*"))
@@ -104,17 +91,17 @@ public class RestAssuredEdgeGridFilterTest {
                         .withHeader("Content-Type", "text/xml")
                         .withBody("<response>Some content</response>")));
 
-        RestAssured.given()
-                .relaxedHTTPSValidation()
-                .filter(new RestAssuredEdgeGridFilter(credential))
+        getBaseRequestSpecification()
                 .get("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
 
         List<LoggedRequest> loggedRequests = wireMockServer.findRequestsMatching(RequestPattern
                 .everything()).getRequests();
         MatcherAssert.assertThat(loggedRequests.get(0).getHeader("Authorization"),
-                CoreMatchers.equalTo(loggedRequests.get(1).getHeader("Authorization")));
+                Matchers.not(CoreMatchers.equalTo(loggedRequests.get(1).getHeader("Authorization"))));
     }
+
+
 
     @Test
     public void signEachRequest() throws URISyntaxException, IOException {
@@ -127,9 +114,7 @@ public class RestAssuredEdgeGridFilterTest {
                         .withHeader("Content-Type", "text/xml")
                         .withBody("<response>Some content</response>")));
 
-        RestAssured.given()
-                .relaxedHTTPSValidation()
-                .filter(new RestAssuredEdgeGridFilter(credential))
+        getBaseRequestSpecification()
                 .get("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
     }
@@ -145,9 +130,7 @@ public class RestAssuredEdgeGridFilterTest {
                         .withHeader("Content-Type", "text/xml")
                         .withBody("<response>Some content</response>")));
 
-        RestAssured.given()
-                .relaxedHTTPSValidation()
-                .filter(new RestAssuredEdgeGridFilter(credential))
+        getBaseRequestSpecification()
                 .get("/config-gtm/v1/domains/{domain}", "storage1.akadns.net")
                 .then().statusCode(200);
     }
@@ -165,9 +148,7 @@ public class RestAssuredEdgeGridFilterTest {
                         .withHeader("Content-Type", "text/xml")
                         .withBody("<response>Some content</response>")));
 
-        RestAssured.given()
-                .relaxedHTTPSValidation()
-                .filter(new RestAssuredEdgeGridFilter(credential))
+        getBaseRequestSpecification()
                 .queryParam("param1", "value1")
                 .get("/config-gtm/v1/domains/{domain}", "storage1.akadns.net")
                 .then().statusCode(200);
@@ -184,73 +165,88 @@ public class RestAssuredEdgeGridFilterTest {
                         .withHeader("Content-Type", "text/xml")
                         .withBody("<response>Some content</response>")));
 
-        RestAssured.given()
-                .relaxedHTTPSValidation()
-                .filter(new RestAssuredEdgeGridFilter(credential))
+        getBaseRequestSpecification()
                 .header("Host", "ignored-hostname.com")
                 .get("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
     }
 
     @Test
-    public void replacesProvidedHostHeader() throws URISyntaxException, IOException,
+    public void replaceProvidedHostHeaderOnlyInApacheClient() throws URISyntaxException, IOException,
             RequestSigningException {
 
+        wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources"))
+                .withHeader("Authorization", matching(".*"))
+                .willReturn(aResponse()
+                        .withStatus(200)));
 
-        RestAssured.given()
-                .relaxedHTTPSValidation()
+        getBaseRequestSpecification()
                 .header("Host", "ignored-hostname.com")
-                .filter(new RestAssuredEdgeGridFilter(credential))
                 .filter(new Filter() {
                     @Override
                     public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec, FilterContext ctx) {
                         MatcherAssert.assertThat(requestSpec.getHeaders().getList("Host").size(),
                                 CoreMatchers.equalTo(1));
                         MatcherAssert.assertThat(requestSpec.getHeaders().get("Host").getValue(),
-                                CoreMatchers.equalTo(credential.getHost()));
-
+                                CoreMatchers.equalTo("ignored-hostname.com"));
                         return ctx.next(requestSpec, responseSpec);
                     }
                 })
-                .get();
+                .get("/billing-usage/v1/reportSources");
 
+
+        List<LoggedRequest> loggedRequests = wireMockServer.findRequestsMatching(RequestPattern
+                .everything()).getRequests();
+        MatcherAssert.assertThat(loggedRequests.get(0).getHeader("Host"),
+                CoreMatchers.equalTo(SERVICE_MOCK));
 
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void dontSignEachRequestWithAbsolutePath() throws URISyntaxException, IOException {
+    @Test
+    public void signEachRequestWithAbsolutePath() throws URISyntaxException, IOException {
 
-        RestAssured.given()
-                .filter(new RestAssuredEdgeGridFilter(credential))
-                .get("https://ignored-hostname.com/billing-usage/v1/reportSources")
+        wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources"))
+                .withHeader("Authorization", matching(".*"))
+                .willReturn(aResponse()
+                        .withStatus(200)));
+
+        getBaseRequestSpecification()
+                .get("https://" + SERVICE_MOCK+ "/billing-usage/v1/reportSources")
                 .then().statusCode(200);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void dontSignRequestWithFileContent() throws URISyntaxException, IOException {
+    @Test
+    public void signRequestWithFileContent() throws URISyntaxException, IOException {
 
-        RestAssured.given()
-                .filter(new RestAssuredEdgeGridFilter(credential))
-                .body(new File("/home/johan/some_large_file.bin"))
+        wireMockServer.stubFor(post(urlPathEqualTo("/billing-usage/v1/reportSources"))
+                .withHeader("Authorization", matching(".*"))
+                .willReturn(aResponse()
+                        .withStatus(200)));
+
+        getBaseRequestSpecification()
+                .body(new File("./pom.xml"))
                 .post("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void dontSignRequestWithInputStreamContent() throws URISyntaxException, IOException {
+    @Test
+    public void signRequestWithInputStreamContent() throws URISyntaxException, IOException {
 
-        RestAssured.given()
-                .filter(new RestAssuredEdgeGridFilter(credential))
+        wireMockServer.stubFor(post(urlPathEqualTo("/billing-usage/v1/reportSources"))
+                .withHeader("Authorization", matching(".*"))
+                .willReturn(aResponse()
+                        .withStatus(200)));
+
+        getBaseRequestSpecification()
                 .body(new ByteArrayInputStream("exampleString".getBytes(StandardCharsets.UTF_8)))
                 .post("/billing-usage/v1/reportSources")
-        .then().statusCode(200);
+                .then().statusCode(200);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void dontSignRequestWithMultipartContent() throws URISyntaxException, IOException {
 
-        RestAssured.given()
-                .filter(new RestAssuredEdgeGridFilter(credential))
+        getBaseRequestSpecification()
                 .multiPart("file", new File("/home/johan/some_large_file.bin"))
                 .post("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
@@ -259,6 +255,26 @@ public class RestAssuredEdgeGridFilterTest {
     @AfterClass
     public void tearDownAll() {
         wireMockServer.stop();
+    }
+
+    private RequestSpecification getBaseRequestSpecification() {
+        return RestAssured.given()
+                .config(getRestAssuredConfig(credential))
+                .relaxedHTTPSValidation()
+                .baseUri("https://" + SERVICE_MOCK);
+    }
+
+
+    private static RestAssuredConfig getRestAssuredConfig(final ClientCredential credential) {
+        return RestAssuredConfig.config().httpClient(HttpClientConfig.httpClientConfig().httpClientFactory(new HttpClientConfig.HttpClientFactory() {
+            @Override
+            public HttpClient createHttpClient() {
+                final DefaultHttpClient client = new DefaultHttpClient();
+                client.addRequestInterceptor(new ApacheHttpClientEdgeGridInterceptor(credential));
+                client.setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(credential));
+                return client;
+            }
+        }));
     }
 
 }
