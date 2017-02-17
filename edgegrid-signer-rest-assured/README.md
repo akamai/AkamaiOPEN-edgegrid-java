@@ -2,6 +2,12 @@
 
 Java implementation of Akamai {OPEN} EdgeGrid signing.
 
+[![Build Status](https://travis-ci.org/akamai-open/AkamaiOPEN-edgegrid-java.svg?branch=master)](https://travis-ci.org/akamai-open/AkamaiOPEN-edgegrid-java)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-rest-assured/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-rest-assured)
+[![Reference Status](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-rest-assured/reference_badge.svg?style=flat-square)](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-rest-assured/references)
+[![Dependency Status](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-rest-assured/badge?style=flat-square)](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-rest-assured)
+[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.akamai.edgegrid/edgegrid-signer-rest-assured/badge.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-rest-assured)
+
 ## Description
 
 This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
