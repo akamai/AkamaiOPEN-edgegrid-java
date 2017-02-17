@@ -69,28 +69,5 @@ mechanism to construct a `ClientCredential` at the time of a request based on
 any logic you may want. For example, your own implementation could read
 credentials from a database or other secret store.
 
-## Changes
-
-2.1:
-- Splitting README.md between relevant modules.
-
-2.0:
-
-- Separated binding for Google HTTP Client Library for Java from core
-- Unit tests with TestNG
-
-## Authors
-
-Maciej Gawinecki <mgawinec@akamai.com>
-
-Martin Meyer <mmeyer@akamai.com>
-
-## Contribute!
-
-This is an open-source library, and contributions are welcome. You're welcome
-to fork this project and send us a pull request.
-
-For more information about OPEN API visit the [Akamai {OPEN} Developer Community](https://developer.akamai.com/).
-
 [1]: https://developer.akamai.com/introduction/Client_Auth.html
 [2]: https://github.com/google/google-http-java-client

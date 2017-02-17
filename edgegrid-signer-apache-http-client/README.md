@@ -75,24 +75,6 @@ given()
     .statusCode(200);
 ```
 
-## Releases
-
-2.1:
-- Adding binding for Apache HTTP Client
-
-## Authors
-
-Maciej Gawinecki <mgawinec@akamai.com>
-
-Martin Meyer <mmeyer@akamai.com>
-
-## Contribute!
-
-This is an open-source library, and contributions are welcome. You're welcome
-to fork this project and send us a pull request.
-
-For more information about OPEN API visit the [Akamai {OPEN} Developer Community](https://developer.akamai.com/).
-
 [1]: https://developer.akamai.com/introduction/Client_Auth.html
 [2]: https://hc.apache.org/
 [3]: https://github.com/rest-assured/rest-assured

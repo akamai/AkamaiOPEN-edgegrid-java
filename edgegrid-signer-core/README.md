@@ -91,28 +91,4 @@ create one of these transparently whenever they are passed a `ClientCredential`.
 `#pickSectionName()` method can be overridden by the user to select different
 sections from the configuration file based on the current request.
 
-## Changes
-
-2.1:
-- Splitting README.md between relevant modules.
-
-2.0:
-- Signing algorithm tweaks
-- Separated binding for Google HTTP Client Library for Java from core
-- Unit tests with TestNG
-- Published to Maven Central
-
-## Authors
-
-Maciej Gawinecki <mgawinec@akamai.com>
-
-Martin Meyer <mmeyer@akamai.com>
-
-## Contribute!
-
-This is an open-source library, and contributions are welcome. You're welcome
-to fork this project and send us a pull request.
-
-For more information about OPEN API visit the [Akamai {OPEN} Developer Community](https://developer.akamai.com/).
-
 [1]: https://developer.akamai.com/introduction/Client_Auth.html

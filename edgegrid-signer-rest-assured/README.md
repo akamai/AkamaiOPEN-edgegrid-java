@@ -52,28 +52,6 @@ instead of the REST-assured binding. This will be functionally equivalent, and
 will also sign redirected requests properly. Usage instructions can be found in
 the readme for that module.
 
-## Changes
-
-2.1:
-- Added bindings Apache HTTP Client, which can be used instead of this binding.
-- Splitting README.md between relevant modules.
-
-2.0:
-- Added binding for REST-assured
-
-## Authors
-
-Maciej Gawinecki <mgawinec@akamai.com>
-
-Martin Meyer <mmeyer@akamai.com>
-
-## Contribute!
-
-This is an open-source library, and contributions are welcome. You're welcome
-to fork this project and send us a pull request.
-
-For more information about OPEN API visit the [Akamai {OPEN} Developer Community](https://developer.akamai.com/).
-
 [1]: https://developer.akamai.com/introduction/Client_Auth.html
 [2]: https://github.com/rest-assured/rest-assured
 [3]: ../edgegrid-signer-apache-http-client
