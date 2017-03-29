@@ -1,4 +1,4 @@
-package apachehttpclient;
+package com.akamai.edgegrid.signer.apachehttpclient;
 
 
 import org.apache.http.impl.client.HttpClientBuilder;

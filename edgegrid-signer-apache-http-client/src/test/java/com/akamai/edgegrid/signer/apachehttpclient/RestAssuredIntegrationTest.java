@@ -1,4 +1,4 @@
-package apachehttpclient;
+package com.akamai.edgegrid.signer.apachehttpclient;
 
 
 import com.akamai.edgegrid.signer.ClientCredential;
