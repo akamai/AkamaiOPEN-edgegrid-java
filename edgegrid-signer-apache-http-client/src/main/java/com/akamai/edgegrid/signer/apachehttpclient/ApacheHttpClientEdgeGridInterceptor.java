@@ -50,8 +50,6 @@ public class ApacheHttpClientEdgeGridInterceptor implements HttpRequestIntercept
             binding.sign(request);
         } catch (RequestSigningException e) {
             throw new RuntimeException(e);
-        } finally {
-            System.out.println("Signed");
         }
     }
 }
