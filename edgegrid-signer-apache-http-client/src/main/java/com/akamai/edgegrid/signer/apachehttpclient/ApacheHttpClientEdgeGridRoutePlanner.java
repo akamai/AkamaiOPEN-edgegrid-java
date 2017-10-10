@@ -32,7 +32,7 @@ public class ApacheHttpClientEdgeGridRoutePlanner extends DefaultRoutePlanner {
     public HttpRoute determineRoute(HttpHost host, HttpRequest request, HttpContext context) throws HttpException {
         try {
             ClientCredential clientCredential = binding.getClientCredentialProvider().getClientCredential(binding.map(request));
-            HttpHost target = HttpHost.create("https://" + clientCredential.getHost());
+            HttpHost target = new HttpHost(clientCredential.getHost(), -1, "https");
             return super.determineRoute(target, request, context);
         } catch (NoMatchingCredentialException e) {
             throw new RuntimeException(e);
