@@ -11,7 +11,7 @@ Java implementation of Akamai {OPEN} EdgeGrid signing.
 ## Description
 
 This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
-This particular module is a binding the the [Apache HTTP Client library][2].
+This particular module is a binding for the [Apache HTTP Client library][2].
 
 ## Usage of Apache HTTP Client
 
@@ -21,7 +21,7 @@ Include the following Maven dependency in your project POM:
 <dependency>
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-apache-http-client</artifactId>
-    <version>2.1.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 

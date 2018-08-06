@@ -59,7 +59,7 @@ public class GoogleHttpClientEdgeGridInterceptor implements HttpExecuteIntercept
     @Override
     public void intercept(HttpRequest request) throws IOException {
         try {
-            binding.sign(request);
+            binding.sign(request, request);
         } catch (RequestSigningException e) {
             throw new RuntimeException(e);
         }

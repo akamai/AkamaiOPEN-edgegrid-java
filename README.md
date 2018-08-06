@@ -17,14 +17,20 @@ libraries.
 
 ## Modules
 
-This project contains a core implementation module and three bindings to specific HTTP client libraries.
+This project contains a core implementation module and five bindings to specific HTTP client libraries.
 
 * [edgegrid-signer-core](edgegrid-signer-core) is the core signing implementation and base classes used by the individual library implementations.
-* [edgegrid-signer-apache-http-client](edgegrid-signer-apache-http-client) is a binding for [Apache HTTP Client][2]
-* [edgegrid-signer-google-http-client](edgegrid-signer-google-http-client) is a binding for [Google HTTP Client Library for Java][3]
+* [edgegrid-signer-apache-http-client](edgegrid-signer-apache-http-client) is a binding for [Apache HTTP Client][2].
+* [edgegrid-signer-google-http-client](edgegrid-signer-google-http-client) is a binding for [Google HTTP Client Library for Java][3].
 * [edgegrid-signer-rest-assured](edgegrid-signer-rest-assured) is a binding for [REST-assured][4].
+* [edgegrid-signer-async-http-client](edgegrid-signer-async-http-client) is a binding for [Async HTTP Client][13].
+* [edgegrid-signer-gatling](edgegrid-signer-gatling) is a binding for [Gatling][14].
 
 ## Changes
+
+3.0:
+- Adding binding for Async HTTP Client.
+- Adding binding for Gatling.
 
 2.1:
 - Adding binding for Apache HTTP Client.
@@ -32,10 +38,10 @@ This project contains a core implementation module and three bindings to specifi
 
 2.0:
 - Signing algorithm tweaks
-- Separated binding for Google HTTP Client Library for Java from core
-- Added binding for REST-assured
+- Separating binding for Google HTTP Client Library for Java from core
+- Adding binding for REST-assured
 - Unit tests with TestNG
-- Published to Maven Central!
+- Publishing to Maven Central!
 
 ## Similar tools
 
@@ -62,6 +68,8 @@ programming languages:
 [10]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-node
 [11]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-C-Sharp
 [12]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-golang
+[13]: https://github.com/AsyncHttpClient/async-http-client
+[14]: https://gatling.io/
 
 ## Authors
 

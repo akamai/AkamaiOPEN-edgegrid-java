@@ -11,22 +11,19 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpRequestWrapper;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.RequestWrapper;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Apache HTTP Client binding for EdgeGrid signer for signing {@link HttpRequest}.
  *
  * @author mgawinec@akamai.com
  */
-public class ApacheHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest> {
+public class ApacheHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest, HttpRequest> {
 
     public ApacheHttpClientEdgeGridRequestSigner(ClientCredential clientCredential) {
         super(clientCredential);
@@ -34,6 +31,19 @@ public class ApacheHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
 
     public ApacheHttpClientEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
         super(clientCredentialProvider);
+    }
+
+    @Override
+    protected URI requestUri(HttpRequest request) {
+      if (request instanceof HttpRequestWrapper) {
+          String uri = ((HttpRequestWrapper) request).getOriginal().getRequestLine().getUri();
+          return URI.create(uri);
+      } else if (request instanceof RequestWrapper) {
+          String uri = ((RequestWrapper) request).getOriginal().getRequestLine().getUri();
+          return URI.create(uri);
+      } else {
+          return ((HttpRequestBase) request).getURI();
+      }
     }
 
     @Override
@@ -77,33 +87,19 @@ public class ApacheHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     @Override
-    protected void setHost(HttpRequest request, String host) {
+    protected void setHost(HttpRequest request, String host, URI uri) {
         request.setHeader("Host", host);
-
-        if (request instanceof HttpRequestWrapper) {
-            setHost(((HttpRequestWrapper) request).getOriginal(), host);
-        } else if (request instanceof RequestWrapper) {
-            setHost(((RequestWrapper) request).getOriginal(), host);
-        } else {
-            URI oldUri = ((HttpRequestBase) request).getURI();
-            try {
-                URI newUri = replaceHost(oldUri, host);
-                ((HttpRequestBase) request).setURI(newUri);
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        setRequestUri(request, uri);
     }
 
-    private static URI replaceHost(URI oldUri, String host) throws URISyntaxException {
-        return new URIBuilder()
-                .setScheme(oldUri.getScheme())
-                .setHost(host)
-                .setPort(oldUri.getPort())
-                .setPath(oldUri.getPath())
-                .setParameters(URLEncodedUtils.parse(oldUri, "UTF-8"))
-                .setFragment(oldUri.getFragment())
-                .build();
+    private void setRequestUri(HttpRequest request, URI uri) {
+        if (request instanceof HttpRequestWrapper) {
+            setRequestUri(((HttpRequestWrapper) request).getOriginal(), uri);
+        } else if (request instanceof RequestWrapper) {
+            setRequestUri(((RequestWrapper) request).getOriginal(), uri);
+        } else {
+            ((HttpRequestBase) request).setURI(uri);
+        }
     }
 
 }

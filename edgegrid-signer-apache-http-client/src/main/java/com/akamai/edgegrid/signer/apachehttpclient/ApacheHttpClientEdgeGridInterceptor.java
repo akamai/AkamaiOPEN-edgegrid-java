@@ -47,7 +47,7 @@ public class ApacheHttpClientEdgeGridInterceptor implements HttpRequestIntercept
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
         try {
-            binding.sign(request);
+            binding.sign(request, request);
         } catch (RequestSigningException e) {
             throw new RuntimeException(e);
         }

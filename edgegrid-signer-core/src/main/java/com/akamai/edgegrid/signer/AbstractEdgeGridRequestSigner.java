@@ -19,6 +19,11 @@ package com.akamai.edgegrid.signer;
 import com.akamai.edgegrid.signer.exceptions.NoMatchingCredentialException;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
+import org.apache.commons.lang3.Validate;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
 /**
  * <p> This is an abstract base class for implementing EdgeGrid request signing in a
  * library-specific way. There are several HTTP client libraries available for Java, and this class
@@ -31,7 +36,7 @@ import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
  * @author mgawinec@akamai.com
  * @author mmeyer@akamai.com
  */
-public abstract class AbstractEdgeGridRequestSigner<RequestT> {
+public abstract class AbstractEdgeGridRequestSigner<RequestT, MutableRequestT> {
 
     private final ClientCredentialProvider clientCredentialProvider;
 
@@ -69,12 +74,13 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      * Signs {@code request} with appropriate credentials using EdgeGrid signer algorithm and
      * replaces {@code request}'s host name with the one specified by the credential.
      *
-     * @param request an HTTP request to sign
+     * @param request an HTTP request with data used to sign
+     * @param request an HTTP request to update with signature
      * @throws RequestSigningException       if failed to sign a request
      * @throws NoMatchingCredentialException if acquiring a {@link ClientCredential} throws {@code
      *                                       NoMatchingCredentialException} or returns {@code null}
      */
-    public void sign(RequestT request) throws RequestSigningException {
+    public void sign(RequestT request, MutableRequestT requestToUpdate) throws RequestSigningException {
         Request req = map(request);
         ClientCredential credential;
         try {
@@ -85,10 +91,19 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
         if (credential == null) {
             throw new NoMatchingCredentialException();
         }
-        setHost(request, credential.getHost());
+        String newHost = credential.getHost();
+        URI originalUri = requestUri(request);
+        Validate.notNull(originalUri, "Request-URI cannot be null");
+        URI newUri = withNewHost(originalUri, newHost);
+        setHost(requestToUpdate, newHost, newUri);
         String authorization = edgeGridSigner.getSignature(req, credential);
-        setAuthorization(request, authorization);
+        setAuthorization(requestToUpdate, authorization);
     }
+
+    /**
+     * Returns Request-URI of an original request.
+     */
+    protected abstract URI requestUri(RequestT request);
 
     /**
      * Maps HTTP client-specific request to client-agnostic model of this request.
@@ -106,14 +121,38 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT> {
      * @param request   HTTP request to update
      * @param signature HTTP request signature
      */
-    protected abstract void setAuthorization(RequestT request, String signature);
+    protected abstract void setAuthorization(MutableRequestT request, String signature);
 
     /**
      * Updates a given HTTP request by replacing the request hostname with {@code host} instead.
+     * Usually, it means updating Host header and Request-URI.
      *
      * @param request HTTP request to update
      * @param host    an OPEN API hostname
+     * @param uri     request URI with OPEN API hostname
      */
-    protected abstract void setHost(RequestT request, String host);
+    protected abstract void setHost(MutableRequestT request, String host, URI uri);
+
+    private URI withNewHost(URI uri, String host) {
+        // We allow host to contain port only for because mocking OPEN API service requires it
+        String[] hostAndPort = host.split(":");
+        String hostName = hostAndPort[0];
+        int port = (hostAndPort.length == 2)
+            ? Integer.parseInt(hostAndPort[1])
+            : uri.getPort();
+
+        try {
+            return new URI(
+                uri.getScheme(),
+                uri.getUserInfo(),
+                hostName,
+                port,
+                uri.getPath(),
+                uri.getQuery(),
+                uri.getFragment());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
