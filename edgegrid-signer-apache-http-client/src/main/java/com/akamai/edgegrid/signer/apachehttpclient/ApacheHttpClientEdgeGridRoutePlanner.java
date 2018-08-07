@@ -16,6 +16,8 @@
 
 package com.akamai.edgegrid.signer.apachehttpclient;
 
+import java.net.ProxySelector;
+
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.exceptions.NoMatchingCredentialException;
@@ -24,21 +26,20 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.impl.conn.DefaultRoutePlanner;
-import org.apache.http.impl.conn.DefaultSchemePortResolver;
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.protocol.HttpContext;
 
-public class ApacheHttpClientEdgeGridRoutePlanner extends DefaultRoutePlanner {
+public class ApacheHttpClientEdgeGridRoutePlanner extends SystemDefaultRoutePlanner {
 
     private final ApacheHttpClientEdgeGridRequestSigner binding;
 
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredential clientCredential) {
-        super(DefaultSchemePortResolver.INSTANCE);
+        super(ProxySelector.getDefault());
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredential);
     }
 
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredentialProvider clientCredentialProvider) {
-        super(DefaultSchemePortResolver.INSTANCE);
+        super(ProxySelector.getDefault());
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredentialProvider);
     }
 
