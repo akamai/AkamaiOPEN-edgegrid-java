@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Copyright 2016 Akamai Technologies, Inc. All Rights Reserved.
+ * Copyright 2018 Akamai Technologies, Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 
 /**
  * Unit tests for {@link Request}.

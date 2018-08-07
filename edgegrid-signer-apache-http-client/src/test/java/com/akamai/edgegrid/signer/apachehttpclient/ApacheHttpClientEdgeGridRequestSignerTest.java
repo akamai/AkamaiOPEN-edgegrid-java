@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Copyright 2016 Akamai Technologies, Inc. All Rights Reserved.
+ * Copyright 2018 Akamai Technologies, Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package com.akamai.edgegrid.signer.apachehttpclient;
 
-
 import com.akamai.edgegrid.signer.ClientCredential;
-import com.akamai.edgegrid.signer.apachehttpclient.ApacheHttpClientEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
 import org.apache.http.HttpRequest;
@@ -34,7 +32,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
-
 
 /**
  * Example of use of EdgeGrid signer with Apache HTTP Client.
