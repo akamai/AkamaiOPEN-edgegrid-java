@@ -59,7 +59,7 @@ public class GoogleHttpClientEdgeGridRequestSignerTest {
         HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
 
         GoogleHttpClientEdgeGridRequestSigner googleHttpSigner = new GoogleHttpClientEdgeGridRequestSigner(credential);
-        googleHttpSigner.sign(request);
+        googleHttpSigner.sign(request, request);
 
         assertThat(request.getHeaders().containsKey("host"), is(false));
         assertThat(request.getUrl().getHost(), equalTo("endpoint.net"));
@@ -76,7 +76,7 @@ public class GoogleHttpClientEdgeGridRequestSignerTest {
         request.getHeaders().put("Host", "ignored-hostname.com");
 
         GoogleHttpClientEdgeGridRequestSigner googleHttpSigner = new GoogleHttpClientEdgeGridRequestSigner(credential);
-        googleHttpSigner.sign(request);
+        googleHttpSigner.sign(request, request);
 
         // NOTE: The library lower-cases all header names.
         assertThat(request.getHeaders().containsKey("Host"), is(false));

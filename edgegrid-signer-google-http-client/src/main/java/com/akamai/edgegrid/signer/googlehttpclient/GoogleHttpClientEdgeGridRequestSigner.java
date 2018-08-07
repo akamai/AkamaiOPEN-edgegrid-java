@@ -18,6 +18,7 @@ package com.akamai.edgegrid.signer.googlehttpclient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
@@ -26,6 +27,7 @@ import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.util.FieldInfo;
@@ -36,7 +38,7 @@ import com.google.api.client.util.Types;
  *
  * @author mgawinec@akamai.com
  */
-public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest> {
+public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest, HttpRequest> {
 
     /**
      * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
@@ -59,6 +61,11 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     @Override
+    protected URI requestUri(HttpRequest request) {
+        return request.getUrl().toURI();
+    }
+
+    @Override
     protected Request map(HttpRequest request) {
         Request.RequestBuilder builder = Request.builder()
                 .method(request.getRequestMethod())
@@ -76,6 +83,10 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
             }
         }
         return builder.build();
+    }
+
+    public void sign(HttpRequest request) throws RequestSigningException {
+        sign(request, request);
     }
 
     @Override
@@ -111,12 +122,12 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
     }
 
     @Override
-    protected void setHost(HttpRequest request, String host) {
+    protected void setHost(HttpRequest request, String host, URI uri) {
         // NOTE: Header names are lower-cased by the library.
         if (request.getHeaders().containsKey("host")) {
             request.getHeaders().put("host", host);
         }
-        request.getUrl().setHost(host);
+        request.setUrl(new GenericUrl(uri));
     }
 
 }

@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
 
 
 /**
- * Integration tests for {@link com.akamai.edgegrid.signer.apachehttpclient.ApacheHttpClientEdgeGridInterceptor}.
+ * Integration tests for {@link ApacheHttpClientEdgeGridInterceptor}.
  *
  * @author mgawinec@akamai.com
  * @author mmeyer@akamai.com

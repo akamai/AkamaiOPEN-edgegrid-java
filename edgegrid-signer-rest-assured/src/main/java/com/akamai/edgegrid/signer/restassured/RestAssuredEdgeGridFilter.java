@@ -77,7 +77,7 @@ public class RestAssuredEdgeGridFilter implements Filter {
     @Override
     public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec, FilterContext ctx) {
         try {
-            binding.sign(requestSpec);
+            binding.sign(requestSpec, requestSpec);
         } catch (RequestSigningException e) {
             throw new RuntimeException(e);
         }

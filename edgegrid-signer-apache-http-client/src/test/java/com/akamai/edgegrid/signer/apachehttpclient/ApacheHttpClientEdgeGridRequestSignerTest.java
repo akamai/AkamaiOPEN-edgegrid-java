@@ -57,7 +57,7 @@ public class ApacheHttpClientEdgeGridRequestSignerTest {
         HttpRequest request = new HttpGet("https://ignored-hostname.com/billing-usage/v1/reportSources");
 
         ApacheHttpClientEdgeGridRequestSigner apacheHttpSinger = new ApacheHttpClientEdgeGridRequestSigner(credential);
-        apacheHttpSinger.sign(request);
+        apacheHttpSinger.sign(request, request);
 
 
         assertThat(URI.create(request.getRequestLine().getUri()).getHost(), equalTo("endpoint.net"));

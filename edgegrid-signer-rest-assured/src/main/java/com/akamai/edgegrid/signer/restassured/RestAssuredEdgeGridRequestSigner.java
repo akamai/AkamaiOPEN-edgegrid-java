@@ -42,7 +42,7 @@ import io.restassured.specification.FilterableRequestSpecification;
  * @author mgawinec@akamai.com
  */
 public class RestAssuredEdgeGridRequestSigner extends
-        AbstractEdgeGridRequestSigner<FilterableRequestSpecification> {
+        AbstractEdgeGridRequestSigner<FilterableRequestSpecification, FilterableRequestSpecification> {
 
 
     private static String getRequestPath(FilterableRequestSpecification requestSpec) {
@@ -81,6 +81,10 @@ public class RestAssuredEdgeGridRequestSigner extends
         }
     }
 
+    public void sign(FilterableRequestSpecification requestSpecification) throws RequestSigningException {
+        sign(requestSpecification, requestSpecification);
+    }
+
     /**
      * Creates an EdgeGrid request signer using the same {@link ClientCredential} for all requests.
      *
@@ -102,6 +106,15 @@ public class RestAssuredEdgeGridRequestSigner extends
     }
 
     @Override
+    protected URI requestUri(FilterableRequestSpecification requestSpec) {
+        // Due to limitations of REST-assured design only requests with relative paths can be updated
+        String requestPath = getRequestPath(requestSpec);
+        Validate.isTrue(isRelativeUrl(requestPath), "path in request cannot be absolute");
+
+        return URI.create(requestSpec.getBaseUri() + requestPath);
+    }
+
+    @Override
     protected Request map(FilterableRequestSpecification requestSpec) {
 
         Validate.isTrue(requestSpec.getMultiPartParams().isEmpty(),
@@ -111,6 +124,7 @@ public class RestAssuredEdgeGridRequestSigner extends
                 .method(requestSpec.getMethod())
                 .uri(URI.create(requestSpec.getURI()))
                 .body(serialize(requestSpec.getBody()));
+
         for (Header header : requestSpec.getHeaders()) {
             builder.header(header.getName(), header.getValue());
         }
@@ -123,18 +137,11 @@ public class RestAssuredEdgeGridRequestSigner extends
     }
 
     @Override
-    protected void setHost(FilterableRequestSpecification requestSpec, String host) {
-        // Due to limitations of REST-assured design only requests with relative paths can be updated
-        Validate.isTrue(isRelativeUrl(getRequestPath(requestSpec)), "path in request cannot be absolute");
-
+    protected void setHost(FilterableRequestSpecification requestSpec, String host, URI uri) {
         // Avoid redundant Host headers
-        requestSpec.removeHeader("Host");
-
-        requestSpec
+        requestSpec.removeHeader("Host")
                 .baseUri("https://" + host)
                 .header("Host", host);
     }
-
-
 
 }

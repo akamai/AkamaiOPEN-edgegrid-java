@@ -21,7 +21,7 @@ Include the following Maven dependency in your project POM:
 <dependency>
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-rest-assured</artifactId>
-    <version>2.1.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
