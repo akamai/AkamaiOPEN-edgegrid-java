@@ -2,11 +2,8 @@
 
 Java implementation of Akamai {OPEN} EdgeGrid signing.
 
-[![Build Status](https://travis-ci.org/akamai-open/AkamaiOPEN-edgegrid-java.svg?branch=master)](https://travis-ci.org/akamai-open/AkamaiOPEN-edgegrid-java)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-gatling/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-gatling)
-[![Reference Status](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-gatling/reference_badge.svg?style=flat-square)](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-gatling/references)
-[![Dependency Status](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-gatling/badge?style=flat-square)](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-gatling)
-[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.akamai.edgegrid/edgegrid-signer-gatling/badge.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-gatling)
+[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-gatling.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-gatling)
 
 ## Description
 

@@ -2,11 +2,8 @@
 
 Java implementation of Akamai {OPEN} EdgeGrid signing.
 
-[![Build Status](https://travis-ci.org/akamai-open/AkamaiOPEN-edgegrid-java.svg?branch=master)](https://travis-ci.org/akamai-open/AkamaiOPEN-edgegrid-java)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-parent)
-[![Reference Status](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-parent/reference_badge.svg?style=flat-square)](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-parent/references)
-[![Dependency Status](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-parent/badge?style=flat-square)](https://www.versioneye.com/java/com.akamai.edgegrid:edgegrid-signer-parent)
-[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.akamai.edgegrid/edgegrid-signer-parent/badge.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-parent)
+[![Javadocs](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-parent.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-parent)
 
 ## Description
 
