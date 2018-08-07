@@ -26,6 +26,7 @@ This project contains a core implementation module and five bindings to specific
 ## Changes
 
 3.0:
+- Minimum Java version is now 8.
 - Adding binding for Async HTTP Client.
 - Adding binding for Gatling.
 
