@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.akamai.edgegrid.signer.gatling
 
 import com.akamai.edgegrid.signer.ClientCredential
