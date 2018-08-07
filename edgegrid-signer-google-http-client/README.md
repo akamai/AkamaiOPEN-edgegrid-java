@@ -25,7 +25,9 @@ Include the following Maven dependency in your project POM:
 Sign your HTTP request with a defined client credential:
 
 ```java
-HttpTransport httpTransport = new ApacheHttpTransport();
+HttpTransport httpTransport = new ApacheHttpTransport.Builder()
+        .setSocketFactory(SSLSocketFactory.getSystemSocketFactory())
+        .build();
 HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
 URI uri = URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources");
 HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));

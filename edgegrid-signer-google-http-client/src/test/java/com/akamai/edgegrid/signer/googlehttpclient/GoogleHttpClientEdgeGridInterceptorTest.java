@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.testng.annotations.Test;
 
 import com.akamai.edgegrid.signer.ClientCredential;
@@ -84,7 +85,9 @@ public class GoogleHttpClientEdgeGridInterceptorTest {
     }
 
     private HttpRequestFactory createSigningRequestFactory() {
-        HttpTransport httpTransport = new ApacheHttpTransport();
+        HttpTransport httpTransport = new ApacheHttpTransport.Builder()
+                .setSocketFactory(SSLSocketFactory.getSystemSocketFactory())
+                .build();
         return httpTransport.createRequestFactory(new HttpRequestInitializer() {
             @Override
             public void initialize(HttpRequest request) throws IOException {
