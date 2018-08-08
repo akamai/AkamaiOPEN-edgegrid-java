@@ -6,7 +6,7 @@
 
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-parent</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
 
     <modules>
         <module>edgegrid-signer-apache-http-client</module>
