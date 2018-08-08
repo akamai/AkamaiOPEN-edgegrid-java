@@ -1,6 +1,22 @@
+/*
+ * Copyright 2018 Akamai Technologies, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.akamai.edgegrid.signer.apachehttpclient;
 
-
+import java.net.ProxySelector;
 
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
@@ -10,21 +26,20 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.impl.conn.DefaultRoutePlanner;
-import org.apache.http.impl.conn.DefaultSchemePortResolver;
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.protocol.HttpContext;
 
-public class ApacheHttpClientEdgeGridRoutePlanner extends DefaultRoutePlanner {
+public class ApacheHttpClientEdgeGridRoutePlanner extends SystemDefaultRoutePlanner {
 
     private final ApacheHttpClientEdgeGridRequestSigner binding;
 
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredential clientCredential) {
-        super(DefaultSchemePortResolver.INSTANCE);
+        super(ProxySelector.getDefault());
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredential);
     }
 
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredentialProvider clientCredentialProvider) {
-        super(DefaultSchemePortResolver.INSTANCE);
+        super(ProxySelector.getDefault());
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredentialProvider);
     }
 

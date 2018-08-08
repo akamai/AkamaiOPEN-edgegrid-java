@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Copyright 2016 Akamai Technologies, Inc. All Rights Reserved.
+ * Copyright 2018 Akamai Technologies, Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.apache.commons.lang3.builder.Builder;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
 
 /**
  * Library-agnostic representation of an HTTP request. This object is immutable, so you probably
