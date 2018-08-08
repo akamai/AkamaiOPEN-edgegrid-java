@@ -14,11 +14,6 @@
     <packaging>jar</packaging>
     <name>Gatling binding for EdgeGrid Client</name>
 
-    <properties>
-        <gatling-plugin.version>2.2.4</gatling-plugin.version>
-        <scala-maven-plugin.version>3.3.2</scala-maven-plugin.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
@@ -33,19 +28,28 @@
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>${scala-maven-plugin.version}</version>
+                <version>3.4.2</version>
                 <executions>
                     <execution>
                         <goals>
+                            <goal>add-source</goal>
                             <goal>compile</goal>
+                            <goal>doc-jar</goal>
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
@@ -54,7 +58,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>${gatling-plugin.version}</version>
+                <version>2.2.4</version>
                 <configuration>
                     <runMultipleSimulations>true</runMultipleSimulations>
                 </configuration>
