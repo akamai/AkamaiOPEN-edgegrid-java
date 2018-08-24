@@ -61,7 +61,16 @@
                 <version>2.2.4</version>
                 <configuration>
                     <runMultipleSimulations>true</runMultipleSimulations>
+                    <disableCompiler>true</disableCompiler>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>gatling-integration-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
