@@ -26,4 +26,9 @@ package object testdata {
     .clientSecret("SOMESECRET")
     .host("localhost:9089").build
 
+  val SERVICE_MOCK_HOST = "localhost"
+  val SERVICE_MOCK_PORT = 9089
+  val SERVICE_MOCK = testdata.SERVICE_MOCK_HOST + ":" + testdata.SERVICE_MOCK_PORT
+
+
 }

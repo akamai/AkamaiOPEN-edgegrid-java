@@ -17,6 +17,9 @@
 package com.akamai.edgegrid.signer.gatling
 
 import com.akamai.edgegrid.signer.ahc.AsyncHttpClientEdgeGridSignatureCalculator
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
@@ -24,17 +27,36 @@ import io.gatling.http.Predef._
 class EdgeGridSignerSimulation1 extends Simulation {
 
   val httpConf = http
-    .baseURL("http://localhost")
+    .baseURL("http://" + testdata.SERVICE_MOCK_HOST)
+
+  val wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(testdata.SERVICE_MOCK_PORT))
 
   val testScenario = scenario("Test scenario")
     .exec(
       http("fakeRequest")
         .get("/test")
         .signatureCalculator(new AsyncHttpClientEdgeGridSignatureCalculator(testdata.testCredential))
+        .check(status.is(201))
     )
 
-  setUp(
-    testScenario.inject(atOnceUsers(1))
-  ).protocols(httpConf)
+  before {
+    wireMockServer.start()
+    wireMockServer.stubFor(get(urlPathEqualTo("/test"))
+      .withHeader("Authorization", matching(".*"))
+      .withHeader("Host", equalTo(testdata.SERVICE_MOCK))
+      .willReturn(aResponse.withStatus(201)
+        .withHeader("Content-Type", "text/xml")
+        .withBody("<response>Some content</response>")))
+  }
+
+  setUp(testScenario.inject(atOnceUsers(1)))
+    .protocols(httpConf)
+    .assertions(
+      global.successfulRequests.percent.is(100)
+    )
+
+  after {
+    wireMockServer.stop()
+  }
 
 }
