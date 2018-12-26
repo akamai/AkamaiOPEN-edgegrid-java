@@ -23,6 +23,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,6 @@ import java.util.regex.Pattern;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -195,12 +195,12 @@ public class EdgeGridV1Signer {
 
     private String signAndEncode(String stringToSign, String signingKey) throws RequestSigningException {
         byte[] signatureBytes = sign(stringToSign, signingKey);
-        return Base64.encodeBase64String(signatureBytes);
+        return Base64.getEncoder().encodeToString(signatureBytes);
     }
 
     private String getSigningKey(String timeStamp, String clientSecret) throws RequestSigningException {
         byte[] signingKeyBytes = sign(timeStamp, clientSecret);
-        return Base64.encodeBase64String(signingKeyBytes);
+        return Base64.getEncoder().encodeToString(signingKeyBytes);
     }
 
     private String getDataToSign(String canonicalizedRequest, String authData) {
@@ -315,15 +315,15 @@ public class EdgeGridV1Signer {
             lengthToHash = maxBodySize;
         } else {
             if (log.isTraceEnabled()) {
-                log.trace("Content (Base64): {}", Base64.encodeBase64String(requestBody));
+                log.trace("Content (Base64): {}", Base64.getEncoder().encodeToString(requestBody));
             }
         }
 
         byte[] digestBytes = getHash(requestBody, 0, lengthToHash);
-        log.debug("Content hash (Base64): {}", Base64.encodeBase64String(digestBytes));
+        log.debug("Content hash (Base64): {}", Base64.getEncoder().encodeToString(digestBytes));
 
         // (mgawinec) I removed support for non-retryable content, that used to reset the content for downstream handlers
-        return Base64.encodeBase64String(digestBytes);
+        return Base64.getEncoder().encodeToString(digestBytes);
     }
 
 }
