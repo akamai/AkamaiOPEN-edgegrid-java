@@ -82,10 +82,4 @@ credential.
 The constructors for all the `AbstractEdgeGridRequestSigner` implementations
 create one of these transparently whenever they are passed a `ClientCredential`.
 
-`EdgeRcClientCredentialProvider` is another implementation of
-`ClientCredentialProvider` that can read from the EdgeRc configuration files
- that are used in various other EdgeGrid signing library implementations. The
-`#pickSectionName()` method can be overridden by the user to select different
-sections from the configuration file based on the current request.
-
 [1]: https://developer.akamai.com/introduction/Client_Auth.html

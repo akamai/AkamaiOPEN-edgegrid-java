@@ -15,6 +15,7 @@
         <module>edgegrid-signer-gatling</module>
         <module>edgegrid-signer-google-http-client</module>
         <module>edgegrid-signer-rest-assured</module>
+        <module>edgerc-reader</module>
     </modules>
 
     <packaging>pom</packaging>

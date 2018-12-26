@@ -27,7 +27,7 @@ import com.akamai.edgegrid.signer.exceptions.NoMatchingCredentialException;
  * <p>
  * If you are looking for a basic implementation of this interface, see
  * {@link DefaultClientCredentialProvider}. If you would like to read your configuration from an
- * EdgeRc file, see {@link EdgeRcClientCredentialProvider}.
+ * EdgeRc file, see {@code EdgeRcClientCredentialProvider}.
  * </p>
  *
  * @author mmeyer@akamai.com

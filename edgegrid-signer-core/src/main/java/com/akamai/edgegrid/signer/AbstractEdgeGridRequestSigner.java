@@ -75,7 +75,7 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT, MutableRequestT> {
      * replaces {@code request}'s host name with the one specified by the credential.
      *
      * @param request an HTTP request with data used to sign
-     * @param request an HTTP request to update with signature
+     * @param requestToUpdate an HTTP request to update with signature
      * @throws RequestSigningException       if failed to sign a request
      * @throws NoMatchingCredentialException if acquiring a {@link ClientCredential} throws {@code
      *                                       NoMatchingCredentialException} or returns {@code null}

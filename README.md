@@ -17,6 +17,7 @@ libraries.
 This project contains a core implementation module and five bindings to specific HTTP client libraries.
 
 * [edgegrid-signer-core](edgegrid-signer-core) is the core signing implementation and base classes used by the individual library implementations.
+* [edgerc-reader](edgerc-reader) is a configuration file reader that supports edgerc files. These files are basically INI files with certain sections and properties.
 * [edgegrid-signer-apache-http-client](edgegrid-signer-apache-http-client) is a binding for [Apache HTTP Client][2].
 * [edgegrid-signer-google-http-client](edgegrid-signer-google-http-client) is a binding for [Google HTTP Client Library for Java][3].
 * [edgegrid-signer-rest-assured](edgegrid-signer-rest-assured) is a binding for [REST-assured][4].
