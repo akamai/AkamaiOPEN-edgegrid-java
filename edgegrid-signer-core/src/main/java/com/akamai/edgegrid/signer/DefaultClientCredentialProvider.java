@@ -16,7 +16,7 @@
 
 package com.akamai.edgegrid.signer;
 
-import org.apache.commons.lang3.Validate;
+import java.util.Objects;
 
 /**
  * This is a basic implementation of {@link ClientCredentialProvider} that returns the same
@@ -29,7 +29,7 @@ public class DefaultClientCredentialProvider implements ClientCredentialProvider
     private ClientCredential clientCredential;
 
     public DefaultClientCredentialProvider(ClientCredential clientCredential) {
-        this.clientCredential = Validate.notNull(clientCredential, "clientCredential cannot be null");
+        this.clientCredential = Objects.requireNonNull(clientCredential, "clientCredential cannot be null");
     }
     @Override
     public ClientCredential getClientCredential(Request request) {

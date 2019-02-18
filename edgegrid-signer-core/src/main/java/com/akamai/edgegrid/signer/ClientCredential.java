@@ -16,15 +16,10 @@
 
 package com.akamai.edgegrid.signer;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.Builder;
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * This is a representation of client credential used to sign an EdgeGrid request. This object is
@@ -38,6 +33,12 @@ public class ClientCredential implements Comparable<ClientCredential> {
 
     /** This is the default {@code maxBodySize} to apply if not explicitly set in a credential. */
     public static final int DEFAULT_MAX_BODY_SIZE_IN_BYTES = 131072;
+
+    /** An {@link Integer} {@link Comparator}. */
+    private static Comparator<Integer> integerComparator = new NullSafeComparator<>();
+
+    /** A {@link String} {@link Comparator}. */
+    private static Comparator<String> stringComparator = new NullSafeComparator<>();
 
     private String accessToken;
     private String clientSecret;
@@ -67,13 +68,24 @@ public class ClientCredential implements Comparable<ClientCredential> {
 
     @Override
     public int compareTo(ClientCredential that) {
-        return new CompareToBuilder()
-                .append(this.accessToken, that.accessToken)
-                .append(this.clientSecret, that.clientSecret)
-                .append(this.clientToken, that.clientToken)
-                .append(this.host, that.host)
-                .append(this.maxBodySize, that.maxBodySize)
-                .build();
+        if (that == null) {
+            return 1;
+        }
+        int comparison = 0;
+        comparison = stringComparator.compare(this.accessToken, that.accessToken);
+        if (comparison == 0) {
+            comparison = stringComparator.compare(this.clientSecret, that.clientSecret);
+        }
+        if (comparison == 0) {
+            comparison = stringComparator.compare(this.clientToken, that.clientToken);
+        }
+        if (comparison == 0) {
+            comparison = stringComparator.compare(this.host, that.host);
+        }
+        if (comparison == 0) {
+            comparison = integerComparator.compare(this.maxBodySize, that.maxBodySize);
+        }
+        return comparison;
     }
 
     @Override
@@ -118,17 +130,18 @@ public class ClientCredential implements Comparable<ClientCredential> {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("accessToken", accessToken)
-                .append("clientSecret", clientSecret)
-                .append("clientToken", clientToken)
-                .append("headersToSign", headersToSign)
-                .append("host", host)
-                .append("maxBodySize", getMaxBodySize()) // note: intentionally using accessor here.
-                .build();
+        return new StringBuilder("[ ")
+                .append("accessToken: ").append(accessToken).append("; ")
+                .append("clientSecret: ").append(clientSecret).append("; ")
+                .append("clientToken: ").append(clientToken).append("; ")
+                .append("headersToSign: ").append(headersToSign).append("; ")
+                .append("host: ").append(host).append("; ")
+                .append("maxBodySize: ").append(getMaxBodySize()) // note: intentionally using accessor here.
+                .append(" ]")
+                .toString();
     }
 
-    public static class ClientCredentialBuilder implements Builder<ClientCredential> {
+    public static class ClientCredentialBuilder {
         private String accessToken;
         private String clientSecret;
         private String clientToken;
@@ -151,7 +164,9 @@ public class ClientCredential implements Comparable<ClientCredential> {
          * @return reference back to this builder instance
          */
         public ClientCredentialBuilder clientToken(String clientToken) {
-            Validate.notBlank(clientToken, "clientToken cannot be blank");
+            if (Objects.isNull(clientToken) || "".equals(clientToken)) {
+                throw new IllegalArgumentException("clientToken cannot be empty");
+            }
             this.clientToken = clientToken;
             return this;
         }
@@ -164,7 +179,9 @@ public class ClientCredential implements Comparable<ClientCredential> {
          * @return reference back to this builder instance
          */
         public ClientCredentialBuilder clientSecret(String clientSecret) {
-            Validate.notBlank(clientSecret, "clientSecret cannot be blank");
+            if (Objects.isNull(clientSecret) || "".equals(clientSecret)) {
+                throw new IllegalArgumentException("clientSecret cannot be empty");
+            }
             this.clientSecret = clientSecret;
             return this;
         }
@@ -176,7 +193,9 @@ public class ClientCredential implements Comparable<ClientCredential> {
          * @return reference back to this builder instance
          */
         public ClientCredentialBuilder accessToken(String accessToken) {
-            Validate.notBlank(accessToken, "accessToken cannot be blank");
+            if (Objects.isNull(accessToken) || "".equals(accessToken)) {
+                throw new IllegalArgumentException("accessToken cannot be empty");
+            }
             this.accessToken = accessToken;
             return this;
         }
@@ -218,8 +237,9 @@ public class ClientCredential implements Comparable<ClientCredential> {
          * @return reference back to this builder instance
          */
         public ClientCredentialBuilder headerToSign(String headerName) {
-            Validate.notBlank(headerName, "headerName cannot be blank");
-
+            if (Objects.isNull(headerName) || "".equals(headerName)) {
+                throw new IllegalArgumentException("headerName cannot be empty");
+            }
             this.headersToSign.add(headerName.toLowerCase());
             return this;
         }
@@ -231,7 +251,9 @@ public class ClientCredential implements Comparable<ClientCredential> {
          * @return reference back to this builder instance
          */
         public ClientCredentialBuilder host(String host) {
-            Validate.notBlank(host, "host cannot be blank");
+            if (Objects.isNull(host) || "".equals(host)) {
+                throw new IllegalArgumentException("host cannot be empty");
+            }
             this.host = host;
             return this;
         }
@@ -252,12 +274,11 @@ public class ClientCredential implements Comparable<ClientCredential> {
          *
          * @return reference back to this builder instance
          */
-        @Override
         public ClientCredential build() {
-            Validate.notBlank(accessToken, "accessToken cannot be blank");
-            Validate.notBlank(clientSecret, "clientSecret cannot be blank");
-            Validate.notBlank(clientToken, "clientToken cannot be blank");
-            Validate.notBlank(host, "host cannot be blank");
+            Objects.requireNonNull(accessToken, "accessToken cannot be empty");
+            Objects.requireNonNull(clientSecret, "clientSecret cannot be empty");
+            Objects.requireNonNull(clientToken, "clientToken cannot be empty");
+            Objects.requireNonNull(host, "host cannot be empty");
             return new ClientCredential(this);
         }
 

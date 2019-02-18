@@ -27,18 +27,16 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +61,7 @@ import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
  * The main entry point to produce a signature is
  * {@link #getSignature(Request, ClientCredential)}. This method's two arguments are
  * immutable representations of exactly what they sound like: an API request and your client
- * credentials. They should be built with their {@link Builder} classes ({@link RequestBuilder} and
+ * credentials. They should be built with their builder classes ({@link RequestBuilder} and
  * {@link ClientCredentialBuilder} respectively).
  * </p>
  *
@@ -158,7 +156,7 @@ public class EdgeGridV1Signer {
     }
 
     private static String canonicalizeUri(String uri) {
-        if (StringUtils.isEmpty(uri)) {
+        if (uri == null || "".equals(uri)) {
             return "/";
         }
 
@@ -171,8 +169,8 @@ public class EdgeGridV1Signer {
 
     String getSignature(Request request, ClientCredential credential, long timestamp, String nonce)
             throws RequestSigningException {
-        Validate.notNull(credential, "credential cannot be null");
-        Validate.notNull(request, "request cannot be null");
+        Objects.requireNonNull(credential, "credential cannot be null");
+        Objects.requireNonNull(request, "request cannot be null");
 
         String timeStamp = formatTimeStamp(timestamp);
         String authData = getAuthData(credential, timeStamp, nonce);
@@ -186,9 +184,9 @@ public class EdgeGridV1Signer {
                                 String authData) throws RequestSigningException {
         String signingKey = getSigningKey(timeStamp, credential.getClientSecret());
         String canonicalizedRequest = getCanonicalizedRequest(request, credential);
-        log.debug("Canonicalized request: {}", StringEscapeUtils.escapeJava(canonicalizedRequest));
+        log.trace("Canonicalized request: {}", canonicalizedRequest);
         String dataToSign = getDataToSign(canonicalizedRequest, authData);
-        log.debug("Data to sign: {}", StringEscapeUtils.escapeJava(dataToSign));
+        log.trace("Data to sign: {}", dataToSign);
 
         return signAndEncode(dataToSign, signingKey);
     }
@@ -275,21 +273,20 @@ public class EdgeGridV1Signer {
     }
 
     private String canonicalizeHeaders(Map<String, String> requestHeaders, ClientCredential credential) {
-        List<String> headers = new ArrayList<>();
         // NOTE: Headers are expected to be in order. ClientCredential#headersToSign is a TreeSet.
-        for (String headerName : credential.getHeadersToSign()) {
-            String headerValue = requestHeaders.get(headerName);
-            if (StringUtils.isBlank(headerValue)) {
-                continue;
-            }
-            headers.add(headerName.toLowerCase() + ":" + canonicalizeHeaderValue(headerValue));
-        }
-        return StringUtils.join(headers, "\t");
+        return requestHeaders.entrySet().stream()
+                .filter(entry -> credential.getHeadersToSign().contains(entry.getKey()))
+                .filter(entry -> entry.getValue() != null)
+                .filter(entry -> !"".equals(entry.getValue()))
+                .map(entry -> {
+                    return entry.getKey().toLowerCase() + ":" + canonicalizeHeaderValue(entry.getValue());
+                })
+                .collect(Collectors.joining("\t"));
     }
 
     private String canonicalizeHeaderValue(String headerValue) {
         headerValue = headerValue.trim();
-        if (StringUtils.isNotBlank(headerValue)) {
+        if (headerValue != null && !"".equals(headerValue)) {
             Matcher matcher = PATTERN_SPACES.matcher(headerValue);
             headerValue = matcher.replaceAll(" ");
         }

@@ -16,19 +16,16 @@
 
 package com.akamai.edgegrid.signer.restassured;
 
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.URI;
 
 import com.akamai.edgegrid.signer.AbstractEdgeGridRequestSigner;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.ClientCredentialProvider;
 import com.akamai.edgegrid.signer.Request;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
-
-import org.apache.commons.lang3.Validate;
-
-import java.io.File;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.URI;
 
 import io.restassured.http.Header;
 import io.restassured.specification.FilterableRequestSpecification;
@@ -109,16 +106,18 @@ public class RestAssuredEdgeGridRequestSigner extends
     protected URI requestUri(FilterableRequestSpecification requestSpec) {
         // Due to limitations of REST-assured design only requests with relative paths can be updated
         String requestPath = getRequestPath(requestSpec);
-        Validate.isTrue(isRelativeUrl(requestPath), "path in request cannot be absolute");
+        if (!isRelativeUrl(requestPath)) {
+            throw new IllegalArgumentException("path in request cannot be absolute");
+        }
 
         return URI.create(requestSpec.getBaseUri() + requestPath);
     }
 
     @Override
     protected Request map(FilterableRequestSpecification requestSpec) {
-
-        Validate.isTrue(requestSpec.getMultiPartParams().isEmpty(),
-                "multipart request is not supported");
+        if (!requestSpec.getMultiPartParams().isEmpty()) {
+            throw new IllegalArgumentException("multipart request is not supported");
+        }
 
         Request.RequestBuilder builder = Request.builder()
                 .method(requestSpec.getMethod())

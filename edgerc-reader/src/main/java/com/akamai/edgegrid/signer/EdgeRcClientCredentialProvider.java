@@ -22,12 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Objects;
 
 import org.apache.commons.configuration2.INIConfiguration;
 import org.apache.commons.configuration2.SubnodeConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 
 import com.akamai.edgegrid.signer.ClientCredential.ClientCredentialBuilder;
 
@@ -62,7 +61,7 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
      */
     public static EdgeRcClientCredentialProvider fromEdgeRc(File file, String section)
             throws ConfigurationException, IOException {
-        Validate.notNull(file, "file cannot be null");
+        Objects.requireNonNull(file, "file cannot be null");
         return fromEdgeRc(new FileReader(file), section);
     }
 
@@ -78,7 +77,7 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
      */
     public static EdgeRcClientCredentialProvider fromEdgeRc(InputStream inputStream, String section)
             throws ConfigurationException, IOException {
-        Validate.notNull(inputStream, "inputStream cannot be null");
+        Objects.requireNonNull(inputStream, "inputStream cannot be null");
         return fromEdgeRc(new InputStreamReader(inputStream), section);
     }
 
@@ -94,7 +93,7 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
      */
     public static EdgeRcClientCredentialProvider fromEdgeRc(Reader reader, String section)
             throws ConfigurationException, IOException {
-        Validate.notNull(reader, "reader cannot be null");
+        Objects.requireNonNull(reader, "reader cannot be null");
         return new EdgeRcClientCredentialProvider(reader, section);
     }
 
@@ -110,7 +109,9 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
      */
     public static EdgeRcClientCredentialProvider fromEdgeRc(String filename, String section)
             throws ConfigurationException, IOException {
-        Validate.notEmpty(filename, "filename cannot be null");
+        if (filename == null || "".equals(filename)) {
+            throw new IllegalArgumentException("filename cannot be null");
+        }
         filename = filename.replaceFirst("^~", System.getProperty("user.home"));
         File file = new File(filename);
         return fromEdgeRc(new FileReader(file), section);
@@ -127,7 +128,7 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
      */
     public EdgeRcClientCredentialProvider(Reader reader, String section)
             throws ConfigurationException, IOException {
-        Validate.notNull(reader, "reader cannot be null");
+        Objects.requireNonNull(reader, "reader cannot be null");
         configuration = new INIConfiguration();
         configuration.read(reader);
         this.defaultSectionName = section;
@@ -156,7 +157,7 @@ public class EdgeRcClientCredentialProvider implements ClientCredentialProvider 
             builder.maxBodySize(s.getInteger("max-body", null));
         }
         String headersString = s.getString("headers_to_sign");
-        if (StringUtils.isNotBlank(headersString)) {
+        if (headersString != null && !"".equals(headersString)) {
             for (String h : headersString.split(",")) {
                 builder.headerToSign(h);
             }

@@ -81,7 +81,7 @@ public class EdgeRcClientCredentialProviderTest {
         assertThat(credential.getMaxBodySize(), is(131072));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class)
     public void testMalformedEdgeRc() throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc_malformed");
         EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "broken").getClientCredential("broken");
@@ -93,7 +93,7 @@ public class EdgeRcClientCredentialProviderTest {
         EdgeRcClientCredentialProvider.fromEdgeRc(inputStream, "broken").getClientCredential("broken");
     }
 
-    @Test(expectedExceptions=NullPointerException.class, dataProvider = "badSections")
+    @Test(expectedExceptions=IllegalArgumentException.class, dataProvider = "badSections")
     public void testUnparseableSections(String sectionName) throws Exception {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("edgerc");
         // NOTE: Specifying a different default section name ensures we honor the method argument.

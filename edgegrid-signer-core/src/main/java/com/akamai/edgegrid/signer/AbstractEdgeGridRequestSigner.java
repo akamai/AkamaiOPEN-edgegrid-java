@@ -19,10 +19,9 @@ package com.akamai.edgegrid.signer;
 import com.akamai.edgegrid.signer.exceptions.NoMatchingCredentialException;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 
-import org.apache.commons.lang3.Validate;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 /**
  * <p> This is an abstract base class for implementing EdgeGrid request signing in a
@@ -92,8 +91,7 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT, MutableRequestT> {
             throw new NoMatchingCredentialException();
         }
         String newHost = credential.getHost();
-        URI originalUri = requestUri(request);
-        Validate.notNull(originalUri, "Request-URI cannot be null");
+        URI originalUri = Objects.requireNonNull(requestUri(request), "Request-URI cannot be null");
         URI newUri = withNewHost(originalUri, newHost);
         setHost(requestToUpdate, newHost, newUri);
         String authorization = edgeGridSigner.getSignature(req, credential);
