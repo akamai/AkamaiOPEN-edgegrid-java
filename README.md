@@ -26,6 +26,13 @@ This project contains a core implementation module and five bindings to specific
 
 ## Changes
 
+4.0:
+- BREAKING CHANGE: Split the edgerc file reader into new module [edgerc-reader](edgerc-reader).
+- Drop dependency on commons-configuration2 from edgegrid-signer-core.
+- Drop dependency on commons-lang3.
+- Drop dependency on commons-codec (use Base64 methods from JDK instead).
+- Use maven-bundle-plugin to add OSGi headers to MANIFEST.MF.
+
 3.0:
 - Minimum Java version is now 8.
 - Adding binding for Async HTTP Client.
@@ -72,9 +79,11 @@ programming languages:
 
 ## Authors
 
-Maciej Gawinecki <mgawinec@akamai.com>
-
+### Active authors
 Martin Meyer <mmeyer@akamai.com>
+
+### Inactive authors
+Maciej Gawinecki <mgawinec@akamai.com>
 
 ## Contribute!
 
