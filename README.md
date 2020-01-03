@@ -26,6 +26,10 @@ This project contains a core implementation module and five bindings to specific
 
 ## Changes
 
+4.0.1:
+- Fix Issue #35, a broken unit test.
+- Use [URI#getRawPath()](https://docs.oracle.com/javase/8/docs/api/java/net/URI.html#getRawPath--) when constructing a signature.
+
 4.0:
 - BREAKING CHANGE: Split the edgerc file reader into new module [edgerc-reader](edgerc-reader).
 - Drop dependency on commons-configuration2 from edgegrid-signer-core.
