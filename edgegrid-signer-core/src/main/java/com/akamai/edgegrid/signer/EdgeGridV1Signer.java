@@ -122,7 +122,7 @@ public class EdgeGridV1Signer {
     }
 
     private static String getRelativePathWithQuery(URI uri) {
-        StringBuilder sb = new StringBuilder(uri.getPath());
+        StringBuilder sb = new StringBuilder(uri.getRawPath());
         if (uri.getQuery() != null) {
             sb.append("?").append(uri.getQuery());
         }

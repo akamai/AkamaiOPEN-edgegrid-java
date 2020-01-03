@@ -132,20 +132,25 @@ public class EdgeGridV1SignerTest {
                                 "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
                                 "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=8GpKbZnIx4XEw/zXtQdbVwIu0zJSG0RpNiVTSyIUwr0=",
                 },
-                {"GET with special characters",
+                {"GET with query string containing escaped characters",
                         Request.builder()
                                 .method("GET")
-                                .uri(new URI(null, null, null, 0,
-                                        "/security-monitor/v1/report-packs/123456/data",
-                                        "filterParams=[{\"id\":12,\"type\":\"dimension\"," +
-                                                "\"values\":[\"US\"]," +
-                                                "\"condition\":\"in\"},{\"id\":56,\"type\":\"metric\",\"values\":[50],\"condition\":\"gt\"}]",
-                                        null))
+                                .uri(URI.create("/api/v1/data?query=%7B%22foo%22%3A%22bar%22%7D"))
                                 .build(),
                         clientCredential, fixedTimestamp, fixedNonce,
                         "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
                                 "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
-                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=sEzaxksZPAOPcKTwNZokVTCe+iny25w4xlwU9XYKK1s=",
+                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=qNVm6x91VcPKfUqCOeqvEXvNkqfD9kNnj3qVXYIWQyA=",
+                },
+                {"GET with path containing escaped characters",
+                        Request.builder()
+                                .method("GET")
+                                .uri(URI.create("/api/v1/foo%20resource"))
+                                .build(),
+                        clientCredential, fixedTimestamp, fixedNonce,
+                        "EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjrtwpvpn6yjoj;" +
+                                "access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2gz6oz234;" +
+                                "timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=cXz7CtWUEi1WvNhNDYrcveufmfXBQc/yqO/JhHNloi4=",
                 },
         };
     }
