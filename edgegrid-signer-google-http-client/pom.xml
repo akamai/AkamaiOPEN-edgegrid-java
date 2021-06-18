@@ -6,7 +6,7 @@
     <parent>
         <artifactId>edgegrid-signer-parent</artifactId>
         <groupId>com.akamai.edgegrid</groupId>
-        <version>4.0.1</version>
+        <version>4.0.2</version>
     </parent>
 
     <artifactId>edgegrid-signer-google-http-client</artifactId>
@@ -22,10 +22,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.http-client</groupId>

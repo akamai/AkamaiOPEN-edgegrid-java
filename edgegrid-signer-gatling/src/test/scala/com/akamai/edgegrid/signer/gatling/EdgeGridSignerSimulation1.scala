@@ -20,8 +20,9 @@ import com.akamai.edgegrid.signer.ahc.AsyncHttpClientEdgeGridSignatureCalculator
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import io.gatling.core
 import io.gatling.core.Predef._
-import io.gatling.http.Predef._
+import io.gatling.http.Predef.{status, http}
 
 
 class EdgeGridSignerSimulation1 extends Simulation {
@@ -31,7 +32,7 @@ class EdgeGridSignerSimulation1 extends Simulation {
 
   val wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(testdata.SERVICE_MOCK_PORT))
 
-  val testScenario = scenario("Test scenario")
+  val testScenario = core.Predef.scenario("Test scenario")
     .exec(
       http("fakeRequest")
         .get("/test")
