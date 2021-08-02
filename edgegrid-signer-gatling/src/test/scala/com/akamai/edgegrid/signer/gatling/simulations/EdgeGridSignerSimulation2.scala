@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package com.akamai.edgegrid.signer.gatling
+package com.akamai.edgegrid.signer.gatling.simulations
 
-import com.akamai.edgegrid.signer.ahc.AsyncHttpClientEdgeGridSignatureCalculator
+import com.akamai.edgegrid.signer.gatling.openapi.OpenApiHttpConfiguration
+import com.akamai.edgegrid.signer.gatling.testdata
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import io.gatling.core.Predef._
-import io.gatling.http.Predef._
+import io.gatling.core.structure.ScenarioBuilder
+import io.gatling.http.Predef.http
+import io.gatling.http.protocol.HttpProtocolBuilder
 
 class EdgeGridSignerSimulation2 extends Simulation {
 
-  val httpConf = http
+  val httpConf: HttpProtocolBuilder = OpenApiHttpConfiguration.openApiHttpConf(testdata.testCredential)
 
   val wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(testdata.SERVICE_MOCK_PORT))
 
-  val testScenario = scenario("Test scenario")
+  val testScenario: ScenarioBuilder = scenario("Test scenario")
     .exec(
       http("fakeRequest")
         .get("http://" + testdata.testCredential.getHost + "/test")
-        .signatureCalculator(new AsyncHttpClientEdgeGridSignatureCalculator(testdata.testCredential))
     )
 
   before {

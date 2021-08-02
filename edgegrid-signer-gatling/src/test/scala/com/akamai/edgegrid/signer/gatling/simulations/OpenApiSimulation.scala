@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package com.akamai.edgegrid.signer.gatling
+package com.akamai.edgegrid.signer.gatling.simulations
 
 import com.akamai.edgegrid.signer.ClientCredential
-import com.akamai.edgegrid.signer.ahc.AsyncHttpClientEdgeGridSignatureCalculator
-import io.gatling.core.Predef.{Simulation, _}
-import io.gatling.http.Predef.http
+import com.akamai.edgegrid.signer.gatling.openapi.OpenApiHttpConfiguration
+import io.gatling.core.Predef.Simulation
 
 abstract class OpenApiSimulation(credential: ClientCredential) extends Simulation {
 
-  val httpConf = http
-      .signatureCalculator(new AsyncHttpClientEdgeGridSignatureCalculator(credential))
-      .baseURL("https://" + credential.getHost)
+  val httpConf = OpenApiHttpConfiguration.openApiHttpConf(credential)
 
 }

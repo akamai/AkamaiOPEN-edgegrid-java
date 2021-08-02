@@ -62,6 +62,7 @@
                 <configuration>
                     <runMultipleSimulations>true</runMultipleSimulations>
                     <disableCompiler>true</disableCompiler>
+                    <resourcesFolder>${project.basedir}/src/test/resources</resourcesFolder>
                 </configuration>
                 <executions>
                     <execution>
