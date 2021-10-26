@@ -24,39 +24,6 @@ This project contains a core implementation module and five bindings to specific
 * [edgegrid-signer-async-http-client](edgegrid-signer-async-http-client) is a binding for [Async HTTP Client][13].
 * [edgegrid-signer-gatling](edgegrid-signer-gatling) is a binding for [Gatling][14].
 
-## Changes
-
-4.0.2:
-- Upgrade libraries.
-- Add missing dependencies for Java ≥ 9.
-
-4.0.1:
-- Fix Issue #35, a broken unit test.
-- Use [URI#getRawPath()](https://docs.oracle.com/javase/8/docs/api/java/net/URI.html#getRawPath--) when constructing a signature.
-
-4.0:
-- BREAKING CHANGE: Split the edgerc file reader into new module [edgerc-reader](edgerc-reader).
-- Drop dependency on commons-configuration2 from edgegrid-signer-core.
-- Drop dependency on commons-lang3.
-- Drop dependency on commons-codec (use Base64 methods from JDK instead).
-- Use maven-bundle-plugin to add OSGi headers to MANIFEST.MF.
-
-3.0:
-- Minimum Java version is now 8.
-- Adding binding for Async HTTP Client.
-- Adding binding for Gatling.
-
-2.1:
-- Adding binding for Apache HTTP Client.
-- Splitting README.md between relevant modules.
-
-2.0:
-- Signing algorithm tweaks
-- Separating binding for Google HTTP Client Library for Java from core
-- Adding binding for REST-assured
-- Unit tests with TestNG
-- Publishing to Maven Central!
-
 ## Similar tools
 
 A number of similar libraries for signing requests exist for popular
@@ -87,13 +54,17 @@ programming languages:
 
 ## Authors
 
-### Active authors
-Martin Meyer <mmeyer@akamai.com>
+### Active
 
-### Inactive authors
+Roberto López López <rlopezlo@akamai.com>
+Michał Wójcik <miwojci@akamai.com>
+
+### Inactive
+
+Martin Meyer <mmeyer@akamai.com>
 Maciej Gawinecki <mgawinec@akamai.com>
 
-## Contribute!
+## Contribute
 
 This is an open-source library, and contributions are welcome. You're welcome
 to fork this project and send us a pull request.
