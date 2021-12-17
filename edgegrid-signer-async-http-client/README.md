@@ -1,16 +1,13 @@
-# EdgeGrid Client for Java
+# Async HTTP Client library - EdgeGrid Client for Java
 
-Java implementation of Akamai {OPEN} EdgeGrid signing.
+-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-async-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-async-http-client)
+-[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-async-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-async-http-client)
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-async-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-async-http-client)
-[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-async-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-async-http-client)
+This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
+This particular module is a binding for the [Async HTTP Client library](https://github.com/AsyncHttpClient/async-http-client).
+This project contains installation and usage instructions in the [README.md](../README.md).
 
-## Description
-
-This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
-This particular module is a binding for the [Async HTTP Client library][2].
-
-## Usage of Async HTTP Client
+## Use Async HTTP Client
 
 Include the following Maven dependency in your project POM:
 
@@ -35,6 +32,10 @@ Request request = new RequestBuilder("POST")
     .build();
 
 asyncHttpClient().executeRequest(request).get();
+
+> Note: The `host` part of the URI will be replaced by the provided `AsyncHttpClientEdgeGridSignatureCalculator`  
+with the host from the client credential in the `.edgerc` file.
+
 ```
 
 Alternatively, create an HTTP client that will sign each HTTP request with a defined client 
@@ -52,11 +53,4 @@ client.preparePost("https://localhost/papi/v0/properties")
     .execute().get();
 ```
 
-Note, in the latter case requests *must* be prepared with the HTTP client.
-
-Note, in both cases the host part of the URI does not matter, because it will be replaced by
-the provided `AsyncHttpClientEdgeGridSignatureCalculator`  with the host from the provided client 
-credential.
-
-[1]: https://developer.akamai.com/introduction/Client_Auth.html
-[2]: https://github.com/AsyncHttpClient/async-http-client
+> Note: In this case you need to prepare requests with the HTTP client.

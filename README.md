@@ -12,7 +12,7 @@ In order to use EdgeGrid Client for Java, you need [Java version 8+](https://www
 [![Javadocs](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-parent.svg)](https://www.javadoc.io/doc/com.akamai.edgegrid)
 
 ## Make an API call
-You'll need the values for the tokens from your [.edgerc](doc:set-up-authentication-credentials#add-credential-to-edgerc-file) file.
+You'll need the values for the tokens from your [.edgerc](https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials#add-credential-to-edgerc-file) file.
 
 ```
 ClientCredential credential = ClientCredential.builder()
@@ -41,27 +41,19 @@ This is an example of an API call to [List available edge server locations](http
 This project contains a core implementation module and five bindings to specific HTTP client libraries.
 
 * [edgegrid-signer-core](edgegrid-signer-core) is the core signing implementation and base classes used by the individual library implementations.
-* [edgerc-reader](edgerc-reader) is a configuration file reader that supports edgerc files. These files are basically INI files with certain sections and properties.
+* [edgerc-reader](edgerc-reader) is a configuration file reader that supports `.edgerc` files. These files are basically INI files with certain sections and properties.
 * [edgegrid-signer-apache-http-client](edgegrid-signer-apache-http-client) is a binding for [Apache HTTP Client][2].
 * [edgegrid-signer-google-http-client](edgegrid-signer-google-http-client) is a binding for [Google HTTP Client Library for Java][3].
 * [edgegrid-signer-rest-assured](edgegrid-signer-rest-assured) is a binding for [REST-assured][4].
 * [edgegrid-signer-async-http-client](edgegrid-signer-async-http-client) is a binding for [Async HTTP Client][13].
 * [edgegrid-signer-gatling](edgegrid-signer-gatling) is a binding for [Gatling][14].
 
-## Similar tools
 
-A number of similar libraries for signing requests exist for popular
-programming languages:
+> Note: A number of similar libraries for signing requests exist for popular
+programming languages, and you can find them at [https://github.com/akamai?q=edgegrid](https://github.com/akamai?q=edgegrid)
 
-* There are two Python bindings: a [command line tool similar to curl][5] and a [Python library][6].
-* [Ruby binding][7]
-* [Perl binding][8]
-* [Powershell binding][9]
-* [NodeJS binding][10]
-* [C# binding][11]
-* [Go binding][12]
 
-[1]: https://developer.akamai.com/introduction/Client_Auth.html
+[1]: https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid
 [2]: https://hc.apache.org/
 [3]: https://github.com/google/google-http-java-client
 [4]: https://github.com/rest-assured/rest-assured
