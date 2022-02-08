@@ -85,14 +85,24 @@
         <gatling.version>3.5.1</gatling.version>
         <slf4j.version>1.7.30</slf4j.version>
         <scala-library.version>2.13.6</scala-library.version>
+        <netty.version>4.1.73.Final</netty.version>
+        <logback.version>1.2.10</logback.version>
+        <dependency-check.version>6.5.3</dependency-check.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.3</version>
+                <version>${logback.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -286,6 +296,18 @@
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${dependency-check.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
