@@ -1,13 +1,6 @@
 # EdgeGrid Client for Java
 
-Java implementation of Akamai {OPEN} EdgeGrid signing.
-
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-core)
-[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-core.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-core)
-
-## Description
-
-This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
+This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
 This particular module is the core implementation, containing base classes and
 a signing algorithm implementation.
 
@@ -81,5 +74,3 @@ credential.
 `ClientCredentialProvider` which always returns the same `ClientCredential`.
 The constructors for all the `AbstractEdgeGridRequestSigner` implementations
 create one of these transparently whenever they are passed a `ClientCredential`.
-
-[1]: https://developer.akamai.com/introduction/Client_Auth.html

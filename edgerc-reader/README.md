@@ -1,20 +1,15 @@
-# EdgeGrid Client for Java
-
-Java implementation of Akamai {OPEN} EdgeGrid signing.
+# EdgeRC Reader - EdgeGrid Client for Java
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgerc-reader/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgerc-reader)
 [![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgerc-reader.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgerc-reader)
 
-## Description
-
-This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
-This particular module is a `ClientCredentialProvider` implementation which is capable of reading
-credentials from an EdgeRC file.
+This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
+This particular module is a `ClientCredentialProvider` implementation which is capable of reading credentials from an `.edgerc` file.
+This project contains installation and usage instructions in the [README.md](../README.md).
 
 ## Overview of EdgeRC Files
 
-The format of an EdgeRC file is simply an INI file where each section corresponds to an OPEN
-credential. Each section MUST have the following properties:
+The format of an EdgeRC file is simply an INI file where each section corresponds to an authentication token. Each section MUST have the following properties:
 * access_token
 * client_secret
 * client_token
@@ -31,5 +26,3 @@ else.
 ```java
 ClientCredential credential = EdgeRcClientCredentialProvider.fromEdgeRc("~/.edgerc", "good1").getClientCredential("section");
 ```
-
-[1]: https://developer.akamai.com/introduction/Client_Auth.html

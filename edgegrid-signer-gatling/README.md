@@ -1,16 +1,15 @@
-# EdgeGrid Client for Java
-
-Java implementation of Akamai {OPEN} EdgeGrid signing.
+# Gatling - EdgeGrid Client for Java
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-gatling/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-gatling)
 [![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-gatling.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-gatling)
 
-## Description
+This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
+This particular module is a binding for [Gatling](https://gatling.io/).
+This project contains installation and usage instructions in the [README.md](../README.md).
 
-This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
-This particular module is a binding for the [Gatling][2].
+## Use Gatling
 
-## Usage of Gatling
+> Note: The binding works only with Gatling 2, not Gatling 3.
 
 Include the following Maven dependency in your project POM:
 
@@ -18,7 +17,7 @@ Include the following Maven dependency in your project POM:
 <dependency>
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-gatling</artifactId>
-    <version>4.0.2</version>
+    <version>4.1.1</version>
 </dependency>
 ```
 
@@ -52,13 +51,4 @@ class YourSimulation extends OpenApiSimulation(clientCredential) {
 }
 ```
 
-Note, `httpConf` is a protocol configured to use the defined `clientCredential`.
-
-The binding works only with Gatling 2. It will not work Gatling 3.
-
-
-
-
-
-[1]: https://developer.akamai.com/introduction/Client_Auth.html
-[2]: https://gatling.io/
+> Note: `httpConf` is a protocol configured to use the defined `clientCredential`.

@@ -1,76 +1,59 @@
 # EdgeGrid Client for Java
 
-Java implementation of Akamai {OPEN} EdgeGrid signing.
+This library implements [EdgeGrid authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
+
+Before you begin, you need to [Create authentication credentials](https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials).
+
+## Install required software
+
+In order to use EdgeGrid Client for Java, you need [Java version 8+](https://www.java.com/en/download/help/download_options.xml).
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-parent)
-[![Javadocs](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-parent.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-parent)
+[![Javadocs](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-parent.svg)](https://www.javadoc.io/doc/com.akamai.edgegrid)
 
-## Description
+## Make an API call
+You'll need the values for the tokens from your [.edgerc](https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials#add-credential-to-edgerc-file) file.
 
-This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
-It is presented as a core module which can be used independently of any
-particular HTTP client library and three implementations for specific HTTP client
-libraries.
+```
+ClientCredential credential = ClientCredential.builder()
+        .accessToken("akaa-xxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxx")
+        .clientToken("akaa-xxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxx")
+        .clientSecret("SOMESECRET")
+        .host("akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net")
+        .build();
+```
+
+Example API call:
+```
+Request request = Request.builder()
+        .method("POST")
+        .uri("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/diagnostic-tools/v2/ghost-locations/available")
+        .body("{ \"field\": \"field value\" }".getBytes())
+        .header("X-Some-Signed-Header", "header value")
+        .header("X-Some-Other-Signed-Header", "header value 2")
+        .build();
+```
+
+This is an example of an API call to [List available edge server locations](https://techdocs.akamai.com/diagnostic-tools/reference/ghost-locationsavailable). Change the `uri` element to reference an endpoint in any of the [Akamai APIs](https://developer.akamai.com/api).
 
 ## Modules
 
 This project contains a core implementation module and five bindings to specific HTTP client libraries.
 
 * [edgegrid-signer-core](edgegrid-signer-core) is the core signing implementation and base classes used by the individual library implementations.
-* [edgerc-reader](edgerc-reader) is a configuration file reader that supports edgerc files. These files are basically INI files with certain sections and properties.
+* [edgerc-reader](edgerc-reader) is a configuration file reader that supports `.edgerc` files. These files are basically INI files with certain sections and properties.
 * [edgegrid-signer-apache-http-client](edgegrid-signer-apache-http-client) is a binding for [Apache HTTP Client][2].
 * [edgegrid-signer-google-http-client](edgegrid-signer-google-http-client) is a binding for [Google HTTP Client Library for Java][3].
 * [edgegrid-signer-rest-assured](edgegrid-signer-rest-assured) is a binding for [REST-assured][4].
 * [edgegrid-signer-async-http-client](edgegrid-signer-async-http-client) is a binding for [Async HTTP Client][13].
 * [edgegrid-signer-gatling](edgegrid-signer-gatling) is a binding for [Gatling][14].
 
-## Changes
 
-4.0.2:
-- Upgrade libraries.
-- Add missing dependencies for Java ≥ 9.
+> Note: A number of similar libraries for signing requests exist for popular
+programming languages, and you can find them at [https://github.com/akamai?q=edgegrid](https://github.com/akamai?q=edgegrid)
 
-4.0.1:
-- Fix Issue #35, a broken unit test.
-- Use [URI#getRawPath()](https://docs.oracle.com/javase/8/docs/api/java/net/URI.html#getRawPath--) when constructing a signature.
 
-4.0:
-- BREAKING CHANGE: Split the edgerc file reader into new module [edgerc-reader](edgerc-reader).
-- Drop dependency on commons-configuration2 from edgegrid-signer-core.
-- Drop dependency on commons-lang3.
-- Drop dependency on commons-codec (use Base64 methods from JDK instead).
-- Use maven-bundle-plugin to add OSGi headers to MANIFEST.MF.
-
-3.0:
-- Minimum Java version is now 8.
-- Adding binding for Async HTTP Client.
-- Adding binding for Gatling.
-
-2.1:
-- Adding binding for Apache HTTP Client.
-- Splitting README.md between relevant modules.
-
-2.0:
-- Signing algorithm tweaks
-- Separating binding for Google HTTP Client Library for Java from core
-- Adding binding for REST-assured
-- Unit tests with TestNG
-- Publishing to Maven Central!
-
-## Similar tools
-
-A number of similar libraries for signing requests exist for popular
-programming languages:
-
-* There are two Python bindings: a [command line tool similar to curl][5] and a [Python library][6].
-* [Ruby binding][7]
-* [Perl binding][8]
-* [Powershell binding][9]
-* [NodeJS binding][10]
-* [C# binding][11]
-* [Go binding][12]
-
-[1]: https://developer.akamai.com/introduction/Client_Auth.html
+[1]: https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid
 [2]: https://hc.apache.org/
 [3]: https://github.com/google/google-http-java-client
 [4]: https://github.com/rest-assured/rest-assured
@@ -87,15 +70,19 @@ programming languages:
 
 ## Authors
 
-### Active authors
-Martin Meyer <mmeyer@akamai.com>
+### Active
 
-### Inactive authors
+Roberto López López <rlopezlo@akamai.com>
+Michał Wójcik <miwojci@akamai.com>
+
+### Inactive
+
+Martin Meyer <mmeyer@akamai.com>
 Maciej Gawinecki <mgawinec@akamai.com>
 
-## Contribute!
+## Contribute
 
 This is an open-source library, and contributions are welcome. You're welcome
 to fork this project and send us a pull request.
 
-For more information about OPEN API visit the [Akamai {OPEN} Developer Community](https://developer.akamai.com/).
+Find valuable resources on the [Akamai Developer](https://developer.akamai.com/) website.

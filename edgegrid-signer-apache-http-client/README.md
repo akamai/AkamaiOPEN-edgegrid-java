@@ -1,16 +1,13 @@
-# EdgeGrid Client for Java
+# Apache HTTP Client module - EdgeGrid Client for Java
 
-Java implementation of Akamai {OPEN} EdgeGrid signing.
+-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
+-[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-apache-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
-[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-apache-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
+This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
+This particular module is a binding for the [Apache HTTP Client library](https://hc.apache.org/).
+This project contains installation and usage instructions in the [README.md](../README.md).
 
-## Description
-
-This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
-This particular module is a binding for the [Apache HTTP Client library][2].
-
-## Usage of Apache HTTP Client
+## Use Apache HTTP Client
 
 Include the following Maven dependency in your project POM:
 
@@ -18,7 +15,7 @@ Include the following Maven dependency in your project POM:
 <dependency>
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-apache-http-client</artifactId>
-    <version>4.0.2</version>
+    <version>4.1.1</version>
 </dependency>
 ```
 
@@ -34,10 +31,10 @@ HttpGet request = new HttpGet("http://endpoint.net/billing-usage/v1/reportSource
 client.execute(request);
 ```
 
-## Usage with REST-assured
+## Use with REST-assured
 
-This signing module can also be used with [REST-assured][3] instead of using the
-[REST-assured signing module][4]. In this situation you would be configuring the
+This signing module can also be used with [REST-assured](https://github.com/rest-assured/rest-assured) instead of using the
+[EdgeGrid REST-assured signing module](../edgegrid-signer-rest-assured). In this situation you'd configure the
 Apache HTTP Client as the low-level transport for REST-assured requests and the
 `RestAssuredEdgeGridFilter` would not be used at all. This may be advantageous
 because of some capabilities available to the Apache HTTP Client that are not
@@ -71,8 +68,3 @@ given()
 .then()
     .statusCode(200);
 ```
-
-[1]: https://developer.akamai.com/introduction/Client_Auth.html
-[2]: https://hc.apache.org/
-[3]: https://github.com/rest-assured/rest-assured
-[4]: ../edgegrid-signer-rest-assured

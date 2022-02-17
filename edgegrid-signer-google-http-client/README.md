@@ -1,16 +1,13 @@
-# EdgeGrid Client for Java
-
-Java implementation of Akamai {OPEN} EdgeGrid signing.
+# Google HTTP Client Library - EdgeGrid Client for Java
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-google-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-google-http-client)
 [![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-google-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-google-http-client)
 
-## Description
+This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
+This particular module is a binding for [Google HTTP Client Library for Java](https://github.com/google/google-http-java-client).
+This project contains installation and usage instructions in the [README.md](../README.md).
 
-This library implements [Akamai {OPEN} EdgeGrid Authentication][1] for Java.
-This particular module is a binding for the [Google HTTP Client Library for Java][2].
-
-## Usage with Google HTTP Client Library for Java
+## Use Google HTTP Client Library for Java
 
 Include the following Maven dependency in your project POM:
 
@@ -18,7 +15,7 @@ Include the following Maven dependency in your project POM:
 <dependency>
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-google-http-client</artifactId>
-    <version>4.0.2</version>
+    <version>4.1.1</version>
 </dependency>
 ```
 
@@ -37,7 +34,8 @@ requestSigner.sign(request);
 request.execute();
 ```
 
-This, however, requires remembering to sign explicitly every request.
+This, however, requires remembering to sign every request explicitly.
+
 Alternately, you may create an `HttpRequestFactory` that will automatically
 sign requests via an Interceptor:
 
@@ -52,7 +50,7 @@ private HttpRequestFactory createSigningRequestFactory() {
 }
 ```
 
-And then
+And then:
 
 ```java
 HttpRequestFactory requestFactory = createSigningRequestFactory();
@@ -62,11 +60,8 @@ HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
 request.execute();
 ```
 
-NOTE: In this example we have used a `ClientCredentialProvider` rather than
-a more simple `ClientCredential`. `ClientCredentialProvider` provides a
-mechanism to construct a `ClientCredential` at the time of a request based on
-any logic you may want. For example, your own implementation could read
-credentials from a database or other secret store.
-
-[1]: https://developer.akamai.com/introduction/Client_Auth.html
-[2]: https://github.com/google/google-http-java-client
+> Note: In this example we used a `clientCredentialProvider` rather than
+a simpler `ClientCredential`. `clientCredentialProvider` provides a
+mechanism to construct a `ClientCredential` at the time of the request based on
+any logic you define. For example, your implementation could read
+credentials from a database or another secret store.
