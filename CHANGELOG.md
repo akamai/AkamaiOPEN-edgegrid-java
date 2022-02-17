@@ -1,9 +1,15 @@
 # Change log
 
-## 4.1.1 (?)
+## 4.1.1 (February 17, 2022)
+
+### Enhancements
+
+* Added OWASP dependency check plugin to maven pipeline.
 
 ### Fixes
 
+* Fix multiple CVE vulnerabilities by upgrading logback and netty dependencies.
+* Fix Travis build by updating Java version to 8.
 * Correct README.md inconsistencies.
 
 ## 4.1.0 (August 26, 2021)
@@ -11,7 +17,7 @@
 ### Enhancements
 
 * Upgrade project dependencies.
-* Ensure compatibility with Java > v9.
+* Ensure compatibility with Java >= v9.
 
 ## 4.0.1
 
