@@ -1,5 +1,11 @@
 # Change log
 
+## 4.1.2 (XXX YY, ZZZZ)
+
+### Fixes
+
+* Avoid major bug OSSRH-66257 by upgrading org.sonatype.plugins:nexus-staging-maven-plugin.
+
 ## 4.1.1 (February 17, 2022)
 
 ### Enhancements
