@@ -2,9 +2,13 @@
 
 ## 4.1.2 (XXX YY, ZZZZ)
 
+### Improvements
+
+* Extract edgegrid-signer-gatling module to a separate project.
+
 ### Fixes
 
-* Avoid major bug OSSRH-66257 by upgrading org.sonatype.plugins:nexus-staging-maven-plugin.
+* Fixes for various vulnerabilities: OSSRH-66257, CVE-2020-36518, sonatype-2021-4682, CVE-2022-24823, sonatype-2019-0673, sonatype-2012-0050, sonatype-2021-4916
 
 ## 4.1.1 (February 17, 2022)
 

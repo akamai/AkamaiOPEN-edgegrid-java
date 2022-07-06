@@ -15,7 +15,7 @@ Include the following Maven dependency in your project POM:
 <dependency>
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-apache-http-client</artifactId>
-    <version>4.1.1</version>
+    <version>4.1.2</version>
 </dependency>
 ```
 
