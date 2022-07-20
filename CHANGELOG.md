@@ -1,6 +1,6 @@
 # Change log
 
-## 4.1.2 (XXX YY, ZZZZ)
+## 4.1.2 (July 21, 2022)
 
 ### Improvements
 
