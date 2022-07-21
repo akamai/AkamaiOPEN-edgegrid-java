@@ -1,5 +1,15 @@
 # Change log
 
+## 4.1.2 (July 21, 2022)
+
+### Improvements
+
+* Extract edgegrid-signer-gatling module to a separate project.
+
+### Fixes
+
+* Fixes for various vulnerabilities: OSSRH-66257, CVE-2020-36518, sonatype-2021-4682, CVE-2022-24823, sonatype-2019-0673, sonatype-2012-0050, sonatype-2021-4916
+
 ## 4.1.1 (February 17, 2022)
 
 ### Enhancements

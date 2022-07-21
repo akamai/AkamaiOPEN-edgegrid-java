@@ -46,7 +46,6 @@ This project contains a core implementation module and five bindings to specific
 * [edgegrid-signer-google-http-client](edgegrid-signer-google-http-client) is a binding for [Google HTTP Client Library for Java][3].
 * [edgegrid-signer-rest-assured](edgegrid-signer-rest-assured) is a binding for [REST-assured][4].
 * [edgegrid-signer-async-http-client](edgegrid-signer-async-http-client) is a binding for [Async HTTP Client][13].
-* [edgegrid-signer-gatling](edgegrid-signer-gatling) is a binding for [Gatling][14].
 
 
 > Note: A number of similar libraries for signing requests exist for popular
@@ -66,7 +65,6 @@ programming languages, and you can find them at [https://github.com/akamai?q=edg
 [11]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-C-Sharp
 [12]: https://github.com/akamai-open/AkamaiOPEN-edgegrid-golang
 [13]: https://github.com/AsyncHttpClient/async-http-client
-[14]: https://gatling.io/
 
 ## Authors
 
