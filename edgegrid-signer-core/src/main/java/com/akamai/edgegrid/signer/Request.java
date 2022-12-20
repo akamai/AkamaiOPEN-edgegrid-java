@@ -160,10 +160,9 @@ public class Request implements Comparable<Request> {
          * @return reference back to this builder instance
          */
         public RequestBuilder body(byte[] requestBody) {
-            if (body == null || "".equals(body)) {
-                throw new IllegalArgumentException("body cannot be empty");
+            if (requestBody != null && requestBody.length != 0) {
+                this.body = Arrays.copyOf(requestBody, requestBody.length);
             }
-            this.body = Arrays.copyOf(requestBody, requestBody.length);
             return this;
         }
 

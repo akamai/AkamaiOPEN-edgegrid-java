@@ -103,6 +103,29 @@ public class RequestTest {
         assertThat(request.getHeaders().get("header"), equalTo("h"));
     }
 
+    @Test
+    public void testAcceptRequestWithEmptyRequestBody()  {
+        Request request = Request.builder()
+                .body("".getBytes())
+                .method("GET")
+                .uri(URI.create("/check"))
+                .header("HeaDer", "h")
+                .build();
+
+        assertThat(request.getBody(), equalTo(new byte[]{}));
+    }
+
+    @Test
+    public void testAcceptRequestWithNullRequestBody()  {
+        Request request = Request.builder()
+                .method("GET")
+                .uri(URI.create("/check"))
+                .header("HeaDer", "h")
+                .build();
+
+        assertThat(request.getBody(), equalTo(new byte[]{}));
+    }
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testRejectDuplicateHeaderNames() {
         Request.builder()

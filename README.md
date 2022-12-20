@@ -6,7 +6,7 @@ Before you begin, you need to [Create authentication credentials](https://techdo
 
 ## Install required software
 
-In order to use EdgeGrid Client for Java, you need [Java version 8+](https://www.java.com/en/download/help/download_options.xml).
+In order to use EdgeGrid Client for Java, you need [Java version 11+](https://www.java.com/en/download/help/download_options.xml).
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-parent)
 [![Javadocs](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-parent.svg)](https://www.javadoc.io/doc/com.akamai.edgegrid)
@@ -70,13 +70,17 @@ programming languages, and you can find them at [https://github.com/akamai?q=edg
 
 ### Active
 
-Roberto López López <rlopezlo@akamai.com>
 Michał Wójcik <miwojci@akamai.com>
+
+Tatiana Slonimskaia <tslonims@akamai.com>
 
 ### Inactive
 
 Martin Meyer <mmeyer@akamai.com>
-Maciej Gawinecki <mgawinec@akamai.com>
+
+Maciej Gawinecki
+
+Roberto López López
 
 ## Contribute
 
