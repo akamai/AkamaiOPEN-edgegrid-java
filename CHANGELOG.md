@@ -1,6 +1,6 @@
 # Change log
 
-## 5.0.0 (XXX, 2023)
+## 5.0.0 (January 19, 2023)
 
 ### BREAKING CHANGES
 
