@@ -1,5 +1,11 @@
 # Change log
 
+## 5.0.0 (January 19, 2023)
+
+### BREAKING CHANGES
+
+*  Minimum Java version is 11.
+
 ## 4.1.2 (July 21, 2022)
 
 ### Improvements
