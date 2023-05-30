@@ -4,7 +4,8 @@
 -[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-apache-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
 
 This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
-This particular module is a binding for the [Apache HTTP Client library](https://hc.apache.org/).
+This particular module is a binding for the [Apache HTTP Client library](https://hc.apache.org/) versions before 5.0.0.
+For Apache HTTP Client >= 5.0.0 support, use `edgegrid-signer-apache-http-client5` module.
 This project contains installation and usage instructions in the [README.md](../README.md).
 
 ## Use Apache HTTP Client
