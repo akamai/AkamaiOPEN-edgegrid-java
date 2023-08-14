@@ -10,6 +10,7 @@
 
     <modules>
         <module>edgegrid-signer-apache-http-client</module>
+        <module>edgegrid-signer-apache-http-client5</module>
         <module>edgegrid-signer-async-http-client</module>
         <module>edgegrid-signer-core</module>
         <module>edgegrid-signer-google-http-client</module>
@@ -146,6 +147,16 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
                 <version>4.4.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5</artifactId>
+                <version>5.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>5.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.asynchttpclient</groupId>
