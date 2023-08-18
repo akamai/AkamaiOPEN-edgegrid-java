@@ -8,7 +8,10 @@ import org.testng.annotations.Test;
 import java.net.URISyntaxException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Example of use of EdgeGrid signer with Apache HTTP Client5.
