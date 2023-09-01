@@ -1,5 +1,17 @@
 # Change log
 
+## 5.1.0 (September 4, 2023)
+
+### Improvements
+
+* Add support for Apache HTTP Client version 5.
+
+### Fixes
+
+* Fixes for various CVE vulnerabilities by upgrading netty, dependency-check and guava libraries.
+* Fixes some build errors by upgrading Jacoco library.
+* Resolve various Javadoc warnings in different modules.
+
 ## 5.0.0 (January 19, 2023)
 
 ### BREAKING CHANGES

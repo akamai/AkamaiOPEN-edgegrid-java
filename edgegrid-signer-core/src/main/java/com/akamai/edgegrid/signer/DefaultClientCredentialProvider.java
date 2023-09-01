@@ -28,6 +28,11 @@ public class DefaultClientCredentialProvider implements ClientCredentialProvider
 
     private ClientCredential clientCredential;
 
+    /**
+     * Creates a {@link DefaultClientCredentialProvider} using {@link ClientCredential}.
+     *
+     * @param clientCredential a {@link ClientCredential}
+     */
     public DefaultClientCredentialProvider(ClientCredential clientCredential) {
         this.clientCredential = Objects.requireNonNull(clientCredential, "clientCredential cannot be null");
     }

@@ -29,10 +29,19 @@ public class NoMatchingCredentialException extends RequestSigningException {
 
     private static final long serialVersionUID = -6663545494847315492L;
 
+    /**
+     * Creates a {@link NoMatchingCredentialException} with default message.
+     *
+     */
     public NoMatchingCredentialException() {
         super(MESSAGE);
     }
 
+    /**
+     * Creates a {@link NoMatchingCredentialException} using {@link Exception}.
+     *
+     * @param e a {@link Exception}
+     */
     public NoMatchingCredentialException(Exception e) {
         super(MESSAGE, e);
     }

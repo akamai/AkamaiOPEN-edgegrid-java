@@ -32,6 +32,10 @@
             <artifactId>wiremock</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-context</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
         </dependency>

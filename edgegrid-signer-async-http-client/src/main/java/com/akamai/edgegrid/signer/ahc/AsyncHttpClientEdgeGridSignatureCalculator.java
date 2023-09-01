@@ -24,14 +24,29 @@ import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilderBase;
 import org.asynchttpclient.SignatureCalculator;
 
+/**
+ * Async HTTP Client binding for EdgeGrid signature calculator {@link SignatureCalculator}.
+ *
+ * @author mgawinec@akamai.com
+ */
 public class AsyncHttpClientEdgeGridSignatureCalculator implements SignatureCalculator {
 
     private final AsyncHttpClientEdgeGridRequestSigner binding;
 
+    /**
+     * Creates an EdgeGrid signature calculator using {@link ClientCredential}.
+     *
+     * @param credential a {@link ClientCredential}
+     */
     public AsyncHttpClientEdgeGridSignatureCalculator(ClientCredential credential) {
         this.binding = new AsyncHttpClientEdgeGridRequestSigner(credential);
     }
 
+    /**
+     * Creates an EdgeGrid signature calculator using {@link ClientCredentialProvider}.
+     *
+     * @param credentialProvider a {@link ClientCredentialProvider}
+     */
     public AsyncHttpClientEdgeGridSignatureCalculator(ClientCredentialProvider credentialProvider) {
         this.binding = new AsyncHttpClientEdgeGridRequestSigner(credentialProvider);
     }

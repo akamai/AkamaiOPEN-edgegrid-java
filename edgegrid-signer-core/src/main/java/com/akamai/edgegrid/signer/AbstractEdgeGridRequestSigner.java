@@ -32,6 +32,7 @@ import java.util.Objects;
  * offers a more configurable way to retrieve credentials any way the user wants. </p>
  *
  * @param <RequestT> a type of HTTP client specific request.
+ * @param <MutableRequestT> a type of HTTP client request to update.
  * @author mgawinec@akamai.com
  * @author mmeyer@akamai.com
  */
@@ -64,7 +65,12 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT, MutableRequestT> {
         this.edgeGridSigner = new EdgeGridV1Signer();
     }
 
-
+    /**
+     * Retrieves {@link ClientCredentialProvider}.
+     *
+     * @return  {@link ClientCredentialProvider}
+     *
+     */
     public final ClientCredentialProvider getClientCredentialProvider() {
         return clientCredentialProvider;
     }
@@ -100,6 +106,9 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT, MutableRequestT> {
 
     /**
      * Returns Request-URI of an original request.
+     *
+     * @param request an HTTP client-specific request
+     * @return a {@link URI} of {@code request}
      */
     protected abstract URI requestUri(RequestT request);
 

@@ -78,6 +78,12 @@ public class RestAssuredEdgeGridRequestSigner extends
         }
     }
 
+    /**
+     * REST-assured sign method binding of EdgeGrid signer using {@link FilterableRequestSpecification}
+     *
+     * @param requestSpecification a {@link FilterableRequestSpecification}
+     * @throws RequestSigningException if failed to sign a request
+     */
     public void sign(FilterableRequestSpecification requestSpecification) throws RequestSigningException {
         sign(requestSpecification, requestSpecification);
     }

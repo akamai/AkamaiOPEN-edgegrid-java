@@ -9,11 +9,20 @@ import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.protocol.HttpContext;
 
+/**
+ * Apache HTTP Client binding for EdgeGrid route planner for computing {@link HttpRoute}.
+ *
+ */
 @Contract(threading = ThreadingBehavior.STATELESS)
 public class ApacheHttpClient5EdgeGridRoutePlanner implements HttpRoutePlanner {
 
     private final ClientCredential clientCredential;
 
+    /**
+     * Creates an EdgeGrid route planner using {@link ClientCredential}.
+     *
+     * @param clientCredential a {@link ClientCredential}
+     */
     public ApacheHttpClient5EdgeGridRoutePlanner(ClientCredential clientCredential) {
         this.clientCredential = clientCredential;
     }
