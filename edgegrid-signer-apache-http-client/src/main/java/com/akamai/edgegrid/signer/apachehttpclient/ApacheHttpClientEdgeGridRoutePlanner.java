@@ -43,7 +43,11 @@ public class ApacheHttpClientEdgeGridRoutePlanner extends SystemDefaultRoutePlan
      * @param clientCredential a {@link ClientCredential}
      */
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredential clientCredential) {
-        super(ProxySelector.getDefault());
+        this(clientCredential, ProxySelector.getDefault());
+    }
+
+    public ApacheHttpClientEdgeGridRoutePlanner(ClientCredential clientCredential, ProxySelector proxySelector) {
+        super(proxySelector);
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredential);
     }
 
@@ -53,7 +57,11 @@ public class ApacheHttpClientEdgeGridRoutePlanner extends SystemDefaultRoutePlan
      * @param clientCredentialProvider a {@link ClientCredentialProvider}
      */
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredentialProvider clientCredentialProvider) {
-        super(ProxySelector.getDefault());
+        this(clientCredentialProvider, ProxySelector.getDefault());
+    }
+
+    public ApacheHttpClientEdgeGridRoutePlanner(ClientCredentialProvider clientCredentialProvider, ProxySelector proxySelector) {
+        super(proxySelector);
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredentialProvider);
     }
 
