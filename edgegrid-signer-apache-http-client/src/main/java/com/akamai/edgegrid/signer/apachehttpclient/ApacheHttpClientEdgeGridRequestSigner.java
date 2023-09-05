@@ -41,10 +41,20 @@ import java.net.URI;
  */
 public class ApacheHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest, HttpRequest> {
 
+    /**
+     * Creates an EdgeGrid signer using {@link ClientCredential}.
+     *
+     * @param clientCredential a {@link ClientCredential}
+     */
     public ApacheHttpClientEdgeGridRequestSigner(ClientCredential clientCredential) {
         super(clientCredential);
     }
 
+    /**
+     * Creates an EdgeGrid signer using {@link ClientCredentialProvider}.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider}
+     */
     public ApacheHttpClientEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
         super(clientCredentialProvider);
     }

@@ -28,16 +28,30 @@ import org.apache.http.HttpRequest;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.protocol.HttpContext;
-
+/**
+ * Apache HTTP Client binding for EdgeGrid route planner for computing {@link HttpRoute}.
+ *
+ * @author mgawinec@akamai.com
+ */
 public class ApacheHttpClientEdgeGridRoutePlanner extends SystemDefaultRoutePlanner {
 
     private final ApacheHttpClientEdgeGridRequestSigner binding;
 
+    /**
+     * Creates an EdgeGrid route planner using {@link ClientCredential}.
+     *
+     * @param clientCredential a {@link ClientCredential}
+     */
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredential clientCredential) {
         super(ProxySelector.getDefault());
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredential);
     }
 
+    /**
+     * Creates an EdgeGrid route planner using {@link ClientCredentialProvider}.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider}
+     */
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredentialProvider clientCredentialProvider) {
         super(ProxySelector.getDefault());
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredentialProvider);

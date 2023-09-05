@@ -96,26 +96,62 @@ public class ClientCredential implements Comparable<ClientCredential> {
         return compareTo(that) == 0;
     }
 
+    /**
+     * Retrieves access token.
+     *
+     * @return accessToken
+     *
+     */
     public String getAccessToken() {
         return accessToken;
     }
 
+    /**
+     * Retrieves client secret.
+     *
+     * @return clientSecret
+     *
+     */
     public String getClientSecret() {
         return clientSecret;
     }
 
+    /**
+     * Retrieves client token.
+     *
+     * @return clientToken
+     *
+     */
     public String getClientToken() {
         return clientToken;
     }
 
+    /**
+     * Retrieves set of headers for signing.
+     *
+     * @return headersToSign
+     *
+     */
     public Set<String> getHeadersToSign() {
         return headersToSign;
     }
 
+    /**
+     * Retrieves host.
+     *
+     * @return host
+     *
+     */
     public String getHost() {
         return host;
     }
 
+    /**
+     * Defines maximum body size defined in bytes.
+     *
+     * @return maxBodySize
+     *
+     */
     public int getMaxBodySize() {
         if (maxBodySize == null) {
             return DEFAULT_MAX_BODY_SIZE_IN_BYTES;
@@ -141,6 +177,10 @@ public class ClientCredential implements Comparable<ClientCredential> {
                 .toString();
     }
 
+    /**
+     * Defines {@link ClientCredentialBuilder} which is used to build instance of {@link ClientCredential}.
+     *
+     */
     public static class ClientCredentialBuilder {
         private String accessToken;
         private String clientSecret;

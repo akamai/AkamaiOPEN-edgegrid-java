@@ -19,10 +19,20 @@ import java.net.URISyntaxException;
  */
 public class ApacheHttpClient5EdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<HttpRequest, HttpRequest> {
 
+    /**
+     * Creates an EdgeGrid signer using {@link ClientCredential}.
+     *
+     * @param clientCredential a {@link ClientCredential}
+     */
     public ApacheHttpClient5EdgeGridRequestSigner(ClientCredential clientCredential) {
         super(clientCredential);
     }
 
+    /**
+     * Creates an EdgeGrid signer using {@link ClientCredentialProvider}.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider}
+     */
     public ApacheHttpClient5EdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
         super(clientCredentialProvider);
     }

@@ -37,12 +37,27 @@ import java.util.Map;
 
 import static org.asynchttpclient.util.MiscUtils.isNonEmpty;
 
+/**
+ * Async HTTP Client binding for EdgeGrid signer for signing {@link Request}.
+ *
+ * @author mgawinec@akamai.com
+ */
 public class AsyncHttpClientEdgeGridRequestSigner extends AbstractEdgeGridRequestSigner<Request, RequestBuilderBase> {
 
+    /**
+     * Creates an EdgeGrid signer using {@link ClientCredential}.
+     *
+     * @param credential a {@link ClientCredential}
+     */
     public AsyncHttpClientEdgeGridRequestSigner(ClientCredential credential) {
         super(credential);
     }
 
+    /**
+     * Creates an EdgeGrid signer using {@link ClientCredentialProvider}.
+     *
+     * @param credentialProvider a {@link ClientCredentialProvider}
+     */
     public AsyncHttpClientEdgeGridRequestSigner(ClientCredentialProvider credentialProvider) {
         super(credentialProvider);
     }

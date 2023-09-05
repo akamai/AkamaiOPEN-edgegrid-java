@@ -84,6 +84,13 @@ public class GoogleHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReque
         return builder.build();
     }
 
+    /**
+     * Google HTTP Client Library sign method binding of EdgeGrid signer which signs {@link HttpRequest} with appropriate credentials using EdgeGrid signer algorithm and
+     * replaces {@link HttpRequest}'s host name with the one specified by the credential.
+     *
+     * @param request a {@link HttpRequest}
+     * @throws RequestSigningException if failed to sign a request
+     */
     public void sign(HttpRequest request) throws RequestSigningException {
         sign(request, request);
     }
