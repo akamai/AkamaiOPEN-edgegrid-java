@@ -1,6 +1,6 @@
 # Change log
 
-## 5.1.0 (September 4, 2023)
+## 5.1.0 (September 5, 2023)
 
 ### Improvements
 
