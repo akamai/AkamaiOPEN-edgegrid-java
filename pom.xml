@@ -80,8 +80,8 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <slf4j.version>1.7.36</slf4j.version>
-        <netty.version>4.1.97.Final</netty.version>
-        <logback.version>1.2.11</logback.version>
+        <netty.version>4.1.101.Final</netty.version>
+        <logback.version>1.4.14</logback.version>
         <dependency-check.version>8.4.0</dependency-check.version>
     </properties>
 
