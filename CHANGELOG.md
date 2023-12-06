@@ -1,5 +1,12 @@
 # Change log
 
+## 5.1.1 (December 6, 2023)
+
+### Fixes
+
+* Fixes for various CVE vulnerabilities by upgrading logback classic, netty and dependency-check.
+
+
 ## 5.1.0 (September 5, 2023)
 
 ### Improvements
