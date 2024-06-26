@@ -20,8 +20,12 @@ package com.akamai.edgegrid.signer.googlehttpclient;
 import com.akamai.edgegrid.signer.ClientCredential;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpClientEdgeGridRequestSigner;
-import com.google.api.client.http.*;
-import com.google.api.client.http.apache.ApacheHttpTransport;
+
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 
 import org.testng.annotations.Test;
 

@@ -1,5 +1,12 @@
 # Change log
 
+## X.X.X (X X, X)
+
+### BREAKING CHANGES
+
+* Replaced deprecated `ApacheHttpTransport` with `com.google.api.client.http.apache.v2.ApacheHttpTransport` in `edgegrid-signer-google-http-client`.
+* Updated `README.md` for `edgegrid-signer-google-http-client` to include changes in the instructions for signing HTTP requests with specified client credentials.
+
 ## 5.1.1 (December 6, 2023)
 
 ### Fixes

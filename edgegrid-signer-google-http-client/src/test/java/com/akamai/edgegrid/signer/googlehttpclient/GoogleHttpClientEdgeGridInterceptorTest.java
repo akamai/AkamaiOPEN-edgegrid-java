@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.testng.annotations.Test;
 
@@ -35,8 +36,7 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.apache.ApacheHttpTransport;
+import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 
 /**
  * Unit tests for {@link GoogleHttpClientEdgeGridInterceptor}.
@@ -85,15 +85,15 @@ public class GoogleHttpClientEdgeGridInterceptorTest {
     }
 
     private HttpRequestFactory createSigningRequestFactory() {
-        HttpTransport httpTransport = new ApacheHttpTransport.Builder()
-                .setSocketFactory(SSLSocketFactory.getSystemSocketFactory())
+        HttpClient client = ApacheHttpTransport.newDefaultHttpClientBuilder()
+                .setSSLSocketFactory((SSLSocketFactory.getSystemSocketFactory()))
                 .build();
-        return httpTransport.createRequestFactory(new HttpRequestInitializer() {
+
+        return new ApacheHttpTransport(client).createRequestFactory(new HttpRequestInitializer() {
             @Override
             public void initialize(HttpRequest request) throws IOException {
                 request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(credential));
             }
         });
     }
-
 }
