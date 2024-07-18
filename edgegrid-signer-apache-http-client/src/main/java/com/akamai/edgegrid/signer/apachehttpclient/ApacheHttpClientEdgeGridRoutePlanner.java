@@ -46,6 +46,12 @@ public class ApacheHttpClientEdgeGridRoutePlanner extends SystemDefaultRoutePlan
         this(clientCredential, ProxySelector.getDefault());
     }
 
+    /**
+     * Creates an EdgeGrid route planner using {@link ClientCredential}.
+     *
+     * @param clientCredential a {@link ClientCredential}
+     * @param proxySelector a {@link ProxySelector}
+     */
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredential clientCredential, ProxySelector proxySelector) {
         super(proxySelector);
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredential);
@@ -60,6 +66,12 @@ public class ApacheHttpClientEdgeGridRoutePlanner extends SystemDefaultRoutePlan
         this(clientCredentialProvider, ProxySelector.getDefault());
     }
 
+    /**
+     * Creates an EdgeGrid route planner using {@link ClientCredentialProvider}.
+     *
+     * @param clientCredentialProvider a {@link ClientCredentialProvider}
+     * @param proxySelector a {@link ProxySelector}
+     */
     public ApacheHttpClientEdgeGridRoutePlanner(ClientCredentialProvider clientCredentialProvider, ProxySelector proxySelector) {
         super(proxySelector);
         this.binding = new ApacheHttpClientEdgeGridRequestSigner(clientCredentialProvider);
