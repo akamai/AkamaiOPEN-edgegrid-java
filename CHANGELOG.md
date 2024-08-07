@@ -14,6 +14,7 @@
 ### Fixes
 
 * Fixes for various vulnerabilities by upgrading `grpc-context`, `netty` and `commons-configuration2`.
+* Fixed issue when path param is an url for rest assured
 
 
 ## 5.1.1 (December 6, 2023)

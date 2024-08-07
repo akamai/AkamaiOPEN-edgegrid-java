@@ -286,6 +286,12 @@ public class Request implements Comparable<Request> {
             return this;
         }
 
+        public RequestBuilder rawUri(URI uri) {
+            Objects.requireNonNull(uri, "uri cannot be empty");
+            this.uri = uri;
+            return this;
+        }
+
         /**
          * Returns a newly-created immutable HTTP request.
          *
