@@ -40,7 +40,7 @@ import io.restassured.specification.FilterableResponseSpecification;
  */
 public class RestAssuredEdgeGridFilter implements Filter {
 
-    private final RestAssuredEdgeGridRequestSigner binding;
+    protected RestAssuredEdgeGridRequestSigner binding;
 
     /**
      * Creates an EdgeGrid signing interceptor using the same {@link ClientCredential} for each

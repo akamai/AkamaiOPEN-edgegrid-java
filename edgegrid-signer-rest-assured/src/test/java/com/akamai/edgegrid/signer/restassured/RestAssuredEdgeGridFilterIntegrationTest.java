@@ -17,6 +17,7 @@ package com.akamai.edgegrid.signer.restassured;
 
 
 import com.akamai.edgegrid.signer.ClientCredential;
+import com.akamai.edgegrid.signer.EdgeGridV1Signer;
 import com.akamai.edgegrid.signer.exceptions.RequestSigningException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
@@ -259,6 +260,61 @@ public class RestAssuredEdgeGridFilterIntegrationTest {
                 .multiPart("file", new File("/home/johan/some_large_file.bin"))
                 .post("/billing-usage/v1/reportSources")
                 .then().statusCode(200);
+    }
+
+    class MockedEdgeGridV1Signer extends EdgeGridV1Signer {
+        String fixedNonce = "ec9d20ee-1e9b-4c1f-925a-f0017754f86c";
+        // Fixed timestamp corresponds to 2016-08-04T07:00:00+0000.
+        long fixedTimestamp = 1470294000000L;
+
+        protected long getTimestamp() {
+            return fixedTimestamp;
+        }
+
+        protected String getNonce() {
+            return fixedNonce;
+        }
+
+    }
+
+    class MockedRestAssuredEdgeGridRequestSigner extends RestAssuredEdgeGridRequestSigner {
+
+        public MockedRestAssuredEdgeGridRequestSigner(ClientCredential clientCredential) {
+            super(clientCredential);
+        }
+
+        @Override
+        protected EdgeGridV1Signer createEdgeGridSigner() {
+            return new MockedEdgeGridV1Signer();
+        }
+    }
+
+    class MockedRestAssuredEdgeGridFilter extends RestAssuredEdgeGridFilter {
+
+        public MockedRestAssuredEdgeGridFilter(ClientCredential credential) {
+            super(credential);
+            this.binding = new MockedRestAssuredEdgeGridRequestSigner(credential);
+        }
+    }
+    @Test
+    public void signRequestWithPathParamContainingURL() throws URISyntaxException, IOException {
+
+        wireMockServer.stubFor(get(urlPathMatching("/sso-config/v1/idps/https%3A%2F%2Ffdef2ea8-64b1-4b78-ad36-bacae87af167/certificates"))
+                .withHeader("Authorization", equalTo("EG1-HMAC-SHA256 client_token=akaa-k7glklzuxkkh2ycw-oadjphopvpn6yjoj;access_token=akaa-dm5g2bfwoodqnc6k-ju7vlao2wz6oz2rp;timestamp=20160804T07:00:00+0000;nonce=ec9d20ee-1e9b-4c1f-925a-f0017754f86c;signature=2KunLDWST5ZgrbL8CuTF2Gxp7UfsIy/DxELcajvziTo="))
+                .withHeader("Host", equalTo(SERVICE_MOCK))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody("<response>Some content</response>")));
+
+        RestAssuredEdgeGridFilter filter = new MockedRestAssuredEdgeGridFilter(credential);
+        RestAssured.given()
+                .relaxedHTTPSValidation()
+                .filter(filter)
+                .get("/sso-config/v1/idps/{id}/certificates", "https://fdef2ea8-64b1-4b78-ad36-bacae87af167")
+                .then().statusCode(200);
+
+        assertThat(wireMockServer.findAllUnmatchedRequests().size(), CoreMatchers.equalTo(0));
     }
 
     @AfterClass
