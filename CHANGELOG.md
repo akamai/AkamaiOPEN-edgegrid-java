@@ -1,6 +1,6 @@
 # Change log
 
-## X.X.X (X X, X)
+## 6.0.0 (August 21, 2024)
 
 ### BREAKING CHANGES
 
