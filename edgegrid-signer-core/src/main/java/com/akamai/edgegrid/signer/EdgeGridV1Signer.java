@@ -110,7 +110,23 @@ public class EdgeGridV1Signer {
      */
     public String getSignature(Request request, ClientCredential credential)
             throws RequestSigningException {
-        return getSignature(request, credential, System.currentTimeMillis(), generateNonce());
+        return getSignature(request, credential, getTimestamp(), getNonce());
+    }
+
+    /**
+     * Returns timestamp needed for signing
+     * @return returns current time stamp
+     */
+    protected long getTimestamp() {
+        return System.currentTimeMillis();
+    }
+
+    /**
+     * Returns nonce needed for signing
+     * @return returns generated nonce
+     */
+    protected String getNonce() {
+        return generateNonce();
     }
 
     private static String generateNonce() {

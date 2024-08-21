@@ -22,17 +22,22 @@ Include the following Maven dependency in your project POM:
 Sign your HTTP request with a defined client credential:
 
 ```java
-HttpTransport httpTransport = new ApacheHttpTransport.Builder()
-        .setSocketFactory(SSLSocketFactory.getSystemSocketFactory())
+HttpClient client = HttpClients.custom()
+        .setSSLSocketFactory(SSLSocketFactory.getSystemSocketFactory())
         .build();
-HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
+HttpRequestFactory requestFactory = new ApacheHttpTransport(client).createRequestFactory();
 URI uri = URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources");
-HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
+try {
+    HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
+    GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner(credential);
 
-GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner(clientCredential);
-requestSigner.sign(request);
-request.execute();
+    requestSigner.sign(request);
+    request.execute();
+} catch (IOException | RequestSigningException e) {
+    throw new RuntimeException("Error during HTTP request execution", e);
+}
 ```
+
 
 This, however, requires remembering to sign every request explicitly.
 

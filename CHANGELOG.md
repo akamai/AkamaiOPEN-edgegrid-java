@@ -1,5 +1,22 @@
 # Change log
 
+## 6.0.0 (August 21, 2024)
+
+### BREAKING CHANGES
+
+* Replaced deprecated `ApacheHttpTransport` with `com.google.api.client.http.apache.v2.ApacheHttpTransport` in `edgegrid-signer-google-http-client`.
+* Updated `README.md` for `edgegrid-signer-google-http-client` to include changes in the instructions for signing HTTP requests with specified client credentials.
+
+### Improvements
+
+* Add support for `ProxySelector` in `ApacheHttpClientEdgeGridRoutePlanner` to enable the use of custom proxy servers.
+
+### Fixes
+
+* Fixes for various vulnerabilities by upgrading `grpc-context`, `netty` and `commons-configuration2`.
+* Fixed issue when path param is an url for rest assured
+
+
 ## 5.1.1 (December 6, 2023)
 
 ### Fixes

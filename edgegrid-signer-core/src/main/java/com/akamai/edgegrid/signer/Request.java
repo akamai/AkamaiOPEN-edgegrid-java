@@ -287,6 +287,27 @@ public class Request implements Comparable<Request> {
         }
 
         /**
+         * <p>
+         * Sets the URI of the HTTP request without any processing it, which is important when URI contains
+         * path parameters which consists of encoded URLs.
+         * This URI <i>MUST</i> have the correct path and query segments set. Scheme is assumed to be "HTTPS" for the purpose of this library. Host is
+         * actually taken from a {@link ClientCredential} at signing time; any value in this URI is
+         * discarded. Fragments are not removed from signing process.
+         * </p>
+         * <p>
+         * A path and/or query string is required.
+         * </p>
+         *
+         * @param uri a {@link URI}
+         * @return reference back to this builder instance
+         */
+        public RequestBuilder rawUri(URI uri) {
+            Objects.requireNonNull(uri, "uri cannot be empty");
+            this.uri = uri;
+            return this;
+        }
+
+        /**
          * Returns a newly-created immutable HTTP request.
          *
          * @return new HTTP request {@link Request}

@@ -62,7 +62,16 @@ public abstract class AbstractEdgeGridRequestSigner<RequestT, MutableRequestT> {
      */
     public AbstractEdgeGridRequestSigner(ClientCredentialProvider clientCredentialProvider) {
         this.clientCredentialProvider = clientCredentialProvider;
-        this.edgeGridSigner = new EdgeGridV1Signer();
+        this.edgeGridSigner = createEdgeGridSigner();
+    }
+
+    /**
+     * Returns new instance of EdgeGridV1Signer.
+     *
+     * @return a {@link EdgeGridV1Signer} new instance
+     */
+    protected EdgeGridV1Signer createEdgeGridSigner() {
+        return new EdgeGridV1Signer();
     }
 
     /**

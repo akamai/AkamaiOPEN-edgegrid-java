@@ -35,9 +35,15 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.ArrayList;
 
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
@@ -72,7 +78,6 @@ public class RestAssuredIntegrationTest {
             .build();
 
     WireMockServer wireMockServer = new WireMockServer(wireMockConfig().httpsPort(SERVICE_MOCK_PORT));
-
 
 
     @BeforeClass
@@ -114,6 +119,33 @@ public class RestAssuredIntegrationTest {
                 Matchers.not(CoreMatchers.equalTo(loggedRequests.get(1).getHeader("Authorization"))));
     }
 
+    @Test
+    public void signAgainFollowedRedirectsWithProxy() throws URISyntaxException, IOException {
+
+        wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources"))
+                .withHeader("Authorization", matching(".*"))
+                .withHeader("Host", equalTo(SERVICE_MOCK))
+                .willReturn(aResponse()
+                        .withStatus(302)
+                        .withHeader("Location", "/billing-usage/v1/reportSources/alternative")));
+
+        wireMockServer.stubFor(get(urlPathEqualTo("/billing-usage/v1/reportSources/alternative"))
+                .withHeader("Authorization", matching(".*"))
+                .withHeader("Host", equalTo(SERVICE_MOCK))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody("<response>Some content</response>")));
+
+        getBaseRequestSpecificationWithCustomProxy()
+                .get("/billing-usage/v1/reportSources")
+                .then().statusCode(200);
+
+        List<LoggedRequest> loggedRequests = wireMockServer.findRequestsMatching(RequestPattern
+                .everything()).getRequests();
+        MatcherAssert.assertThat(loggedRequests.get(0).getHeader("Authorization"),
+                Matchers.not(CoreMatchers.equalTo(loggedRequests.get(1).getHeader("Authorization"))));
+    }
 
 
     @Test
@@ -224,7 +256,7 @@ public class RestAssuredIntegrationTest {
                         .withStatus(200)));
 
         getBaseRequestSpecification()
-                .get("https://" + SERVICE_MOCK+ "/billing-usage/v1/reportSources")
+                .get("https://" + SERVICE_MOCK + "/billing-usage/v1/reportSources")
                 .then().statusCode(200);
     }
 
@@ -277,6 +309,13 @@ public class RestAssuredIntegrationTest {
                 .baseUri("https://" + SERVICE_MOCK);
     }
 
+    private RequestSpecification getBaseRequestSpecificationWithCustomProxy() {
+        return RestAssured.given()
+                .config(getRestAssuredConfigWithCustomProxy(credential, new CustomProxySelector()))
+                .relaxedHTTPSValidation()
+                .baseUri("https://" + SERVICE_MOCK);
+    }
+
 
     private static RestAssuredConfig getRestAssuredConfig(final ClientCredential credential) {
         return RestAssuredConfig.config().httpClient(HttpClientConfig.httpClientConfig().httpClientFactory(new HttpClientConfig.HttpClientFactory() {
@@ -290,4 +329,41 @@ public class RestAssuredIntegrationTest {
         }));
     }
 
+    private static RestAssuredConfig getRestAssuredConfigWithCustomProxy(final ClientCredential credential, ProxySelector proxySelector) {
+        return RestAssuredConfig.config().httpClient(HttpClientConfig.httpClientConfig().httpClientFactory(new HttpClientConfig.HttpClientFactory() {
+            @Override
+            public HttpClient createHttpClient() {
+                final DefaultHttpClient client = new DefaultHttpClient();
+                client.addRequestInterceptor(new ApacheHttpClientEdgeGridInterceptor(credential));
+                client.setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(credential, proxySelector));
+                return client;
+            }
+        }));
+    }
+
+    class CustomProxySelector extends ProxySelector {
+
+        private List<Proxy> proxies;
+
+        public CustomProxySelector() {
+            // Define a proxy
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy.example.com", 8080));
+            proxies = new ArrayList<>();
+            proxies.add(proxy);
+        }
+
+        @Override
+        public List<Proxy> select(URI uri) {
+            // Return the proxy list
+            if (uri == null) {
+                throw new IllegalArgumentException("URI can't be null.");
+            }
+            return proxies;
+        }
+
+        @Override
+        public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+            // No implementation needed
+        }
+    }
 }
