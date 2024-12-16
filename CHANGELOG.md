@@ -1,15 +1,23 @@
 # Change log
 
+## 6.0.1 (December 17, 2024)
+
+### Fixes
+
+* Fixed vulnerability by upgrading the `asynchttpclient` module to 3.0.1 .
+* Removed checks in the `AsyncHttpClientEdgeGridRequestSigner` class for the `ReactiveStreamsBodyGenerator` case, which is no longer available in a new version of the `asynchttpclient` module.
+* Fixed some build errors by upgrading the JaCoCo library.
+
 ## 6.0.0 (August 21, 2024)
 
 ### BREAKING CHANGES
 
-* Replaced deprecated `ApacheHttpTransport` with `com.google.api.client.http.apache.v2.ApacheHttpTransport` in `edgegrid-signer-google-http-client`.
-* Updated `README.md` for `edgegrid-signer-google-http-client` to include changes in the instructions for signing HTTP requests with specified client credentials.
+* Replaced the deprecated `ApacheHttpTransport` method with `com.google.api.client.http.apache.v2.ApacheHttpTransport` in the `edgegrid-signer-google-http-client` module.
+* Updated the `README.md` file for the `edgegrid-signer-google-http-client` module to include changes in the instructions for signing HTTP requests with specified client credentials.
 
 ### Improvements
 
-* Add support for `ProxySelector` in `ApacheHttpClientEdgeGridRoutePlanner` to enable the use of custom proxy servers.
+* Added support for `ProxySelector` in the `ApacheHttpClientEdgeGridRoutePlanner` method to enable the use of custom proxy servers.
 
 ### Fixes
 
