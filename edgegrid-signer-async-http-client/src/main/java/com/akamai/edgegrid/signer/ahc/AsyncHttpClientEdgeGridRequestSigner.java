@@ -26,7 +26,6 @@ import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilderBase;
 import org.asynchttpclient.request.body.generator.FileBodyGenerator;
 import org.asynchttpclient.request.body.generator.InputStreamBodyGenerator;
-import org.asynchttpclient.request.body.generator.ReactiveStreamsBodyGenerator;
 import org.asynchttpclient.uri.Uri;
 
 import java.net.URI;
@@ -112,8 +111,6 @@ public class AsyncHttpClientEdgeGridRequestSigner extends AbstractEdgeGridReques
             throw new UnsupportedOperationException("Serializing FileBodyGenerator in request body is not supported");
         } else if (request.getBodyGenerator() instanceof InputStreamBodyGenerator) {
             throw new UnsupportedOperationException("Serializing InputStreamBodyGenerator in request body is not supported");
-        } else if (request.getBodyGenerator() instanceof ReactiveStreamsBodyGenerator) {
-            throw new UnsupportedOperationException("Serializing ReactiveStreamsBodyGenerator in request body is not supported");
         } else if (request.getBodyGenerator() != null) {
             throw new UnsupportedOperationException("Serializing generic BodyGenerator in request body is not supported");
         } else {

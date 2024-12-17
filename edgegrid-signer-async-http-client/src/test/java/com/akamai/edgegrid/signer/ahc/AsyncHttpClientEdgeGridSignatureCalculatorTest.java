@@ -43,7 +43,7 @@ public class AsyncHttpClientEdgeGridSignatureCalculatorTest {
             .host("endpoint.net")
             .build();
 
-        RequestBuilder requestToUpdate = new RequestBuilder(request);
+        RequestBuilder requestToUpdate = new RequestBuilder(request.toString());
         new AsyncHttpClientEdgeGridSignatureCalculator(credential).calculateAndAddSignature(
             request, requestToUpdate);
         Request updatedRequest = requestToUpdate.build();
@@ -65,7 +65,7 @@ public class AsyncHttpClientEdgeGridSignatureCalculatorTest {
             .build();
 
         Request request = new RequestBuilder().setUrl("http://localhost/test?x=y").build();
-        RequestBuilder requestToUpdate = new RequestBuilder(request);
+        RequestBuilder requestToUpdate = new RequestBuilder(request.toString());
 
         new AsyncHttpClientEdgeGridSignatureCalculator(credential).calculateAndAddSignature(
             request, requestToUpdate);
@@ -86,7 +86,7 @@ public class AsyncHttpClientEdgeGridSignatureCalculatorTest {
             .build();
 
         Request request = new RequestBuilder().setUrl("http://localhost/test").addQueryParam("x", "y").build();
-        RequestBuilder requestToUpdate = new RequestBuilder(request);
+        RequestBuilder requestToUpdate = new RequestBuilder(request.toString());
 
         new AsyncHttpClientEdgeGridSignatureCalculator(credential).calculateAndAddSignature(
             request, requestToUpdate);
