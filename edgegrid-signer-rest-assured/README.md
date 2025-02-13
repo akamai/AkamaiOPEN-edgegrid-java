@@ -1,44 +1,72 @@
-# REST-assured - EdgeGrid Client for Java
+# REST-assured binding
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-rest-assured/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-rest-assured)
 [![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-rest-assured.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-rest-assured)
 
-This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
-This particular module is a binding for [REST-assured library](https://github.com/rest-assured/rest-assured).
-This project contains installation and usage instructions in the [README.md](../README.md).
+This module is a binding for the [REST-assured library](https://github.com/rest-assured/rest-assured).
 
-## Use with REST-assured
+## Use
 
-Include the following Maven dependency in your project POM:
+1. Include the Maven dependencies in your project's POM.
 
-```xml
-<dependency>
-    <groupId>com.akamai.edgegrid</groupId>
-    <artifactId>edgegrid-signer-rest-assured</artifactId>
-    <version>5.0.0</version>
-</dependency>
-```
+    ```xml
+    <dependencies>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>5.5.0</version>
+        </dependency>
 
-Sign your REST-assured request specification with a defined client credential:
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgerc-reader</artifactId>
+            <version>6.0.1</version>
+        </dependency>
 
-```java
-given()
-    .filter(new RestAssuredEdgeGridFilter(clientCredential))
-.when()
-    .get("/billing-usage/v1/reportSources")
-.then()
-    .statusCode(200);
-```
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgegrid-signer-rest-assured</artifactId>
+            <version>6.0.1</version>
+        </dependency>
+    </dependencies>
+    ```
 
-REST-assured request specifications *must* contain a relative path in `get(path)`, `post
-(path)` etc.
+2. Create an HTTP client that will sign your HTTP request with a defined set of client credentials from a given section, for example, `default`, of your `.edgerc` file.
 
+    ```java
+    import static io.restassured.RestAssured.given;
 
-## Alternative: Use the Apache HTTP Client bindings
+    import java.io.IOException;
 
-REST-assured does not expose certain capabilities effectively. In particular it
-does not support re-triggering its filters when following a 301/302 redirect.
-The result of following a redirect is presently an invalid request signature and
-a rejected request.
+    import org.apache.commons.configuration2.ex.ConfigurationException;
 
-If you experience this problem, you can use the [Apache HTTP Client binding](../edgegrid-signer-apache-http-client) instead of the REST-assured binding. This will be functionally equivalent, and will also sign redirected requests properly. Usage instructions can be found in the README file for that module.
+    import com.akamai.edgegrid.signer.ClientCredential;
+    import com.akamai.edgegrid.signer.EdgeRcClientCredentialProvider;
+    import com.akamai.edgegrid.signer.restassured.RestAssuredEdgeGridFilter;
+
+    import io.restassured.response.Response;
+
+    public class GetUserProfile {
+        public static void main(String[] args) throws ConfigurationException, IOException {
+            ClientCredential credential = EdgeRcClientCredentialProvider
+                    .fromEdgeRc("~/.edgerc", "default")
+                    .getClientCredential(null);
+
+            Response response = given()
+                    .filter(new RestAssuredEdgeGridFilter(credential))
+                    .when()
+                    .get("/identity-management/v3/user-profile")
+                    .then()
+                    .extract()
+                    .response();
+            System.out.println(response.getStatusCode());
+            System.out.println(response.asPrettyString());
+        }
+    }
+    ```
+
+> **Note:**
+>
+> REST-assured doesn't expose certain capabilities effectively. In particular, it doesn't support re-triggering its filters when following a 301/302 redirect. As a result, a redirect becomes an invalid request signature and a rejected request.
+>
+> If you experience this problem, use the [Apache HTTP Client binding](../edgegrid-signer-apache-http-client) instead of the REST-assured binding. The Apache HTTP Client binding is functionally equivalent and also signs redirected requests properly.

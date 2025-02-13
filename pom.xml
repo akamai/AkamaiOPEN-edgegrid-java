@@ -34,30 +34,6 @@
         </license>
     </licenses>
 
-    <developers>
-        <developer>
-            <name>Michał Wójcik</name>
-            <id>miwojci</id>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Martin Meyer</name>
-            <id>mmeyer</id>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Tatiana Slonimskaia</name>
-            <id>tslonims</id>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
-
     <scm>
         <connection>scm:git:https://github.com/akamai/AkamaiOPEN-edgegrid-java.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:akamai/AkamaiOPEN-edgegrid-java.git</developerConnection>

@@ -1,71 +1,68 @@
-# Apache HTTP Client module - EdgeGrid Client for Java
+# Apache HTTP Client binding
 
--[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
--[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-apache-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
+[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-apache-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-apache-http-client)
 
-This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
-This particular module is a binding for the [Apache HTTP Client library](https://hc.apache.org/) versions before 5.0.0.
-For Apache HTTP Client >= 5.0.0, use `edgegrid-signer-apache-http-client5` module.
-This project contains installation and usage instructions in the [README.md](../README.md).
+This module is a binding for the [Apache HTTP Client library before version 5.0.0](https://hc.apache.org/httpcomponents-client-4.5.x/).
 
-## Use Apache HTTP Client
+For Apache HTTP Client >= 5.0.0, use the [`edgegrid-signer-apache-http-client5`](/edgegrid-signer-apache-http-client5/README.md) module.
 
-Include the following Maven dependency in your project POM:
+## Use
 
-```xml
-<dependency>
-    <groupId>com.akamai.edgegrid</groupId>
-    <artifactId>edgegrid-signer-apache-http-client</artifactId>
-    <version>5.0.0</version>
-</dependency>
-```
+1. Include the Maven dependencies in your project's POM.
 
-Create an HTTP client that will sign your HTTP request with a defined client credential:
+    ```xml
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
 
-```java
-HttpClient client = HttpClientBuilder.create()
-        .addInterceptorFirst(new ApacheHttpClientEdgeGridInterceptor(clientCredential))
-        .setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(clientCredential))
-        .build();
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgerc-reader</artifactId>
+            <version>6.0.1</version>
+        </dependency>
 
-HttpGet request = new HttpGet("http://endpoint.net/billing-usage/v1/reportSources");
-client.execute(request);
-```
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgegrid-signer-apache-http-client</artifactId>
+            <version>6.0.1</version>
+        </dependency>
+    </dependencies>
+    ```
 
-## Use with REST-assured
+2. Create an HTTP client that will sign your HTTP request with a defined set of client credentials from a given section, for example, `default`, of your `.edgerc` file.
 
-This signing module can also be used with [REST-assured](https://github.com/rest-assured/rest-assured) instead of using the
-[EdgeGrid REST-assured signing module](../edgegrid-signer-rest-assured). In this situation you'd configure the
-Apache HTTP Client as the low-level transport for REST-assured requests and the
-`RestAssuredEdgeGridFilter` would not be used at all. This may be advantageous
-because of some capabilities available to the Apache HTTP Client that are not
-available to REST-assured request filters or interceptors. In particular,
-REST-assured does not support re-signing requests when it follows a redirect.
+   ```java
+   import java.io.IOException;
 
-To use this module with REST-assured, you need to define an `HttpClientFactory`:
+   import org.apache.commons.configuration2.ex.ConfigurationException;
+   import org.apache.http.client.methods.HttpGet;
+   import org.apache.http.impl.client.BasicResponseHandler;
+   import org.apache.http.impl.client.CloseableHttpClient;
+   import org.apache.http.impl.client.HttpClientBuilder;
 
-```java
-public HttpClientFactory getSigningHttpClientFactory() {
-    return new HttpClientConfig.HttpClientFactory() {
-            @Override
-            public HttpClient createHttpClient() {
-                final DefaultHttpClient client = new DefaultHttpClient();
-                client.addRequestInterceptor(new ApacheHttpClientEdgeGridInterceptor(clientCredential));
-                client.setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(clientCredential));
-                return client;
-            }
-        };
-}
-```
+   import com.akamai.edgegrid.signer.ClientCredential;
+   import com.akamai.edgegrid.signer.EdgeRcClientCredentialProvider;
+   import com.akamai.edgegrid.signer.apachehttpclient.ApacheHttpClientEdgeGridInterceptor;
+   import com.akamai.edgegrid.signer.apachehttpclient.ApacheHttpClientEdgeGridRoutePlanner;
 
-Next, make `REST-assured` use it:
+   public class GetUserProfile {
+       public static void main(String[] args) throws ConfigurationException, IOException {
+           ClientCredential credential = EdgeRcClientCredentialProvider
+                   .fromEdgeRc("~/.edgerc", "default")
+                   .getClientCredential(null);
 
-```java
-given()
-    .config()
-        .httpClient(HttpClientConfig.httpClientConfig().httpClientFactory(getSigningHttpClientFactory()))
-.when()
-    .get("/billing-usage/v1/reportSources")
-.then()
-    .statusCode(200);
-```
+           try (CloseableHttpClient client = HttpClientBuilder.create()
+                   .addInterceptorFirst(new ApacheHttpClientEdgeGridInterceptor(credential))
+                   .setRoutePlanner(new ApacheHttpClientEdgeGridRoutePlanner(credential))
+                   .build()) {
+
+               String uri = "https://" + credential.getHost() + "/identity-management/v3/user-profile";
+               System.out.println(client.execute(new HttpGet(uri), new BasicResponseHandler()));
+           }
+       }
+   }
+   ```

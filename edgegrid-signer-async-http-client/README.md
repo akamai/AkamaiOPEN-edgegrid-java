@@ -1,56 +1,62 @@
-# Async HTTP Client library - EdgeGrid Client for Java
+# Async HTTP Client binding
 
--[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-async-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-async-http-client)
--[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-async-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-async-http-client)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-async-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-async-http-client)
+[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-async-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-async-http-client)
 
-This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
-This particular module is a binding for the [Async HTTP Client library](https://github.com/AsyncHttpClient/async-http-client).
-This project contains installation and usage instructions in the [README.md](../README.md).
+This module is a binding for the [Async HTTP Client library](https://github.com/AsyncHttpClient/async-http-client).
 
-## Use Async HTTP Client
+## Use
 
-Include the following Maven dependency in your project POM:
+1. Include the Maven dependencies in your project's POM.
 
-```xml
-<dependency>
-    <groupId>com.akamai.edgegrid</groupId>
-    <artifactId>edgegrid-signer-async-http-client</artifactId>
-    <version>5.0.0</version>
-</dependency>
-```
+    ```xml
+    <dependencies>
+        <dependency>
+            <groupId>org.asynchttpclient</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
-Create an HTTP request that will be signed with a defined client credential:
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgerc-reader</artifactId>
+            <version>6.0.1</version>
+        </dependency>
 
-```java
-Request request = new RequestBuilder("POST")
-    .setUrl("https://localhost/papi/v0/properties")
-    .addQueryParam("contractId","ctr_1-3CV382")
-    .addQueryParam("groupId","grp_18385")
-    .setBody("{ \"productId\": \"Site_Accel\", \"propertyName\": \"8LuWyUjwea\" }")
-    .setHeader("Content-Type", "application/json")
-    .setSignatureCalculator(new AsyncHttpClientEdgeGridSignatureCalculator(clientCredential))
-    .build();
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgegrid-signer-async-http-client</artifactId>
+            <version>6.0.1</version>
+        </dependency>
+    </dependencies>
+    ```
 
-asyncHttpClient().executeRequest(request).get();
+2. Create an HTTP client that will sign your HTTP request with a defined set of client credentials from a given section, for example, `default`, of your `.edgerc` file.
 
-> Note: The `host` part of the URI will be replaced by the provided `AsyncHttpClientEdgeGridSignatureCalculator`  
-with the host from the client credential in the `.edgerc` file.
+    ```java
+    import static org.asynchttpclient.Dsl.asyncHttpClient;
 
-```
+    import java.io.IOException;
+    import java.util.concurrent.ExecutionException;
 
-Alternatively, create an HTTP client that will sign each HTTP request with a defined client 
-credential:
+    import org.apache.commons.configuration2.ex.ConfigurationException;
+    import org.asynchttpclient.AsyncHttpClient;
 
-```java
-AsyncHttpClient client = asyncHttpClient()
-    .setSignatureCalculator(new AsyncHttpClientEdgeGridSignatureCalculator(clientCredential));
+    import com.akamai.edgegrid.signer.ClientCredential;
+    import com.akamai.edgegrid.signer.EdgeRcClientCredentialProvider;
+    import com.akamai.edgegrid.signer.ahc.AsyncHttpClientEdgeGridSignatureCalculator;
 
-client.preparePost("https://localhost/papi/v0/properties")
-    .addQueryParam("contractId","ctr_1-3CV382")
-    .addQueryParam("groupId","grp_18385")
-    .setBody("{ \"productId\": \"Site_Accel\", \"propertyName\": \"8LuWyUjwea\" }")
-    .setHeader("Content-Type", "application/json")
-    .execute().get();
-```
+    public class GetUserProfile {
+        public static void main(String[] args) throws ConfigurationException, IOException, ExecutionException, InterruptedException {
+            ClientCredential credential = EdgeRcClientCredentialProvider
+                    .fromEdgeRc("~/.edgerc", "default")
+                    .getClientCredential(null);
 
-> Note: In this case you need to prepare requests with the HTTP client.
+            try (AsyncHttpClient client = asyncHttpClient()
+                    .setSignatureCalculator(new AsyncHttpClientEdgeGridSignatureCalculator(credential))) {
+                String uri = "https://" + credential.getHost() + "/identity-management/v3/user-profile";
+                System.out.println(client.prepareGet(uri).execute().get());
+            }
+        }
+    }
+    ```

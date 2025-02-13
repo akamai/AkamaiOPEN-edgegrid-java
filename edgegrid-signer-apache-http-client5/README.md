@@ -1,45 +1,66 @@
-# Apache HTTP Client 5 module - EdgeGrid Client for Java
+# Apache HTTP Client 5 binding
 
--[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client5/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client5)
--[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-apache-http-client5.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-apache-http-client5)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client5/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-apache-http-client5)
+[![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-apache-http-client5.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-apache-http-client5)
 
-This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
-This particular module is a binding for the [Apache HTTP Client library version 5.x](https://hc.apache.org/).
-This project contains installation and usage instructions in the [README.md](../README.md).
+This module is a binding for the [Apache HTTP Client library version 5.x](https://hc.apache.org/httpcomponents-client-5.4.x/).
 
-## Use Apache HTTP Client
+## Use
 
-Include the following Maven dependency in your project POM:
+1. Include the Maven dependencies in your project's POM.
 
-```xml
-<dependency>
-    <groupId>com.akamai.edgegrid</groupId>
-    <artifactId>edgegrid-signer-apache-http-client5</artifactId>
-    <version>${version}</version>
-</dependency>
-```
+    ```xml
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.4.1</version>
+        </dependency>
 
-Or in Gradle's `build.gradle.kts`
-```kotlin
-implementation("com.akamai.edgegrid:edgegrid-signer-apache-http-client5:$version")
-```
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgerc-reader</artifactId>
+            <version>6.0.1</version>
+        </dependency>
 
-Create an HTTP client that will sign your HTTP request with a defined client credential:
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgegrid-signer-apache-http-client5</artifactId>
+            <version>6.0.1</version>
+        </dependency>
+    </dependencies>
+    ```
 
-```java
-var client=HttpClientBuilder.create()
-        .addRequestInterceptorFirst(new ApacheHttpClient5EdgeGridInterceptor(credential))
-        .setRoutePlanner(new ApacheHttpClient5EdgeGridRoutePlanner(credential))
-        .build();
+2. Create an HTTP client that will sign your HTTP request with a defined set of client credentials from a given section, for example, `default`, of your `.edgerc` file.
 
-        var request=new HttpGet("http://endpoint.net/billing-usage/v1/reportSources");
-        client.execute(request,response->{
-            // response handler
-        });
-```
+    ```java
+    import java.io.IOException;
 
-## Use with REST-assured
+    import org.apache.commons.configuration2.ex.ConfigurationException;
+    import org.apache.hc.client5.http.classic.methods.HttpGet;
+    import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
+    import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+    import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
-[REST-assured](https://github.com/rest-assured/rest-assured) doesn't currently support Apache HTTP Client 5. Refer to
-this [README](/edgegrid-signer-apache-http-client/README.md) in `edgegrid-signer-apache-http-client` module to set up
-an interceptor for a legacy client.
+    import com.akamai.edgegrid.signer.ClientCredential;
+    import com.akamai.edgegrid.signer.EdgeRcClientCredentialProvider;
+    import com.akamai.edgegrid.signer.apachehttpclient5.ApacheHttpClient5EdgeGridInterceptor;
+    import com.akamai.edgegrid.signer.apachehttpclient5.ApacheHttpClient5EdgeGridRoutePlanner;
+
+    public class GetUserProfile {
+        public static void main(String[] args) throws ConfigurationException, IOException {
+            ClientCredential credential = EdgeRcClientCredentialProvider
+                    .fromEdgeRc("~/.edgerc", "default")
+                    .getClientCredential(null);
+
+            try (CloseableHttpClient client = HttpClientBuilder.create()
+                    .addRequestInterceptorFirst(new ApacheHttpClient5EdgeGridInterceptor(credential))
+                    .setRoutePlanner(new ApacheHttpClient5EdgeGridRoutePlanner(credential))
+                    .build()) {
+
+                String uri = "https://" + credential.getHost() + "/identity-management/v3/user-profile";
+                System.out.println(client.execute(new HttpGet(uri), new BasicHttpClientResponseHandler()));
+            }
+        }
+    }
+    ```
