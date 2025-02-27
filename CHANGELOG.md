@@ -1,5 +1,11 @@
 # Change log
 
+## 6.x.x (xxx XX, 2025)
+
+### Fixes
+
+* Upgraded `dependency-check` to 12.1.0 to fix the build issue.
+
 ## 6.0.1 (Dec 17, 2024)
 
 ### Fixes
