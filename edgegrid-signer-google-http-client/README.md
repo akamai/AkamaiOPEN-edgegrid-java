@@ -20,13 +20,13 @@ This module is a binding for the [Google HTTP Client library](https://github.com
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgerc-reader</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgegrid-signer-google-http-client</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
     </dependencies>
     ```

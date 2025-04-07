@@ -20,13 +20,13 @@ This module is a binding for the [REST-assured library](https://github.com/rest-
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgerc-reader</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgegrid-signer-rest-assured</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
     </dependencies>
     ```

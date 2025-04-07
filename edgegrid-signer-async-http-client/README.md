@@ -14,19 +14,19 @@ This module is a binding for the [Async HTTP Client library](https://github.com/
         <dependency>
             <groupId>org.asynchttpclient</groupId>
             <artifactId>async-http-client</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgerc-reader</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgegrid-signer-async-http-client</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
     </dependencies>
     ```

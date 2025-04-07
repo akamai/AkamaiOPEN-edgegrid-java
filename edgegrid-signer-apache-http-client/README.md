@@ -22,13 +22,13 @@ For Apache HTTP Client >= 5.0.0, use the [`edgegrid-signer-apache-http-client5`]
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgerc-reader</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgegrid-signer-apache-http-client</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
     </dependencies>
     ```

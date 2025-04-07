@@ -20,13 +20,13 @@ This module is a binding for the [Apache HTTP Client library version 5.x](https:
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgerc-reader</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgegrid-signer-apache-http-client5</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
         </dependency>
     </dependencies>
     ```
