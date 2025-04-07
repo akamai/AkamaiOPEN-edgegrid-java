@@ -6,7 +6,7 @@
     <parent>
         <artifactId>edgegrid-signer-parent</artifactId>
         <groupId>com.akamai.edgegrid</groupId>
-        <version>6.0.2-SNAPSHOT</version>
+        <version>6.0.2-rc.1</version>
     </parent>
 
     <artifactId>edgegrid-signer-google-http-client</artifactId>
