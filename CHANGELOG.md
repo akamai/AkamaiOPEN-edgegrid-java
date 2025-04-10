@@ -1,14 +1,21 @@
 # Change log
 
-## 6.0.1 (December 17, 2024)
+## 6.0.2 (Apr 10, 2025)
 
 ### Fixes
 
-* Fixed vulnerability by upgrading the `asynchttpclient` module to 3.0.1 .
+* Fixed a vulnerability by upgrading the `asynchttpclient` module to `3.0.2`.
+* Upgraded `dependency-check` to 12.1.0 to fix the build issue.
+
+## 6.0.1 (Dec 17, 2024)
+
+### Fixes
+
+* Fixed a vulnerability by upgrading the `asynchttpclient` module to `3.0.1`.
 * Removed checks in the `AsyncHttpClientEdgeGridRequestSigner` class for the `ReactiveStreamsBodyGenerator` case, which is no longer available in a new version of the `asynchttpclient` module.
 * Fixed some build errors by upgrading the JaCoCo library.
 
-## 6.0.0 (August 21, 2024)
+## 6.0.0 (Aug 21, 2024)
 
 ### BREAKING CHANGES
 
@@ -21,46 +28,46 @@
 
 ### Fixes
 
-* Fixes for various vulnerabilities by upgrading `grpc-context`, `netty` and `commons-configuration2`.
-* Fixed issue when path param is an url for rest assured
+* Fixed various vulnerabilities by upgrading `grpc-context`, `netty`, and `commons-configuration2`.
+* Fixed an issue when a path param is a url for rest-assured.
 
 
-## 5.1.1 (December 6, 2023)
+## 5.1.1 (Dec 6, 2023)
 
 ### Fixes
 
-* Fixes for various CVE vulnerabilities by upgrading logback classic, netty and dependency-check.
+* Fixed various CVE vulnerabilities by upgrading logback classic, netty and dependency-check.
 
 
-## 5.1.0 (September 5, 2023)
+## 5.1.0 (Sep 5, 2023)
 
 ### Improvements
 
-* Add support for Apache HTTP Client version 5.
+* Added support for Apache HTTP Client version 5.
 
 ### Fixes
 
-* Fixes for various CVE vulnerabilities by upgrading netty, dependency-check and guava libraries.
-* Fixes some build errors by upgrading Jacoco library.
-* Resolve various Javadoc warnings in different modules.
+* Fixed various CVE vulnerabilities by upgrading netty, dependency-check, and guava libraries.
+* Fixed some build errors by upgrading Jacoco library.
+* Resolved various Javadoc warnings in different modules.
 
-## 5.0.0 (January 19, 2023)
+## 5.0.0 (Jan 19, 2023)
 
 ### BREAKING CHANGES
 
 *  Minimum Java version is 11.
 
-## 4.1.2 (July 21, 2022)
+## 4.1.2 (Jul 21, 2022)
 
 ### Improvements
 
-* Extract edgegrid-signer-gatling module to a separate project.
+* Extracted the `edgegrid-signer-gatling` module to a separate project.
 
 ### Fixes
 
-* Fixes for various vulnerabilities: OSSRH-66257, CVE-2020-36518, sonatype-2021-4682, CVE-2022-24823, sonatype-2019-0673, sonatype-2012-0050, sonatype-2021-4916
+* Fixed various vulnerabilities: `OSSRH-66257`, `CVE-2020-36518`, `sonatype-2021-4682`, `CVE-2022-24823`, `sonatype-2019-0673`, `sonatype-2012-0050`, `sonatype-2021-4916`.
 
-## 4.1.1 (February 17, 2022)
+## 4.1.1 (Feb 17, 2022)
 
 ### Enhancements
 
@@ -68,35 +75,35 @@
 
 ### Fixes
 
-* Fix multiple CVE vulnerabilities by upgrading logback and netty dependencies.
-* Fix Travis build by updating Java version to 8.
-* Correct README.md inconsistencies.
+* Fixed multiple CVE vulnerabilities by upgrading logback and netty dependencies.
+* Fixed Travis build by updating Java version to 8.
+* Corrected `README.md`'s inconsistencies.
 
-## 4.1.0 (August 26, 2021)
+## 4.1.0 (Aug 26, 2021)
 
 ### Enhancements
 
-* Upgrade project dependencies.
-* Ensure compatibility with Java >= v9.
+* Upgraded project dependencies.
+* Ensured compatibility with Java >= v9.
 
 ## 4.0.1
 
 ### Fixes
 
-* Fix Issue #35, a broken unit test.
-* Use [URI#getRawPath()](https://docs.oracle.com/javase/8/docs/api/java/net/URI.html#getRawPath--) when constructing a signature.
+* Fixed Issue #35, a broken unit test.
+* Use [`URI#getRawPath()`](https://docs.oracle.com/javase/8/docs/api/java/net/URI.html#getRawPath--) when constructing a signature.
 
-## 4.0
+## 4.0 (Feb 19, 2019)
 
 ### BREAKING CHANGES
 
-* Split the edgerc file reader into new module [edgerc-reader](edgerc-reader).
-* Drop dependency on commons-configuration2 from edgegrid-signer-core.
-* Drop dependency on commons-lang3.
-* Drop dependency on commons-codec (use Base64 methods from JDK instead).
-* Use maven-bundle-plugin to add OSGi headers to MANIFEST.MF.
+* Split the edgerc file reader into a new module [edgerc-reader](edgerc-reader).
+* Dropped a dependency on `commons-configuration2` from `edgegrid-signer-core`.
+* Dropped a dependency on `commons-lang3`.
+* Dropped a dependency on `commons-codec` (use Base64 methods from JDK instead).
+* Use maven-bundle-plugin to add `OSGi` headers to `MANIFEST.MF`.
 
-## 3.0
+## 3.0 (Aug 8, 2018)
 
 ### BREAKING CHANGES
 
@@ -104,22 +111,22 @@
 
 ### Improvements
 
-* Adding binding for Async HTTP Client.
-* Adding binding for Gatling.
+* Added binding for Async HTTP Client.
+* Added binding for Gatling.
 
-## 2.1
-
-### Improvements
-
-* Adding binding for Apache HTTP Client.
-* Splitting README.md between relevant modules.
-
-## 2.0
+## 2.1 (Jul 27, 2017)
 
 ### Improvements
 
-* Signing algorithm tweaks
-* Separating binding for Google HTTP Client Library for Java from core
-* Adding binding for REST-assured
-* Unit tests with TestNG
-* Publishing to Maven Central!
+* Added binding for Apache HTTP Client.
+* Split `README.md` between relevant modules.
+
+## 2.0 (Jul 27, 2017)
+
+### Improvements
+
+* Added signing algorithm tweaks.
+* Separated binding for the Google HTTP Client library for Java from the core signing library.
+* Added binding for REST-assured.
+* Unit tests with TestNG.
+* Published to Maven Central.

@@ -1,72 +1,66 @@
-# Google HTTP Client Library - EdgeGrid Client for Java
+# Google HTTP Client binding
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-google-http-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.akamai.edgegrid/edgegrid-signer-google-http-client)
 [![Javadoc](http://www.javadoc.io/badge/com.akamai.edgegrid/edgegrid-signer-google-http-client.svg)](http://www.javadoc.io/doc/com.akamai.edgegrid/edgegrid-signer-google-http-client)
 
-This library implements [Akamai EdgeGrid Authentication](https://techdocs.akamai.com/developer/docs/authenticate-with-edgegrid) for Java.
-This particular module is a binding for [Google HTTP Client Library for Java](https://github.com/google/google-http-java-client).
-This project contains installation and usage instructions in the [README.md](../README.md).
+This module is a binding for the [Google HTTP Client library](https://github.com/google/google-http-java-client).
 
-## Use Google HTTP Client Library for Java
+## Use
 
-Include the following Maven dependency in your project POM:
+1. Include the Maven dependencies in your project's POM.
 
-```xml
-<dependency>
-    <groupId>com.akamai.edgegrid</groupId>
-    <artifactId>edgegrid-signer-google-http-client</artifactId>
-    <version>5.0.0</version>
-</dependency>
-```
+    ```xml
+    <dependencies>
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client</artifactId>
+            <version>1.45.3</version>
+        </dependency>
 
-Sign your HTTP request with a defined client credential:
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgerc-reader</artifactId>
+            <version>6.0.2</version>
+        </dependency>
 
-```java
-HttpClient client = HttpClients.custom()
-        .setSSLSocketFactory(SSLSocketFactory.getSystemSocketFactory())
-        .build();
-HttpRequestFactory requestFactory = new ApacheHttpTransport(client).createRequestFactory();
-URI uri = URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources");
-try {
-    HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
-    GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner(credential);
+        <dependency>
+            <groupId>com.akamai.edgegrid</groupId>
+            <artifactId>edgegrid-signer-google-http-client</artifactId>
+            <version>6.0.2</version>
+        </dependency>
+    </dependencies>
+    ```
 
-    requestSigner.sign(request);
-    request.execute();
-} catch (IOException | RequestSigningException e) {
-    throw new RuntimeException("Error during HTTP request execution", e);
-}
-```
+2. Create an HTTP client that will sign your HTTP request with a defined set of client credentials from a given section, for example, `default`, of your `.edgerc` file.
 
+    ```java
+    import java.io.IOException;
 
-This, however, requires remembering to sign every request explicitly.
+    import org.apache.commons.configuration2.ex.ConfigurationException;
 
-Alternately, you may create an `HttpRequestFactory` that will automatically
-sign requests via an Interceptor:
+    import com.akamai.edgegrid.signer.ClientCredential;
+    import com.akamai.edgegrid.signer.EdgeRcClientCredentialProvider;
+    import com.akamai.edgegrid.signer.googlehttpclient.GoogleHttpClientEdgeGridInterceptor;
+    import com.google.api.client.http.GenericUrl;
+    import com.google.api.client.http.HttpRequest;
+    import com.google.api.client.http.HttpRequestFactory;
+    import com.google.api.client.http.javanet.NetHttpTransport;
 
-```java
-private HttpRequestFactory createSigningRequestFactory() {
-    HttpTransport httpTransport = new ApacheHttpTransport();
-    return httpTransport.createRequestFactory(new HttpRequestInitializer() {
-        public void initialize(HttpRequest request) throws IOException {
-            request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(clientCredentialProvider));
+    public class GetUserProfile {
+
+        public static void main(String[] args) throws ConfigurationException, IOException {
+            ClientCredential credential = EdgeRcClientCredentialProvider
+                    .fromEdgeRc("~/.edgerc", "default")
+                    .getClientCredential(null);
+
+            HttpRequestFactory factory = new NetHttpTransport().createRequestFactory(request ->
+                    request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(credential)));
+
+            String uri = "https://" + credential.getHost() + "/identity-management/v3/user-profile";
+            HttpRequest request = factory.buildGetRequest(new GenericUrl(uri));
+            System.out.println(request.execute().parseAsString());
         }
-    });
-}
-```
+    }
+    ```
 
-And then:
-
-```java
-HttpRequestFactory requestFactory = createSigningRequestFactory();
-URI uri = URI.create("https://akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net/billing-usage/v1/reportSources");
-HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(uri));
-
-request.execute();
-```
-
-> Note: In this example we used a `clientCredentialProvider` rather than
-a simpler `ClientCredential`. `clientCredentialProvider` provides a
-mechanism to construct a `ClientCredential` at the time of the request based on
-any logic you define. For example, your implementation could read
-credentials from a database or another secret store.
+    > **Note:** You can use `GoogleHttpClientEdgeGridRequestSigner` directly instead of using it through `GoogleHttpClientEdgeGridInterceptor`. This approach, however, will result in a more verbose code.
