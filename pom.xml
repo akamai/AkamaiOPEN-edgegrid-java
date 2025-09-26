@@ -69,11 +69,27 @@
         <maven.compiler.target>11</maven.compiler.target>
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.4.14</logback.version>
-        <dependency-check.version>12.1.0</dependency-check.version>
+        <netty.version>4.2.6.Final</netty.version>
+        <dependency-check.version>12.1.6</dependency-check.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!--added to resolve transitive dependency vulnerabilities:CVE-2025-55163,CVE-2025-58056,CVE-2025-58057-->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--added to resolve transitive dependency vulnerabilities:CWE-674-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
@@ -135,7 +151,7 @@
             <dependency>
                 <groupId>org.asynchttpclient</groupId>
                 <artifactId>async-http-client</artifactId>
-                <version>3.0.2</version>
+                <version>3.0.3</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
