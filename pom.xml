@@ -6,7 +6,7 @@
 
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-parent</artifactId>
-    <version>6.0.2</version>
+    <version>6.0.3</version>
 
     <modules>
         <module>edgegrid-signer-apache-http-client</module>
@@ -44,6 +44,15 @@
             <organization>Akamai</organization>
             <organizationUrl>https://www.akamai.com</organizationUrl>
         </developer>
+        <developer>
+            <name>Michał Mazur</name>
+            <id>mimaz</id>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <organization>Akamai</organization>
+            <organizationUrl>https://www.akamai.com</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
@@ -52,28 +61,33 @@
         <url>https://github.com/akamai/AkamaiOPEN-edgegrid-java/tree/master</url>
     </scm>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.4.14</logback.version>
-        <dependency-check.version>12.1.0</dependency-check.version>
+        <netty.version>4.2.6.Final</netty.version>
+        <dependency-check.version>12.1.6</dependency-check.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!--added to resolve transitive dependency vulnerabilities:CVE-2025-55163,CVE-2025-58056,CVE-2025-58057-->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--added to resolve transitive dependency vulnerabilities:CWE-674-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
@@ -135,7 +149,7 @@
             <dependency>
                 <groupId>org.asynchttpclient</groupId>
                 <artifactId>async-http-client</artifactId>
-                <version>3.0.2</version>
+                <version>3.0.3</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -255,13 +269,12 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.13</version>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.9.0</version>
+                    <extensions>true</extensions>
                     <configuration>
-                        <serverId>ossrh</serverId>
-                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        <stagingProfileId>21d1e18e25c8e4</stagingProfileId>
+                        <publishingServerId>central</publishingServerId>
                     </configuration>
                 </plugin>
             </plugins>
@@ -320,7 +333,7 @@
 
     <profiles>
         <profile>
-            <id>sonatype-oss-release</id>
+            <id>sonatype-central-release</id>
             <build>
                 <plugins>
                     <plugin>
@@ -338,15 +351,15 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.9.0</version>
                         <executions>
                             <execution>
                                 <id>default-deploy</id>
                                 <phase>deploy</phase>
                                 <goals>
-                                    <goal>deploy</goal>
+                                    <goal>publish</goal>
                                 </goals>
                             </execution>
                         </executions>

@@ -1,11 +1,19 @@
 # Change log
 
+## 6.0.3 (Sep 29, 2025)
+
+### Fixes
+
+* Fixed a transitive vulnerability by adding the `netty-bom` module with version `4.2.6.Final`.
+* Fixed a transitive vulnerability by adding the `commons-lang3` module with version `3.18.0`.
+* Upgraded `dependency-check` to `12.1.6` to fix the build issue.
+
 ## 6.0.2 (Apr 10, 2025)
 
 ### Fixes
 
 * Fixed a vulnerability by upgrading the `asynchttpclient` module to `3.0.2`.
-* Upgraded `dependency-check` to 12.1.0 to fix the build issue.
+* Upgraded `dependency-check` to `12.1.0` to fix the build issue.
 
 ## 6.0.1 (Dec 17, 2024)
 

@@ -20,13 +20,13 @@ This module is a binding for the [Async HTTP Client library](https://github.com/
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgerc-reader</artifactId>
-            <version>6.0.2</version>
+            <version>6.0.3</version>
         </dependency>
 
         <dependency>
             <groupId>com.akamai.edgegrid</groupId>
             <artifactId>edgegrid-signer-async-http-client</artifactId>
-            <version>6.0.2</version>
+            <version>6.0.3</version>
         </dependency>
     </dependencies>
     ```
