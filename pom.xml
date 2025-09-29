@@ -44,6 +44,15 @@
             <organization>Akamai</organization>
             <organizationUrl>https://www.akamai.com</organizationUrl>
         </developer>
+        <developer>
+            <name>Michał Mazur</name>
+            <id>mimaz</id>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <organization>Akamai</organization>
+            <organizationUrl>https://www.akamai.com</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
@@ -51,17 +60,6 @@
         <developerConnection>scm:git:ssh://git@github.com:akamai/AkamaiOPEN-edgegrid-java.git</developerConnection>
         <url>https://github.com/akamai/AkamaiOPEN-edgegrid-java/tree/master</url>
     </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -271,13 +269,12 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.13</version>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.9.0</version>
+                    <extensions>true</extensions>
                     <configuration>
-                        <serverId>ossrh</serverId>
-                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        <stagingProfileId>21d1e18e25c8e4</stagingProfileId>
+                        <publishingServerId>central</publishingServerId>
                     </configuration>
                 </plugin>
             </plugins>
@@ -336,7 +333,7 @@
 
     <profiles>
         <profile>
-            <id>sonatype-oss-release</id>
+            <id>sonatype-central-release</id>
             <build>
                 <plugins>
                     <plugin>
@@ -354,15 +351,15 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.9.0</version>
                         <executions>
                             <execution>
                                 <id>default-deploy</id>
                                 <phase>deploy</phase>
                                 <goals>
-                                    <goal>deploy</goal>
+                                    <goal>publish</goal>
                                 </goals>
                             </execution>
                         </executions>
