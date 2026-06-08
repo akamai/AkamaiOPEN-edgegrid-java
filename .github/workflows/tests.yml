@@ -31,13 +31,8 @@ jobs:
           distribution: temurin
 
       - name: Run unit tests
-        # clean install: same lifecycle as lunabuild.
-        # -B: batch mode (CI-friendly output, no color/progress).
-        # -Ddependency-check.skip=true: skip OWASP dependency-check; the NVD
-        #   API key and related throttling params from lunabuild are only needed
-        #   for that plugin and must not be embedded in a public workflow.
-        # -Djavax.net.ssl.trustStore is an Akamai-internal SSL override and is
-        #   not applicable on GitHub-hosted runners.
+        # -Ddependency-check.skip=true: Skip OWASP scan here;
+        # vulnerability checks are handled in a separate pipeline.
         run: mvn -B clean install -Ddependency-check.skip=true
 
       - name: Upload test results
