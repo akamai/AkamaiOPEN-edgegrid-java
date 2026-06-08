@@ -46,7 +46,7 @@ jobs:
         with:
           name: test-results-${{ matrix.java-version }}
           path: |
-            **/target/surefire-reports/testng-results.xml
+            **/target/surefire-reports/TEST-*.xml
             **/target/site/jacoco/jacoco.xml
 
   report:
@@ -72,8 +72,8 @@ jobs:
         uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2
         with:
           name: Unit Test Results
-          path: "test-results-*/**/testng-results.xml"
-          reporter: java-testng
+          path: "test-results-*/**/TEST-*.xml"
+          reporter: java-junit
 
   coverage:
     name: Coverage Report
