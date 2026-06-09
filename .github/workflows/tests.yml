@@ -1,0 +1,100 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [ master ]
+  schedule:
+    - cron: "0 3 * * *"  # 03:00 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Java ${{ matrix.java-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version: [17, 21, 25, 26]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: temurin
+
+      - name: Run unit tests
+        # -Ddependency-check.skip=true: Skip OWASP scan here;
+        # vulnerability checks are handled in a separate pipeline.
+        run: mvn -B clean install -Ddependency-check.skip=true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ matrix.java-version }}
+          path: |
+            **/target/surefire-reports/TEST-*.xml
+            **/target/site/jacoco/jacoco.xml
+
+  report:
+    name: Unit Test Report
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download test results
+        uses: actions/download-artifact@v8
+        with:
+          pattern: test-results-*
+          merge-multiple: false
+
+      - name: Publish test report
+        # dorny/test-reporter v3.0.0 — pinned to SHA for supply-chain safety
+        uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2
+        with:
+          name: Unit Test Results
+          path: "test-results-*/**/TEST-*.xml"
+          reporter: java-junit
+
+  coverage:
+    name: Coverage Report
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download test results
+        uses: actions/download-artifact@v8
+        with:
+          pattern: test-results-*
+          merge-multiple: false
+
+      - name: Generate coverage summary
+        run: |
+          args=()
+          for dir in test-results-*/; do
+            version="${dir#test-results-}"
+            version="${version%/}"
+            args+=("${version}:${dir}")
+          done
+          if [[ ${#args[@]} -eq 0 ]]; then
+            echo "::error::No test result directories found; cannot generate coverage summary." >&2
+            exit 1
+          fi
+          python3 ci/coverage_report.py "${args[@]}" >> "$GITHUB_STEP_SUMMARY"
