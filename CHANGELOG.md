@@ -1,5 +1,15 @@
 # Change log
 
+## 6.0.4 (UNRELEASED)
+
+### Fixes
+
+* Fixed vulnerabilities by upgrading `async-http-client` from `3.0.3` to `3.0.10`.
+* Fixed vulnerabilities by upgrading `netty-bom` from `4.2.6.Final` to `4.2.15.Final`.
+* Fixed vulnerabilities by upgrading `commons-configuration2` from `2.11.0` to `2.15.1`.
+* Fixed vulnerabilities by upgrading `commons-codec` from `1.15` to `1.22.0`.
+* Fixed vulnerabilities by upgrading `httpcore5` from `5.2.1` to `5.4.2`.
+
 ## 6.0.3 (Sep 29, 2025)
 
 ### Fixes
