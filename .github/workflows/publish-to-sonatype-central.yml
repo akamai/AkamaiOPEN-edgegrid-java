@@ -1,0 +1,67 @@
+name: Publish to Sonatype Central
+
+# Triggered by releases and prereleases, but not by draft releases.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Build, test, and publish to Sonatype Central
+  # ---------------------------------------------------------------------------
+  publish:
+    name: Publish to Sonatype Central
+    runs-on: ubuntu-latest
+
+    environment: maven-publish
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # Configures ~/.m2/settings.xml with a <server id="central"> entry
+      # whose credentials are read from the CENTRAL_TOKEN_USERNAME /
+      # CENTRAL_TOKEN_PASSWORD environment variables set below.
+      # Also imports the GPG private key for artifact signing.
+      - name: Set up JDK 11
+        uses: actions/setup-java@v5
+        with:
+          java-version: '11'
+          distribution: temurin
+          server-id: central
+          server-username: CENTRAL_TOKEN_USERNAME
+          server-password: CENTRAL_TOKEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish to Sonatype Central
+        # Activates the sonatype-central-release profile defined in pom.xml,
+        # which enables maven-gpg-plugin (artifact signing) and
+        # central-publishing-maven-plugin (bundle upload and release).
+        run: >
+          mvn -B clean deploy
+          -P sonatype-central-release
+          -Ddependency-check.skip=true
+        env:
+          CENTRAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          CENTRAL_TOKEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      # ---------------------------------------------------------------------------
+      # Save a backup of the exact deployment files for traceability
+      # ---------------------------------------------------------------------------
+      - name: Upload deployed artifacts archive
+        uses: actions/upload-artifact@v7
+        with:
+          name: maven-central-deployed-artifacts
+          # Captures JARs, POMs, Sources, Javadocs, and their GPG signatures
+          path: |
+            **/target/*.jar
+            **/target/*.pom
+            **/target/*.asc
+          if-no-files-found: error
