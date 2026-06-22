@@ -1,6 +1,6 @@
 # Change log
 
-## 6.0.4 (UNRELEASED)
+## 6.0.4 (Jun 22, 2026)
 
 ### Fixes
 
