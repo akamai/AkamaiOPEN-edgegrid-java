@@ -8,6 +8,7 @@
 * Fixed vulnerabilities by upgrading `httpclient5` from `5.2.1` to `5.4.4`.
 * Fixed vulnerabilities by upgrading `httpcore5` from `5.4.2` to `5.4.3`.
 * Fixed vulnerabilities by adding and managing `httpcore5-h2` at version `5.4.3`.
+* Fixed vulnerabilities by upgrading `async-http-client` from `3.0.10` to `3.0.11`.
 
 ## 6.0.4 (Jun 22, 2026)
 
