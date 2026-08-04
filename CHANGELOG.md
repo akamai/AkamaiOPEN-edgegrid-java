@@ -1,5 +1,14 @@
 # Change log
 
+## 6.0.5 (UNRELEASED)
+
+### Fixes
+
+* Fixed vulnerabilities by upgrading `netty-bom` from `4.2.15.Final` to `4.2.16.Final`.
+* Fixed vulnerabilities by upgrading `httpclient5` from `5.2.1` to `5.4.4`.
+* Fixed vulnerabilities by upgrading `httpcore5` from `5.4.2` to `5.4.3`.
+* Fixed vulnerabilities by adding and managing `httpcore5-h2` at version `5.4.3`.
+
 ## 6.0.4 (Jun 22, 2026)
 
 ### Fixes
