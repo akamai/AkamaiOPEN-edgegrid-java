@@ -1,6 +1,6 @@
 # Change log
 
-## 6.0.5 (UNRELEASED)
+## 6.0.5 (Aug 5, 2026)
 
 ### Fixes
 
