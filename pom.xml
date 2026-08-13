@@ -69,7 +69,7 @@
         <logback.version>1.4.14</logback.version>
         <netty.version>4.2.16.Final</netty.version>
         <httpcore5.version>5.4.3</httpcore5.version>
-        <httpclient5.version>5.4.4</httpclient5.version>
+        <httpclient5.version>5.6.3</httpclient5.version>
         <dependency-check.version>12.1.6</dependency-check.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
     </properties>
