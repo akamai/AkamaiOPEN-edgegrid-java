@@ -6,7 +6,7 @@
 
     <groupId>com.akamai.edgegrid</groupId>
     <artifactId>edgegrid-signer-parent</artifactId>
-    <version>6.0.6-SNAPSHOT</version>
+    <version>6.0.6-RC1</version>
 
     <modules>
         <module>edgegrid-signer-apache-http-client</module>
@@ -67,9 +67,9 @@
         <maven.compiler.target>11</maven.compiler.target>
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.4.14</logback.version>
-        <netty.version>4.2.16.Final</netty.version>
+        <netty.version>4.2.18.Final</netty.version>
         <httpcore5.version>5.4.3</httpcore5.version>
-        <httpclient5.version>5.4.4</httpclient5.version>
+        <httpclient5.version>5.6.4</httpclient5.version>
         <dependency-check.version>12.1.6</dependency-check.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
     </properties>
@@ -105,7 +105,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>32.1.2-jre</version>
+                <version>33.7.2-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.google.http-client</groupId>
@@ -130,7 +130,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.22.0</version>
+                <version>1.22.1</version>
                 <!-- fixes CWE-379 -->
             </dependency>
             <dependency>
@@ -156,7 +156,7 @@
             <dependency>
                 <groupId>org.asynchttpclient</groupId>
                 <artifactId>async-http-client</artifactId>
-                <version>3.0.11</version>
+                <version>3.0.14</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -306,7 +306,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.6.3</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>

@@ -1,5 +1,14 @@
 # Change log
 
+## 6.0.6 (Oct 6, 2026)
+
+### Fixes
+
+* Fixed vulnerabilities by upgrading  `netty-bom` from `4.2.16.Final` to `4.2.18.Final`.
+* Fixed vulnerabilities by upgrading  `httpclient5` from `5.4.4` to `5.6.4`.
+* Fixed vulnerabilities by upgrading  `guava` from `32.1.2-jre` to `33.7.2-jre`.
+* Fixed vulnerabilities by upgrading  `async-http-client` from `3.0.11` to `3.0.14`.
+
 ## 6.0.5 (Aug 5, 2026)
 
 ### Fixes
