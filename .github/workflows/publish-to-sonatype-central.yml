@@ -34,10 +34,10 @@ jobs:
           java-version: '11'
           distribution: temurin
           server-id: central
-          server-username: CENTRAL_TOKEN_USERNAME
-          server-password: CENTRAL_TOKEN_PASSWORD
+          server-username-env-var: CENTRAL_TOKEN_USERNAME
+          server-password-env-var: CENTRAL_TOKEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
 
       - name: Publish to Sonatype Central
         # Activates the sonatype-central-release profile defined in pom.xml,
