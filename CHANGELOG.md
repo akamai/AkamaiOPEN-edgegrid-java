@@ -9,6 +9,9 @@
 * Fixed vulnerabilities by upgrading  `guava` from `32.1.2-jre` to `33.7.2-jre`.
 * Fixed vulnerabilities by upgrading  `async-http-client` from `3.0.11` to `3.0.14`.
 * Updated release signing to use `maven-gpg-plugin` `3.2.8` and Maven `3.6.3` or newer.
+* Updated `maven-source-plugin` from `3.2.1` to `3.4.0`.
+* Updated `httpcore5` from `5.4.3` to `5.4.4`.
+* Updated `httpclient` from `4.5.13` to `4.5.14`.
 
 ## 6.0.5 (Aug 5, 2026)
 
